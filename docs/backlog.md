@@ -25,6 +25,6 @@
 ---
 
 ## 🚀 Próximas Etapas (Fase 2)
-- [ ] **CORE-010:** Adicionar campos de data de entrega.
-- [ ] **CORE-011:** Implementar visual de "Integridade em Risco" para prazos vencidos.
-- [ ] **CORE-012:** Criar sistema de categorias/tags para compromissos.
+- [ ] **SAFE-001:** Adicionar campos de data de entrega.
+- [ ] **SAFE-002:** Implementar visual de "Integridade em Risco" para prazos vencidos.
+- [ ] **SAFE-003:** Criar sistema de categorias/tags para compromissos.
