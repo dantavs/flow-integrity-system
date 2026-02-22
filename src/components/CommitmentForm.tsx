@@ -5,6 +5,11 @@ import { CreateCommitmentDTO } from '../services/CommitmentService';
 
 interface CommitmentFormProps {
     onSubmit: (data: CreateCommitmentDTO) => boolean;
+    suggestions?: {
+        projetos: string[];
+        owners: string[];
+        stakeholders: string[];
+    };
 }
 
 const initialState: CreateCommitmentDTO = {
@@ -19,7 +24,7 @@ const initialState: CreateCommitmentDTO = {
     riscos: '',
 };
 
-const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit }) => {
+const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, suggestions }) => {
     const [formData, setFormData] = useState<CreateCommitmentDTO>(initialState);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -68,7 +73,11 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit }) => {
                         value={formData.projeto}
                         onChange={handleChange}
                         className="input-field"
+                        list="projetos-list"
                     />
+                    <datalist id="projetos-list">
+                        {suggestions?.projetos.map(p => <option key={p} value={p} />)}
+                    </datalist>
                 </div>
 
                 <div className="space-y-1">
@@ -95,7 +104,11 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit }) => {
                         onChange={handleChange}
                         className="input-field"
                         required
+                        list="owners-list"
                     />
+                    <datalist id="owners-list">
+                        {suggestions?.owners.map(o => <option key={o} value={o} />)}
+                    </datalist>
                 </div>
 
                 <div className="space-y-1">
@@ -109,7 +122,11 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit }) => {
                         onChange={handleChange}
                         className="input-field"
                         required
+                        list="stakeholders-list"
                     />
+                    <datalist id="stakeholders-list">
+                        {suggestions?.stakeholders.map(s => <option key={s} value={s} />)}
+                    </datalist>
                 </div>
 
                 <div className="space-y-1">

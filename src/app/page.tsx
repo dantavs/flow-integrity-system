@@ -124,7 +124,14 @@ export default function Home() {
             <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }} />
           </div>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <CommitmentForm onSubmit={handleCreateCommitment} />
+            <CommitmentForm
+              onSubmit={handleCreateCommitment}
+              suggestions={{
+                projetos: uniqueProjetos,
+                owners: uniqueOwners,
+                stakeholders: uniqueStakeholders
+              }}
+            />
           </div>
         </section>
 
