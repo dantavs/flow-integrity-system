@@ -50,7 +50,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, duration = 3000, onClose }
                 display: 'flex',
                 alignItems: 'center',
                 gap: '1rem',
-                zIndex: 1000,
+                zIndex: 9999,
                 minWidth: '300px',
                 borderLeft: `4px solid ${getColor()}`,
                 background: 'rgba(20, 20, 25, 0.9)',

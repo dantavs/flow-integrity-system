@@ -56,12 +56,15 @@ export default function Home() {
   const handleEditCommitmentSubmit = (data: CreateCommitmentDTO) => {
     if (!editingId) return false;
     try {
-      setCommitments(prev => prev.map(c => {
-        if (c.id === editingId) {
-          return editCommitment(c, data);
-        }
-        return c;
-      }));
+      const commitmentToEdit = commitments.find(c => c.id === editingId);
+      if (!commitmentToEdit) throw new Error('Compromisso não encontrado');
+
+      const updatedCommitment = editCommitment(commitmentToEdit, data);
+
+      setCommitments(prev => prev.map(c =>
+        c.id === editingId ? updatedCommitment : c
+      ));
+
       setToast({ message: 'Compromisso atualizado com sucesso! 📝', type: 'SUCCESS' });
       setEditingId(null);
       return true;

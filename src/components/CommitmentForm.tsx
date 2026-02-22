@@ -153,7 +153,7 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
                         value={formData.dataEsperada instanceof Date ? formData.dataEsperada.toISOString().split('T')[0] : new Date(formData.dataEsperada).toISOString().split('T')[0]}
                         onChange={handleChange}
                         className="input-field"
-                        min={!initialData ? new Date().toISOString().split('T')[0] : undefined}
+                        min={new Date().toISOString().split('T')[0]}
                         required
                     />
                 </div>
