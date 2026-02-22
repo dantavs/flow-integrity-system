@@ -3,16 +3,28 @@
 ## 📦 Primeira Release: Fundação (Commitments Core)
 
 ### 📋 Tarefas
-- [ ] **Definição de Modelo:** Criar o modelo `Commitment` (ID, Título, Descrição, Status, Data Criada).
-- [ ] **Interface de Entrada:** Criar formulário básico para captura de novos compromissos.
-- [ ] **Persistência Inicial:** Implementar salvamento e recuperação via `localStorage`.
-- [ ] **Visualização de Lista:** Listar compromissos ativos em uma UI limpa.
-- [ ] **Gestão de Estado:** Permitir a alteração de status (Pendente -> Em Progresso -> Concluído).
-- [ ] **Feedback Visual:** Indicadores simples de que o compromisso foi salvo.
+- [x] **CORE-001:** **Setup do Projeto:** Inicialização com Next.js e Git.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-002:** **Estrutura de Documentação:** Criação dos arquivos base em `/docs`.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [ ] **CORE-003:** **Definição de Modelo:** Criar o modelo `Commitment` (ID, Título, Descrição, Status, Data Criada).  
+  *(Início: - | Fim: -)*
+- [ ] **CORE-004:** **Interface de Entrada:** Criar formulário básico para captura de novos compromissos.  
+  *(Início: - | Fim: -)*
+- [ ] **CORE-005:** **Persistência Inicial:** Implementar salvamento e recuperação via `localStorage`.  
+  *(Início: - | Fim: -)*
+- [ ] **CORE-006:** **Visualização de Lista:** Listar compromissos ativos em uma UI limpa.  
+  *(Início: - | Fim: -)*
+- [ ] **CORE-007:** **Gestão de Estado:** Permitir a alteração de status (Pendente -> Em Progresso -> Concluído).  
+  *(Início: - | Fim: -)*
+- [ ] **CORE-008:** **Feedback Visual:** Indicadores simples de que o compromisso foi salvo.  
+  *(Início: - | Fim: -)*
+- [ ] **CORE-009:** **Refinamento de Estrutura do Backlog:** Otimizar formato do arquivo para extração facilitada de métricas e relatórios automáticos.  
+  *(Início: - | Fim: -)*
 
 ---
 
 ## 🚀 Próximas Etapas (Fase 2)
-- [ ] Adicionar campos de data de entrega.
-- [ ] Implementar visual de "Integridade em Risco" para prazos vencidos.
-- [ ] Criar sistema de categorias/tags para compromissos.
+- [ ] **CORE-010:** Adicionar campos de data de entrega.
+- [ ] **CORE-011:** Implementar visual de "Integridade em Risco" para prazos vencidos.
+- [ ] **CORE-012:** Criar sistema de categorias/tags para compromissos.
