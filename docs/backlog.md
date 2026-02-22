@@ -23,6 +23,8 @@
   *(Início: - | Fim: -)*
 - [x] **CORE-013:** **Regras de Negócio do Modelo:** Implementar validações (data, obrigatoriedade) e automações (ID, criadoEm) no modelo Commitment.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-014:** **Refinamento Estético (UI/UX):** Implementar design premium, Dark Mode nativo, Minimalismo e Glassmorphism.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
 
 ---
 

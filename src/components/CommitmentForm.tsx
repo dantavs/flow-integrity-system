@@ -36,128 +36,139 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-4 border rounded shadow-md space-y-4 max-w-lg bg-white text-black">
-            <div className="flex flex-col">
-                <label htmlFor="titulo">Título</label>
-                <input
-                    type="text"
-                    id="titulo"
-                    name="titulo"
-                    value={formData.titulo}
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                    required
-                />
+        <form onSubmit={handleSubmit} className="glass-card p-8 space-y-6 w-full animate-fade-in">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-1">
+                    <label htmlFor="titulo">Título do Compromisso</label>
+                    <input
+                        type="text"
+                        id="titulo"
+                        name="titulo"
+                        placeholder="O que será entregue?"
+                        value={formData.titulo}
+                        onChange={handleChange}
+                        className="input-field"
+                        required
+                    />
+                </div>
+
+                <div className="space-y-1">
+                    <label htmlFor="projeto">Projeto de Referência</label>
+                    <input
+                        type="text"
+                        id="projeto"
+                        name="projeto"
+                        placeholder="ex: Flow v1"
+                        value={formData.projeto}
+                        onChange={handleChange}
+                        className="input-field"
+                    />
+                </div>
+
+                <div className="space-y-1">
+                    <label htmlFor="area">Área Responsável</label>
+                    <input
+                        type="text"
+                        id="area"
+                        name="area"
+                        placeholder="ex: Engenharia"
+                        value={formData.area}
+                        onChange={handleChange}
+                        className="input-field"
+                    />
+                </div>
+
+                <div className="space-y-1">
+                    <label htmlFor="owner">Owner (Quem entrega)</label>
+                    <input
+                        type="text"
+                        id="owner"
+                        name="owner"
+                        placeholder="Nome da pessoa"
+                        value={formData.owner}
+                        onChange={handleChange}
+                        className="input-field"
+                        required
+                    />
+                </div>
+
+                <div className="space-y-1">
+                    <label htmlFor="stakeholder">Stakeholder (Quem recebe)</label>
+                    <input
+                        type="text"
+                        id="stakeholder"
+                        name="stakeholder"
+                        placeholder="ex: CEO, Time de QA"
+                        value={formData.stakeholder}
+                        onChange={handleChange}
+                        className="input-field"
+                        required
+                    />
+                </div>
+
+                <div className="space-y-1">
+                    <label htmlFor="dataEsperada">Data de Entrega</label>
+                    <input
+                        type="date"
+                        id="dataEsperada"
+                        name="dataEsperada"
+                        onChange={handleChange}
+                        className="input-field"
+                        required
+                    />
+                </div>
+
+                <div className="space-y-1">
+                    <label htmlFor="tipo">Tipo de Fluxo</label>
+                    <select
+                        id="tipo"
+                        name="tipo"
+                        value={formData.tipo}
+                        onChange={handleChange}
+                        className="input-field"
+                    >
+                        <option value="DELIVERY">🏁 Delivery</option>
+                        <option value="ALIGNMENT">🤝 Alignment</option>
+                        <option value="DECISION">⚖️ Decision</option>
+                        <option value="OP">⚙️ Operational</option>
+                    </select>
+                </div>
+
+                <div className="space-y-1">
+                    <label htmlFor="impacto">Impacto Sistêmico</label>
+                    <select
+                        id="impacto"
+                        name="impacto"
+                        value={formData.impacto}
+                        onChange={handleChange}
+                        className="input-field"
+                    >
+                        <option value="LOW">Low Impact</option>
+                        <option value="MEDIUM">Medium Impact</option>
+                        <option value="HIGH">High Impact</option>
+                        <option value="CRITICAL">Critical</option>
+                    </select>
+                </div>
             </div>
 
-            <div className="flex flex-col">
-                <label htmlFor="projeto">Projeto</label>
-                <input
-                    type="text"
-                    id="projeto"
-                    name="projeto"
-                    value={formData.projeto}
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                />
-            </div>
-
-            <div className="flex flex-col">
-                <label htmlFor="area">Área</label>
-                <input
-                    type="text"
-                    id="area"
-                    name="area"
-                    value={formData.area}
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                />
-            </div>
-
-            <div className="flex flex-col">
-                <label htmlFor="owner">Owner</label>
-                <input
-                    type="text"
-                    id="owner"
-                    name="owner"
-                    value={formData.owner}
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                    required
-                />
-            </div>
-
-            <div className="flex flex-col">
-                <label htmlFor="stakeholder">Stakeholder</label>
-                <input
-                    type="text"
-                    id="stakeholder"
-                    name="stakeholder"
-                    value={formData.stakeholder}
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                    required
-                />
-            </div>
-
-            <div className="flex flex-col">
-                <label htmlFor="dataEsperada">Data Esperada</label>
-                <input
-                    type="date"
-                    id="dataEsperada"
-                    name="dataEsperada"
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                    required
-                />
-            </div>
-
-            <div className="flex flex-col">
-                <label htmlFor="tipo">Tipo</label>
-                <select
-                    id="tipo"
-                    name="tipo"
-                    value={formData.tipo}
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                >
-                    <option value="DELIVERY">Delivery</option>
-                    <option value="ALIGNMENT">Alignment</option>
-                    <option value="DECISION">Decision</option>
-                    <option value="OP">Operational</option>
-                </select>
-            </div>
-
-            <div className="flex flex-col">
-                <label htmlFor="impacto">Impacto</label>
-                <select
-                    id="impacto"
-                    name="impacto"
-                    value={formData.impacto}
-                    onChange={handleChange}
-                    className="border p-2 rounded"
-                >
-                    <option value="LOW">Low</option>
-                    <option value="MEDIUM">Medium</option>
-                    <option value="HIGH">High</option>
-                    <option value="CRITICAL">Critical</option>
-                </select>
-            </div>
-
-            <div className="flex flex-col">
-                <label htmlFor="riscos">Riscos</label>
+            <div className="space-y-1">
+                <label htmlFor="riscos">Riscos e Considerações</label>
                 <textarea
                     id="riscos"
                     name="riscos"
+                    placeholder="Algo que possa impedir a entrega?"
                     value={formData.riscos}
                     onChange={handleChange}
-                    className="border p-2 rounded"
+                    className="input-field"
+                    style={{ minHeight: '100px', resize: 'vertical' }}
                 />
             </div>
 
-            <button type="submit" className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition-colors">
-                Criar Compromisso
-            </button>
+            <div className="pt-4">
+                <button type="submit" className="btn-primary w-full">
+                    Garantir Compromisso
+                </button>
+            </div>
         </form>
     );
 };
