@@ -7,8 +7,8 @@
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-002:** **Estrutura de Documentação:** Criação dos arquivos base em `/docs`.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
-- [ ] **CORE-003:** **Definição de Modelo:** Criar o modelo `Commitment` (ID, Título, Descrição, Status, Data Criada).  
-  *(Início: - | Fim: -)*
+- [x] **CORE-003:** **Definição de Modelo:** Criar o modelo `Commitment` (ID, Título, Descrição, Status, Data Criada).  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [ ] **CORE-004:** **Interface de Entrada:** Criar formulário básico para captura de novos compromissos.  
   *(Início: - | Fim: -)*
 - [ ] **CORE-005:** **Persistência Inicial:** Implementar salvamento e recuperação via `localStorage`.  

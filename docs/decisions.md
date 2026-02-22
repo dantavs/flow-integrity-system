@@ -16,3 +16,8 @@ Este arquivo registra as decisões arquiteturais significativas tomadas durante 
 - **Decisão:** Documentação viva em arquivos Markdown dentro da pasta `/docs`.
 - **Contexto:** Manter a documentação próxima ao código para facilitar a manutenção e versionamento.
 - **Consequências:** Histórico de evolução do produto acessível via Git.
+
+## [2026-02-22] 04: Motor de Testes
+- **Decisão:** Substituição do Jest pelo **Vitest**.
+- **Contexto:** Dificuldades técnicas na configuração do Jest com Next.js 15+ e TypeScript em ambientes com espaços no path. Vitest oferece melhor integração com o ecossistema moderno e é mais veloz.
+- **Consequências:** Configuração simplificada, maior velocidade de execução e compatibilidade nativa com ESM.

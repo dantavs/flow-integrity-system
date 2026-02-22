@@ -3,7 +3,7 @@
 Este documento estabelece as práticas e rituais que garantem a **Integridade do Fluxo** de trabalho no desenvolvimento deste projeto.
 
 ## 🛠️ Desenvolvimento e Git
-- **TDD (Test Driven Development):** Adotar o ciclo Vermelho-Verde-Refatorar para novas funcionalidades. Primeiro o teste falhando, depois o código mínimo para passar, e então a limpeza.
+- **TDD (Test Driven Development):** Adotar o ciclo Vermelho-Verde-Refatorar usando **Vitest** como motor de testes. Primeiro o teste falhando, depois o código mínimo para passar, e então a limpeza.
 - **Commit por Tarefa:** Sempre realizar o commit e push imediatamente após a conclusão de uma tarefa do backlog.
 
 ## 📋 Gestão de Fluxo
