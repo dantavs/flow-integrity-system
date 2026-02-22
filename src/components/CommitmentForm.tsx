@@ -137,6 +137,7 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, suggestions }
                         name="dataEsperada"
                         onChange={handleChange}
                         className="input-field"
+                        min={new Date().toISOString().split('T')[0]}
                         required
                     />
                 </div>

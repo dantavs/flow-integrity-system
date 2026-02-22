@@ -54,7 +54,7 @@ describe('CommitmentForm', () => {
         fireEvent.change(screen.getByLabelText(/Área Responsável/i), { target: { value: 'TI' } });
         fireEvent.change(screen.getByLabelText(/Owner \(Quem entrega\)/i), { target: { value: 'Daniel' } });
         fireEvent.change(screen.getByLabelText(/Stakeholder \(Quem recebe\)/i), { target: { value: 'QA' } });
-        fireEvent.change(screen.getByLabelText(/Data de Entrega/i), { target: { value: '2026-01-01' } });
+        fireEvent.change(screen.getByLabelText(/Data de Entrega/i), { target: { value: '2026-12-31' } });
 
         fireEvent.click(screen.getByRole('button', { name: /Garantir Compromisso/i }));
 
