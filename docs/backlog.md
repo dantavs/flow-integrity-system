@@ -7,7 +7,8 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [/] **CORE-026:** **Visualização de Histórico de Auditoria:** Criar um botão "Ver Histórico" na UI para exibir a linha do tempo (auditoria) de cada fluxo.
+- [x] **CORE-026:** **Visualização de Histórico de Auditoria:** Criar um botão "Ver Histórico" na UI para exibir a linha do tempo (auditoria) de cada fluxo.
+   *(Início: 2022-02-22 | Fim: 2026-02-22)*
   *(Início: 2026-02-22 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
