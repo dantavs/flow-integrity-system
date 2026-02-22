@@ -30,11 +30,49 @@
 ### � Fase 2: Governança e Integridade
 - [x] **SAFE-004:** **Trilha de Auditoria Universal:** Sistema de registro de eventos imutável para toda e qualquer mudança em um compromisso.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
-- [x] **CORE-015:** **Auto-complete Inteligente:** Sugestões baseadas no histórico.
-- [x] **CORE-019:** **Filtros de Lista:** Filtros por Projeto, Owner, Stakeholder e Tipo.
-- [x] **CORE-008:** **Feedback Visual:** Sistema de Toasts (Notificações) premium.
-- [x] **CORE-022:** **Visualização de Arquivados:** Gestão de itens via abas.
-- [x] **CORE-023:** **Resiliência do Formulário:** Preservação de dados em erros.
-- [x] **CORE-020:** **Ordenação Dinâmica:** Ordenação por prazo com sensores de cores.
-- [x] **SAFE-001/002/003:** Estrutura fundamental de segurança e categorização.
-- [x] **CORE-001 até CORE-018:** Setup, Modelo, Persistência, UI e Fluxo Base.
+
+### 📦 Fase 1: Fundação & UI Premium
+- [x] **CORE-015:** **Auto-complete Inteligente:** Implementar sugestões dinâmicas para os campos `Owner`, `Stakeholder` e `Projeto` baseadas no histórico, permitindo novas entradas.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-019:** **Filtros de Lista:** Implementar filtragem por Projeto, Owner, Stakeholder e Tipo de Fluxo na visualização de lista.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-008:** **Feedback Visual:** Implementar sistema de notificações (toasts) premium para confirmação de ações e feedback de salvamento.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-022:** **Visualização de Arquivados:** Adicionar link/atalho para visualizar compromissos Inativos (Done/Cancelled), avaliando modal vs toggle de visualização.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-023:** **Resiliência do Formulário:** Garantir que os dados preenchidos não sejam apagados caso a criação do compromisso falhe por erro de validação.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-020:** **Ordenação Dinâmica:** Permitir ordenar a lista por Data de Entrega (mais próxima/distante). Implementar feedback visual de urgência (Amarelo < 7 dias, Vermelho < hoje).  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-021:** **Status Inicial Padrão:** Garantir que todos os novos compromissos sejam criados com o status `BACKLOG` por padrão.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-007:** **Gestão de Estado:** Permitir a alteração de status (Pendente -> Em Progresso -> Concluído).  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-006:** **Visualização de Lista:** Listar compromissos ativos em uma UI limpa.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-018:** **UX de Entrada:** Limpar o formulário automaticamente após a submissão bem-sucedida de um compromisso.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-017:** **Bugfix de Datas:** Corrigir erro de fuso horário que altera o dia selecionado (ex: seleciona 24 e aparece 23).  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-016:** **Melhoria de UI:** Melhorar a visibilidade do ícone nativo do campo `Data de Entrega` in Dark Mode.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-014:** **Refinamento Estético (UI/UX):** Implementar design premium, Dark Mode nativo, Minimalismo e Glassmorphism.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-013:** **Regras de Negócio do Modelo:** Implementar validações (data, obrigatoriedade) e automações (ID, criadoEm) no modelo Commitment.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-005:** **Persistência Inicial:** Implementar salvamento e recuperação via `localStorage`.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-004:** **Interface de Entrada:** Criar formulário básico para captura de novos compromissos.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-003:** **Definição de Modelo:** Criar o modelo `Commitment` (ID, Título, Descrição, Status, Data Criada).  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-002:** **Estrutura de Documentação:** Criação dos arquivos base em `/docs`.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-001:** **Setup do Projeto:** Inicialização com Next.js e Git.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **SAFE-001:** Adicionar campos de data de entrega.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **SAFE-002:** Implementar visual de "Integridade em Risco" para prazos vencidos.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **SAFE-003:** Criar sistema de categorias/tags para compromissos.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
