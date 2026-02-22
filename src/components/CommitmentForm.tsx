@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { CreateCommitmentDTO } from '../services/CommitmentService';
 
 interface CommitmentFormProps {
-    onSubmit: (data: CreateCommitmentDTO) => void;
+    onSubmit: (data: CreateCommitmentDTO) => boolean;
 }
 
 const initialState: CreateCommitmentDTO = {
@@ -35,8 +35,10 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData);
-        setFormData(initialState);
+        const success = onSubmit(formData);
+        if (success) {
+            setFormData(initialState);
+        }
     };
 
     return (

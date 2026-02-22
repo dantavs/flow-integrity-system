@@ -31,8 +31,10 @@ export default function Home() {
       setCommitments(prev => [...prev, newCommitment]);
       setMessage('Fluxo de integridade iniciado com sucesso!');
       setTimeout(() => setMessage(null), 3000);
+      return true;
     } catch (error: any) {
       alert(error.message);
+      return false;
     }
   };
 
@@ -43,6 +45,10 @@ export default function Home() {
     setMessage(`Status do compromisso #${id} atualizado.`);
     setTimeout(() => setMessage(null), 3000);
   };
+
+  const activeCommitments = commitments
+    .filter(c => c.status === CommitmentStatus.ACTIVE || c.status === CommitmentStatus.BACKLOG)
+    .sort((a, b) => new Date(a.dataEsperada).getTime() - new Date(b.dataEsperada).getTime());
 
   return (
     <div style={{
@@ -111,15 +117,31 @@ export default function Home() {
 
         {/* Section: Listagem */}
         <section className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>
-              Compromissos Ativos ({commitments.filter(c => c.status === CommitmentStatus.ACTIVE || c.status === CommitmentStatus.BACKLOG).length})
-            </h2>
-            <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }} />
+          <div style={{ marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>
+                Compromissos Ativos ({activeCommitments.length})
+              </h2>
+              <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }} />
+            </div>
+            <button
+              onClick={() => alert('Visualização de arquivados será implementada em breve!')}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: 'var(--accent-primary)',
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                padding: 0,
+                textDecoration: 'underline'
+              }}
+            >
+              Ver itens arquivados
+            </button>
           </div>
 
           <CommitmentList
-            commitments={commitments.filter(c => c.status === CommitmentStatus.ACTIVE || c.status === CommitmentStatus.BACKLOG)}
+            commitments={activeCommitments}
             onStatusChange={handleStatusUpdate}
           />
         </section>

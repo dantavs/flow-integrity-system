@@ -7,7 +7,8 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-*(No momento, nenhuma tarefa em andamento)*
+- [/] **CORE-022:** **Visualização de Arquivados:** Adicionar link/atalho para visualizar compromissos Inativos (Done/Cancelled), avaliando modal vs toggle de visualização.  
+  *(Início: 2026-02-22 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
@@ -20,8 +21,6 @@
   *(Início: - | Fim: -)*
 - [ ] **CORE-019:** **Filtros de Lista:** Implementar filtragem por Projeto, Owner, Stakeholder e Tipo de Fluxo na visualização de lista.  
   *(Início: - | Fim: -)*
-- [ ] **CORE-020:** **Ordenação Dinâmica:** Permitir ordenar a lista por Data de Entrega (mais próxima/distante) e Data de Criação.  
-  *(Início: - | Fim: -)*
 
 ### 🚀 Fase 2: Segurança e Fluxo
 - [ ] **SAFE-001:** Adicionar campos de data de entrega.
@@ -30,6 +29,10 @@
 
 ## ✅ Concluído
 
+- [x] **CORE-023:** **Resiliência do Formulário:** Garantir que os dados preenchidos não sejam apagados caso a criação do compromisso falhe por erro de validação.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-020:** **Ordenação Dinâmica:** Permitir ordenar a lista por Data de Entrega (mais próxima/distante). Implementar feedback visual de urgência (Amarelo < 7 dias, Vermelho < hoje).  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-021:** **Status Inicial Padrão:** Garantir que todos os novos compromissos sejam criados com o status `BACKLOG` por padrão.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-007:** **Gestão de Estado:** Permitir a alteração de status (Pendente -> Em Progresso -> Concluído).  

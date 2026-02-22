@@ -20,6 +20,20 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
         }
     };
 
+    const getDateColor = (date: Date) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const targetDate = new Date(date);
+        targetDate.setHours(0, 0, 0, 0);
+
+        const diffTime = targetDate.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 0) return '#ef4444'; // Vermelho (atraso)
+        if (diffDays <= 6) return '#f59e0b'; // Amarelo (próximo)
+        return 'var(--accent-secondary)'; // Padrão
+    };
+
     return (
         <div
             className="glass-card p-6 flex flex-col justify-between animate-fade-in"
@@ -70,7 +84,7 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
                         <span>📅</span>
-                        <span style={{ fontWeight: 500, color: 'var(--accent-secondary)' }}>
+                        <span style={{ fontWeight: 600, color: getDateColor(c.dataEsperada) }}>
                             {new Date(c.dataEsperada).toLocaleDateString('pt-BR')}
                         </span>
                     </div>
