@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import CommitmentForm from '../components/CommitmentForm';
 import CommitmentList from '../components/CommitmentList';
-import { createCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
+import { createCommitment, changeCommitmentStatus, CreateCommitmentDTO } from '../services/CommitmentService';
 import { loadCommitments, saveCommitments } from '../services/PersistenceService';
 import { Commitment, CommitmentStatus } from '../models/Commitment';
 import Toast, { ToastType } from '../components/Toast';
@@ -47,7 +47,7 @@ export default function Home() {
 
   const handleStatusUpdate = (id: string, newStatus: CommitmentStatus) => {
     setCommitments(prev => prev.map(c =>
-      c.id === id ? { ...c, status: newStatus } : c
+      c.id === id ? changeCommitmentStatus(c, newStatus) : c
     ));
     setToast({ message: `Status do fluxo #${id} atualizado com sucesso.`, type: 'INFO' });
   };

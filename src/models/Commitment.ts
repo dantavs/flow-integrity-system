@@ -8,6 +8,17 @@ export enum CommitmentStatus {
 export type CommitmentType = 'DELIVERY' | 'ALIGNMENT' | 'DECISION' | 'OP';
 export type CommitmentImpact = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
+export type AuditEventType = 'CREATE' | 'STATUS_CHANGE' | 'EDIT' | 'RENEGOTIATION';
+
+export interface AuditEvent {
+    id: string;
+    tipo: AuditEventType;
+    timestamp: Date;
+    descricao: string;
+    valorAnterior?: string;
+    valorNovo?: string;
+}
+
 export interface Commitment {
     id: string;
     titulo: string;
@@ -20,8 +31,9 @@ export interface Commitment {
     impacto: CommitmentImpact;
     status: CommitmentStatus;
     hasImpedimento: boolean;
-    listaImpedimentos?: string[]; // Opcional para não burocratizar agora
+    listaImpedimentos?: string[];
     riscos: string;
-    renegociadoCount?: number; // Para rastrear se houve renegociação
+    renegociadoCount?: number;
     criadoEm: Date;
+    historico: AuditEvent[];
 }

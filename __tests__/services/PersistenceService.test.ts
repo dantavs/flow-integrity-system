@@ -18,7 +18,8 @@ describe('PersistenceService', () => {
             tipo: 'DELIVERY',
             impacto: 'MEDIUM',
             riscos: '',
-            renegociadoCount: 0
+            renegociadoCount: 0,
+            historico: []
         }
     ];
 

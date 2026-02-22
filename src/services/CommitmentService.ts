@@ -38,6 +38,31 @@ export function createCommitment(data: CreateCommitmentDTO, existingIds: string[
         status: CommitmentStatus.BACKLOG,
         hasImpedimento: false,
         criadoEm: now,
-        renegociadoCount: 0
+        renegociadoCount: 0,
+        historico: [{
+            id: `evt-${Date.now()}`,
+            tipo: 'CREATE',
+            timestamp: now,
+            descricao: 'Compromisso criado com status BACKLOG'
+        }]
+    };
+}
+
+export function changeCommitmentStatus(commitment: Commitment, newStatus: CommitmentStatus): Commitment {
+    if (commitment.status === newStatus) return commitment;
+
+    const event = {
+        id: `evt-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        tipo: 'STATUS_CHANGE' as const,
+        timestamp: new Date(),
+        descricao: `Status alterado de ${commitment.status} para ${newStatus}`,
+        valorAnterior: commitment.status,
+        valorNovo: newStatus
+    };
+
+    return {
+        ...commitment,
+        status: newStatus,
+        historico: [...(commitment.historico || []), event]
     };
 }

@@ -19,7 +19,8 @@ describe('CommitmentList', () => {
             tipo: 'DELIVERY',
             impacto: 'MEDIUM',
             riscos: '',
-            renegociadoCount: 0
+            renegociadoCount: 0,
+            historico: []
         },
         {
             id: '2',
@@ -35,7 +36,8 @@ describe('CommitmentList', () => {
             tipo: 'ALIGNMENT',
             impacto: 'HIGH',
             riscos: 'Falta de acesso',
-            renegociadoCount: 0
+            renegociadoCount: 0,
+            historico: []
         }
     ];
 
