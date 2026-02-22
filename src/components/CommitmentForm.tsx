@@ -53,7 +53,7 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit }) => {
                 </div>
 
                 <div className="space-y-1">
-                    <label htmlFor="projeto">Projeto de Referência</label>
+                    <label htmlFor="projeto">Projeto</label>
                     <input
                         type="text"
                         id="projeto"

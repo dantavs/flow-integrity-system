@@ -7,7 +7,7 @@ describe('CommitmentForm', () => {
         render(<CommitmentForm onSubmit={vi.fn()} />);
 
         expect(screen.getByLabelText(/Título do Compromisso/i)).toBeDefined();
-        expect(screen.getByLabelText(/Projeto de Referência/i)).toBeDefined();
+        expect(screen.getByLabelText(/Projeto/i)).toBeDefined();
         expect(screen.getByLabelText(/Área Responsável/i)).toBeDefined();
         expect(screen.getByLabelText(/Owner \(Quem entrega\)/i)).toBeDefined();
         expect(screen.getByLabelText(/Stakeholder \(Quem recebe\)/i)).toBeDefined();
@@ -23,7 +23,7 @@ describe('CommitmentForm', () => {
         render(<CommitmentForm onSubmit={handleSubmit} />);
 
         fireEvent.change(screen.getByLabelText(/Título do Compromisso/i), { target: { value: 'Novo Compromisso' } });
-        fireEvent.change(screen.getByLabelText(/Projeto de Referência/i), { target: { value: 'Projeto Alpha' } });
+        fireEvent.change(screen.getByLabelText(/Projeto/i), { target: { value: 'Projeto Alpha' } });
         fireEvent.change(screen.getByLabelText(/Área Responsável/i), { target: { value: 'Engenharia' } });
         fireEvent.change(screen.getByLabelText(/Owner \(Quem entrega\)/i), { target: { value: 'Daniel' } });
         fireEvent.change(screen.getByLabelText(/Stakeholder \(Quem recebe\)/i), { target: { value: 'Gerência' } });
