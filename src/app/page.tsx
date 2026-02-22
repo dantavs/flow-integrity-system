@@ -1,6 +1,26 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState } from 'react';
+import CommitmentForm from '../components/CommitmentForm';
+import { createCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
+import { Commitment } from '../models/Commitment';
 
 export default function Home() {
+  const [commitments, setCommitments] = useState<Commitment[]>([]);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleCreateCommitment = (data: CreateCommitmentDTO) => {
+    try {
+      const existingIds = commitments.map(c => c.id);
+      const newCommitment = createCommitment(data, existingIds);
+      setCommitments(prev => [...prev, newCommitment]);
+      setMessage('Compromisso criado com sucesso!');
+      setTimeout(() => setMessage(null), 3000);
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
   return (
     <div style={{
       display: 'flex',
@@ -9,68 +29,77 @@ export default function Home() {
       justifyContent: 'center',
       minHeight: '100vh',
       padding: '2rem',
-      textAlign: 'center'
+      textAlign: 'center',
+      backgroundColor: '#f4f7f6'
     }}>
-      <header className="animate-fade-in" style={{ maxWidth: '800px' }}>
-        <h1 style={{ fontSize: '4rem', marginBottom: '1.5rem' }}>
-          Welcome to <span className="gradient-text">Flow Integrity System</span>
+      <header style={{ maxWidth: '800px', marginBottom: '3rem' }}>
+        <h1 style={{ fontSize: '3rem', marginBottom: '1rem', color: '#1a202c' }}>
+          Flow Integrity System
         </h1>
-        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', marginBottom: '3rem' }}>
-          Ensuring the seamless flow of data, logic, and performance across your entire stack. 
-          The ultimate foundation for modern, robust digital experiences.
+        <p style={{ fontSize: '1.25rem', color: '#4a5568' }}>
+          Gestão de Compromissos com Foco em Integridade
         </p>
-        
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <button className="glass" style={{
-            padding: '1rem 2.5rem',
-            borderRadius: 'var(--radius-xl)',
-            fontWeight: '600',
-            fontSize: '1rem',
-            color: 'var(--text-primary)',
-            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.2))',
-            border: '1px solid var(--glass-border)'
-          }}>
-            Explore System
-          </button>
-          <button className="glass" style={{
-             padding: '1rem 2.5rem',
-             borderRadius: 'var(--radius-xl)',
-             fontWeight: '600',
-             fontSize: '1rem',
-             color: 'var(--text-primary)'
-          }}>
-            Documentation
-          </button>
-        </div>
       </header>
 
-      <section style={{
-        marginTop: '6rem',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '2rem',
-        width: '100%',
-        maxWidth: '1200px'
-      }}>
-        {[
-          { title: 'Data Integrity', desc: 'Real-time validation and consistency checks across all distributed nodes.' },
-          { title: 'Performance Flow', desc: 'Predictive analytics to maintain sub-100ms response times at any scale.' },
-          { title: 'Security Shield', desc: 'Automated threat detection and seamless encryption for every byte of data.' }
-        ].map((feature, i) => (
-          <div key={i} className="glass animate-fade-in" style={{
-            padding: '2.5rem',
-            borderRadius: 'var(--radius-2xl)',
-            textAlign: 'left',
-            animationDelay: `${0.2 + i * 0.1}s`,
-            transition: 'transform 0.3s ease'
-          }}>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'var(--accent-primary)' }}>{feature.title}</h3>
-            <p style={{ color: 'var(--text-secondary)' }}>{feature.desc}</p>
-          </div>
-        ))}
-      </section>
+      <main style={{ width: '100%', maxWidth: '600px' }}>
+        <section style={{ marginBottom: '4rem' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: '#2d3748' }}>
+            Novo Compromisso
+          </h2>
+          <CommitmentForm onSubmit={handleCreateCommitment} />
+          {message && (
+            <div style={{
+              marginTop: '1rem',
+              padding: '1rem',
+              backgroundColor: '#c6f6d5',
+              color: '#22543d',
+              borderRadius: '0.375rem'
+            }}>
+              {message}
+            </div>
+          )}
+        </section>
 
-      <footer style={{ marginTop: '8rem', color: 'var(--text-muted)' }}>
+        <section>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: '#2d3748' }}>
+            Compromissos Ativos ({commitments.length})
+          </h2>
+          <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {commitments.length === 0 ? (
+              <p style={{ color: '#718096', textAlign: 'center' }}>Nenhum compromisso criado ainda.</p>
+            ) : (
+              commitments.map(c => (
+                <div key={c.id} style={{
+                  padding: '1rem',
+                  backgroundColor: 'white',
+                  borderRadius: '0.5rem',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                }}>
+                  <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{c.titulo}</div>
+                  <div style={{ fontSize: '0.9rem', color: '#718096' }}>
+                    {c.projeto} | {c.area} | Stakeholder: {c.stakeholder}
+                  </div>
+                  <div style={{ marginTop: '0.5rem', display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{
+                      padding: '0.2rem 0.5rem',
+                      backgroundColor: '#edf2f7',
+                      borderRadius: '0.25rem',
+                      fontSize: '0.8rem'
+                    }}>
+                      {c.status}
+                    </span>
+                    <span style={{ fontSize: '0.8rem' }}>
+                      Expira em: {new Date(c.dataEsperada).toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
+      </main>
+
+      <footer style={{ marginTop: '5rem', color: '#a0aec0' }}>
         <p>&copy; 2026 Flow Integrity System. Built with Next.js.</p>
       </footer>
     </div>

@@ -10,3 +10,4 @@ Registro cronológico do desenvolvimento, decisões rápidas e progresso do sist
 - **Status:** Infraestrutura de documentação pronta.
 - **Mudança Técnica:** Substituição do Jest pelo Vitest para garantir estabilidade e velocidade nos testes automatizados.
 - **Atividade:** Implementação das Regras de Negócio (CORE-013) com validações de data, campos obrigatórios e automação de IDs no `CommitmentService`.
+- **Atividade:** Criação da Interface de Entrada (CORE-004) com o componente `CommitmentForm` e integração na Home page, seguindo TDD.

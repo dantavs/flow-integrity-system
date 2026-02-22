@@ -1,5 +1,5 @@
-import { CommitmentStatus } from '../../src/models/Commitment';
-import { createCommitment } from '../../src/services/CommitmentService';
+import { CommitmentStatus } from '@/models/Commitment';
+import { createCommitment } from '@/services/CommitmentService';
 
 describe('Commitment Business Rules', () => {
     const validBaseData = {

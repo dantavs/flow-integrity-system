@@ -9,8 +9,8 @@
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-003:** **Definição de Modelo:** Criar o modelo `Commitment` (ID, Título, Descrição, Status, Data Criada).  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
-- [ ] **CORE-004:** **Interface de Entrada:** Criar formulário básico para captura de novos compromissos.  
-  *(Início: - | Fim: -)*
+- [x] **CORE-004:** **Interface de Entrada:** Criar formulário básico para captura de novos compromissos.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [ ] **CORE-005:** **Persistência Inicial:** Implementar salvamento e recuperação via `localStorage`.  
   *(Início: - | Fim: -)*
 - [ ] **CORE-006:** **Visualização de Lista:** Listar compromissos ativos em uma UI limpa.  
