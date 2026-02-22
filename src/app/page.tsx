@@ -6,10 +6,12 @@ import CommitmentList from '../components/CommitmentList';
 import { createCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
 import { loadCommitments, saveCommitments } from '../services/PersistenceService';
 import { Commitment, CommitmentStatus } from '../models/Commitment';
+import Toast, { ToastType } from '../components/Toast';
 
 export default function Home() {
   const [commitments, setCommitments] = useState<Commitment[]>([]);
-  const [message, setMessage] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
+  const [viewMode, setViewMode] = useState<'ACTIVE' | 'ARCHIVED'>('ACTIVE');
 
   // Carregar dados iniciais
   useEffect(() => {
@@ -29,11 +31,10 @@ export default function Home() {
       const existingIds = commitments.map(c => c.id);
       const newCommitment = createCommitment(data, existingIds);
       setCommitments(prev => [...prev, newCommitment]);
-      setMessage('Fluxo de integridade iniciado com sucesso!');
-      setTimeout(() => setMessage(null), 3000);
+      setToast({ message: 'Compromisso registrado com sucesso! ✨', type: 'SUCCESS' });
       return true;
     } catch (error: any) {
-      alert(error.message);
+      setToast({ message: error.message, type: 'ERROR' });
       return false;
     }
   };
@@ -42,13 +43,18 @@ export default function Home() {
     setCommitments(prev => prev.map(c =>
       c.id === id ? { ...c, status: newStatus } : c
     ));
-    setMessage(`Status do compromisso #${id} atualizado.`);
-    setTimeout(() => setMessage(null), 3000);
+    setToast({ message: `Status do fluxo #${id} atualizado com sucesso.`, type: 'INFO' });
   };
 
   const activeCommitments = commitments
     .filter(c => c.status === CommitmentStatus.ACTIVE || c.status === CommitmentStatus.BACKLOG)
     .sort((a, b) => new Date(a.dataEsperada).getTime() - new Date(b.dataEsperada).getTime());
+
+  const archivedCommitments = commitments
+    .filter(c => c.status === CommitmentStatus.DONE || c.status === CommitmentStatus.CANCELLED)
+    .sort((a, b) => new Date(b.criadoEm).getTime() - new Date(a.criadoEm).getTime());
+
+  const currentCommitments = viewMode === 'ACTIVE' ? activeCommitments : archivedCommitments;
 
   return (
     <div style={{
@@ -98,50 +104,53 @@ export default function Home() {
           </div>
           <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <CommitmentForm onSubmit={handleCreateCommitment} />
-            {message && (
-              <div className="animate-fade-in" style={{
-                marginTop: '1.5rem',
-                padding: '1rem',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                color: '#10b981',
-                borderRadius: '8px',
-                border: '1px solid rgba(16, 185, 129, 0.2)',
-                textAlign: 'center',
-                fontWeight: 500
-              }}>
-                {message}
-              </div>
-            )}
           </div>
         </section>
 
         {/* Section: Listagem */}
         <section className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          <div style={{ marginBottom: '2rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>
-                Compromissos Ativos ({activeCommitments.length})
-              </h2>
+          <div style={{ marginBottom: '2.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Gestão de Fluxos</h2>
               <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }} />
             </div>
-            <button
-              onClick={() => alert('Visualização de arquivados será implementada em breve!')}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--accent-primary)',
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                padding: 0,
-                textDecoration: 'underline'
-              }}
-            >
-              Ver itens arquivados
-            </button>
+
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button
+                onClick={() => setViewMode('ACTIVE')}
+                className={viewMode === 'ACTIVE' ? 'tab-active' : 'tab-inactive'}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  fontSize: '0.9rem',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  border: '1px solid var(--glass-border)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                Ativos ({activeCommitments.length})
+              </button>
+              <button
+                onClick={() => setViewMode('ARCHIVED')}
+                className={viewMode === 'ARCHIVED' ? 'tab-active' : 'tab-inactive'}
+                style={{
+                  padding: '8px 16px',
+                  borderRadius: '20px',
+                  fontSize: '0.9rem',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  border: '1px solid var(--glass-border)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                Arquivados ({archivedCommitments.length})
+              </button>
+            </div>
           </div>
 
           <CommitmentList
-            commitments={activeCommitments}
+            commitments={currentCommitments}
             onStatusChange={handleStatusUpdate}
           />
         </section>
@@ -150,6 +159,14 @@ export default function Home() {
       <footer style={{ marginTop: '8rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
         <p>&copy; 2026 Flow Integrity System. A cultura de compromisso levada a sério.</p>
       </footer>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

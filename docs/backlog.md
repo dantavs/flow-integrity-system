@@ -7,16 +7,12 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [/] **CORE-022:** **Visualização de Arquivados:** Adicionar link/atalho para visualizar compromissos Inativos (Done/Cancelled), avaliando modal vs toggle de visualização.  
-  *(Início: 2026-02-22 | Fim: -)*
+- [ ] **CORE-009:** **Refinamento de Estrutura do Backlog:** Otimizar formato do arquivo para extração facilitada de métricas e relatórios automáticos.  
+  *(Início: - | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
 ### 📦 Fase 1: Fundação
-- [ ] **CORE-008:** **Feedback Visual:** Indicadores simples de que o compromisso foi salvo.  
-  *(Início: - | Fim: -)*
-- [ ] **CORE-009:** **Refinamento de Estrutura do Backlog:** Otimizar formato do arquivo para extração facilitada de métricas e relatórios automáticos.  
-  *(Início: - | Fim: -)*
 - [ ] **CORE-015:** **Auto-complete Inteligente:** Implementar sugestões dinâmicas para os campos `Owner`, `Stakeholder` e `Projeto` baseadas no histórico, permitindo novas entradas.  
   *(Início: - | Fim: -)*
 - [ ] **CORE-019:** **Filtros de Lista:** Implementar filtragem por Projeto, Owner, Stakeholder e Tipo de Fluxo na visualização de lista.  
@@ -29,6 +25,10 @@
 
 ## ✅ Concluído
 
+- [x] **CORE-008:** **Feedback Visual:** Implementar sistema de notificações (toasts) premium para confirmação de ações e feedback de salvamento.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-022:** **Visualização de Arquivados:** Adicionar link/atalho para visualizar compromissos Inativos (Done/Cancelled), avaliando modal vs toggle de visualização.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-023:** **Resiliência do Formulário:** Garantir que os dados preenchidos não sejam apagados caso a criação do compromisso falhe por erro de validação.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-020:** **Ordenação Dinâmica:** Permitir ordenar a lista por Data de Entrega (mais próxima/distante). Implementar feedback visual de urgência (Amarelo < 7 dias, Vermelho < hoje).  
@@ -43,7 +43,7 @@
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-017:** **Bugfix de Datas:** Corrigir erro de fuso horário que altera o dia selecionado (ex: seleciona 24 e aparece 23).  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
-- [x] **CORE-016:** **Melhoria de UI:** Melhorar a visibilidade do ícone nativo do campo `Data de Entrega` em Dark Mode.  
+- [x] **CORE-016:** **Melhoria de UI:** Melhorar a visibilidade do ícone nativo do campo `Data de Entrega` in Dark Mode.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-014:** **Refinamento Estético (UI/UX):** Implementar design premium, Dark Mode nativo, Minimalismo e Glassmorphism.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
