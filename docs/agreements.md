@@ -7,6 +7,7 @@ Este documento estabelece as práticas e rituais que garantem a **Integridade do
 - **Commit por Tarefa:** Sempre realizar o commit e push imediatamente após a conclusão de uma tarefa do backlog.
 
 ## 📋 Gestão de Fluxo
+- **Backlog Antecipado:** Todo novo requisito ou funcionalidade solicitada que não esteja no backlog deve ser adicionado como uma tarefa antes de ser implementado.
 - **Backlog Vivo:** Toda atividade realizada deve ter sua data de início e fim devidamente registradas no `backlog.md`.
 - **Rastro de Valor:** Ao final de uma sessão ou entrega importante, o `journal.md` deve ser atualizado com o que foi feito e eventuais insights.
 

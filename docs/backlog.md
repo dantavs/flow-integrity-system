@@ -21,6 +21,8 @@
   *(Início: - | Fim: -)*
 - [ ] **CORE-009:** **Refinamento de Estrutura do Backlog:** Otimizar formato do arquivo para extração facilitada de métricas e relatórios automáticos.  
   *(Início: - | Fim: -)*
+- [x] **CORE-013:** **Regras de Negócio do Modelo:** Implementar validações (data, obrigatoriedade) e automações (ID, criadoEm) no modelo Commitment.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
 
 ---
 

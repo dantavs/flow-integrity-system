@@ -9,3 +9,4 @@ Registro cronológico do desenvolvimento, decisões rápidas e progresso do sist
 - **Insight:** O foco em "Compromissos" (Commitments) em vez de "Tarefas" (Tasks) será o diferencial competitivo do modelo mental do app.
 - **Status:** Infraestrutura de documentação pronta.
 - **Mudança Técnica:** Substituição do Jest pelo Vitest para garantir estabilidade e velocidade nos testes automatizados.
+- **Atividade:** Implementação das Regras de Negócio (CORE-013) com validações de data, campos obrigatórios e automação de IDs no `CommitmentService`.
