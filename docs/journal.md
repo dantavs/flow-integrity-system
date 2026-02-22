@@ -11,3 +11,5 @@ Registro cronológico do desenvolvimento, decisões rápidas e progresso do sist
 - **Mudança Técnica:** Substituição do Jest pelo Vitest para garantir estabilidade e velocidade nos testes automatizados.
 - **Atividade:** Implementação das Regras de Negócio (CORE-013) com validações de data, campos obrigatórios e automação de IDs no `CommitmentService`.
 - **Atividade:** Criação da Interface de Entrada (CORE-004) com o componente `CommitmentForm` e integração na Home page, seguindo TDD.
+- **Atividade:** Refinamento Estético e Aprovação (CORE-014). Design Premium Dark e Glassmorphism aprovados. Novos acordos de "Aprovação Necessária" estabelecidos.
+- **Atividade:** Implementação da Persistência Local (CORE-005) usando `localStorage` e integrando ao ciclo de vida da página inicial com React Hooks.

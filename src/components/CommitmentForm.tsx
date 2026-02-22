@@ -7,24 +7,27 @@ interface CommitmentFormProps {
     onSubmit: (data: CreateCommitmentDTO) => void;
 }
 
+const initialState: CreateCommitmentDTO = {
+    titulo: '',
+    projeto: '',
+    area: '',
+    owner: '',
+    stakeholder: '',
+    dataEsperada: new Date(),
+    tipo: 'DELIVERY',
+    impacto: 'MEDIUM',
+    riscos: '',
+};
+
 const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit }) => {
-    const [formData, setFormData] = useState<CreateCommitmentDTO>({
-        titulo: '',
-        projeto: '',
-        area: '',
-        owner: '',
-        stakeholder: '',
-        dataEsperada: new Date(),
-        tipo: 'DELIVERY',
-        impacto: 'MEDIUM',
-        riscos: '',
-    });
+    const [formData, setFormData] = useState<CreateCommitmentDTO>(initialState);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
 
         if (name === 'dataEsperada') {
-            setFormData(prev => ({ ...prev, [name]: new Date(value) }));
+            // Adicionar T00:00:00 garante que a data seja interpretada no fuso horário local
+            setFormData(prev => ({ ...prev, [name]: new Date(value + 'T00:00:00') }));
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
@@ -33,6 +36,7 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit }) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSubmit(formData);
+        setFormData(initialState);
     };
 
     return (

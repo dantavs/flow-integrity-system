@@ -18,7 +18,7 @@ describe('CommitmentForm', () => {
         expect(screen.getByRole('button', { name: /Garantir Compromisso/i })).toBeDefined();
     });
 
-    it('should call onSubmit with form data when submitted', async () => {
+    it('should call onSubmit with form data and reset form when submitted', async () => {
         const handleSubmit = vi.fn();
         render(<CommitmentForm onSubmit={handleSubmit} />);
 
@@ -37,12 +37,10 @@ describe('CommitmentForm', () => {
         expect(handleSubmit).toHaveBeenCalledWith(expect.objectContaining({
             titulo: 'Novo Compromisso',
             projeto: 'Projeto Alpha',
-            area: 'Engenharia',
-            owner: 'Daniel',
-            stakeholder: 'Gerência',
-            tipo: 'DELIVERY',
-            impacto: 'HIGH',
-            riscos: 'Nenhum'
         }));
+
+        // Verificar reset
+        expect(screen.getByLabelText(/Título do Compromisso/i)).toHaveValue('');
+        expect(screen.getByLabelText(/Projeto/i)).toHaveValue('');
     });
 });

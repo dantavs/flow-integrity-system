@@ -1,5 +1,11 @@
 # Backlog do Projeto
 
+**Legenda de Status:**
+- `[ ]` Pendente
+- `[/]` Em andamento
+- `[~]` Aguardando Aprovação
+- `[x]` Concluído
+
 ## 📦 Primeira Release: Fundação (Commitments Core)
 
 ### 📋 Tarefas
@@ -11,8 +17,8 @@
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-004:** **Interface de Entrada:** Criar formulário básico para captura de novos compromissos.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
-- [ ] **CORE-005:** **Persistência Inicial:** Implementar salvamento e recuperação via `localStorage`.  
-  *(Início: - | Fim: -)*
+- [x] **CORE-005:** **Persistência Inicial:** Implementar salvamento e recuperação via `localStorage`.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [ ] **CORE-006:** **Visualização de Lista:** Listar compromissos ativos em uma UI limpa.  
   *(Início: - | Fim: -)*
 - [ ] **CORE-007:** **Gestão de Estado:** Permitir a alteração de status (Pendente -> Em Progresso -> Concluído).  
@@ -24,6 +30,14 @@
 - [x] **CORE-013:** **Regras de Negócio do Modelo:** Implementar validações (data, obrigatoriedade) e automações (ID, criadoEm) no modelo Commitment.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-014:** **Refinamento Estético (UI/UX):** Implementar design premium, Dark Mode nativo, Minimalismo e Glassmorphism.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [ ] **CORE-015:** **Auto-complete Inteligente:** Implementar sugestões dinâmicas para os campos `Owner`, `Stakeholder` e `Projeto` baseadas no histórico, permitindo novas entradas.  
+  *(Início: - | Fim: -)*
+- [x] **CORE-016:** **Melhoria de UI:** Melhorar a visibilidade do ícone nativo do campo `Data de Entrega` em Dark Mode.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-017:** **Bugfix de Datas:** Corrigir erro de fuso horário que altera o dia selecionado (ex: seleciona 24 e aparece 23).  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-018:** **UX de Entrada:** Limpar o formulário automaticamente após a submissão bem-sucedida de um compromisso.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 
 ---

@@ -1,13 +1,27 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CommitmentForm from '../components/CommitmentForm';
 import { createCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
+import { loadCommitments, saveCommitments } from '../services/PersistenceService';
 import { Commitment } from '../models/Commitment';
 
 export default function Home() {
   const [commitments, setCommitments] = useState<Commitment[]>([]);
   const [message, setMessage] = useState<string | null>(null);
+
+  // Carregar dados iniciais
+  useEffect(() => {
+    const data = loadCommitments();
+    setCommitments(data);
+  }, []);
+
+  // Salvar sempre que a lista mudar
+  useEffect(() => {
+    if (commitments.length > 0) {
+      saveCommitments(commitments);
+    }
+  }, [commitments]);
 
   const handleCreateCommitment = (data: CreateCommitmentDTO) => {
     try {

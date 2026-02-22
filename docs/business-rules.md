@@ -14,3 +14,6 @@ As regras abaixo devem ser garantidas no momento da criação ou atualização d
 ### 📝 Campos Obrigatórios
 - **BR-004 (Título Obrigatório):** O campo `titulo` é estritamente obrigatório e não pode ser vazio ou conter apenas espaços em branco.
 - **BR-005 (Owner e Stakeholder):** Todo compromisso deve ter um `owner` e um `stakeholder` definidos no momento da criação.
+
+### ⚡ Inteligência de Entrada
+- **BR-006 (Auto-complete de Histórico):** Os campos `owner`, `stakeholder`, `projeto` e `area` devem sugerir valores baseados em entradas anteriores armazenadas no sistema. Caso o usuário digite um valor novo, este deve ser aceito e passar a fazer parte das sugestões futuras.
