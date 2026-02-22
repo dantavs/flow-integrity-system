@@ -7,10 +7,6 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [ ] **CORE-026:** **Visualização de Histórico de Auditoria:** Criar um botão "Ver Histórico" na UI para exibir a linha do tempo (trilha de auditoria) de cada compromisso.  
-  *(Início: - | Fim: -)*
-- [ ] **CORE-027:** **Edição Completa do Compromisso:** Permitir que campos-chave como Data de Entrega, Título, Projeto, Owner, Stakeholder e Tipo sejam editados após a criação, registrando a mudança no histórico.  
-  *(Início: - | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
@@ -20,6 +16,8 @@
 - [ ] **AI-003:** **Integrity Guardian (Insights):** Gerar relatórios de saúde do fluxo e comportamentos de risco (ex: saturação de owners).
 
 ### 🚀 Fase 2: Governança e Integridade
+- [ ] **CORE-026:** **Visualização de Histórico de Auditoria:** Criar um botão "Ver Histórico" na UI para exibir a linha do tempo (auditoria) de cada fluxo.
+- [ ] **CORE-027:** **Edição Completa do Compromisso:** Permitir que campos-chave (Data, Título, Owner, etc) sejam editados após a criação, registrando no histórico.
 - [ ] **CORE-025:** **Gestão Dinâmica de Riscos:** Evoluir o campo de riscos para uma estrutura com categorias, status de mitigação e impacto na matriz de risco.
 - [ ] **SAFE-005:** **Governança de Prazos:** Reforçar regras de negócio para impedir que datas de entrega sejam definidas ou alteradas para o passado.  
 - [ ] **CORE-024:** **Score de Integridade de Fluxo:** Indicador visual da % de saúde do sistema.
