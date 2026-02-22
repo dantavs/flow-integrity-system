@@ -12,8 +12,6 @@
 ## 📋 Planejado (Aguardando Início)
 
 ### 📦 Fase 1: Fundação
-- [ ] **CORE-007:** **Gestão de Estado:** Permitir a alteração de status (Pendente -> Em Progresso -> Concluído).  
-  *(Início: - | Fim: -)*
 - [ ] **CORE-008:** **Feedback Visual:** Indicadores simples de que o compromisso foi salvo.  
   *(Início: - | Fim: -)*
 - [ ] **CORE-009:** **Refinamento de Estrutura do Backlog:** Otimizar formato do arquivo para extração facilitada de métricas e relatórios automáticos.  
@@ -32,6 +30,10 @@
 
 ## ✅ Concluído
 
+- [x] **CORE-021:** **Status Inicial Padrão:** Garantir que todos os novos compromissos sejam criados com o status `BACKLOG` por padrão.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
+- [x] **CORE-007:** **Gestão de Estado:** Permitir a alteração de status (Pendente -> Em Progresso -> Concluído).  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-006:** **Visualização de Lista:** Listar compromissos ativos em uma UI limpa.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-018:** **UX de Entrada:** Limpar o formulário automaticamente após a submissão bem-sucedida de um compromisso.  

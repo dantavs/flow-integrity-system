@@ -5,7 +5,7 @@ import CommitmentForm from '../components/CommitmentForm';
 import CommitmentList from '../components/CommitmentList';
 import { createCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
 import { loadCommitments, saveCommitments } from '../services/PersistenceService';
-import { Commitment } from '../models/Commitment';
+import { Commitment, CommitmentStatus } from '../models/Commitment';
 
 export default function Home() {
   const [commitments, setCommitments] = useState<Commitment[]>([]);
@@ -34,6 +34,14 @@ export default function Home() {
     } catch (error: any) {
       alert(error.message);
     }
+  };
+
+  const handleStatusUpdate = (id: string, newStatus: CommitmentStatus) => {
+    setCommitments(prev => prev.map(c =>
+      c.id === id ? { ...c, status: newStatus } : c
+    ));
+    setMessage(`Status do compromisso #${id} atualizado.`);
+    setTimeout(() => setMessage(null), 3000);
   };
 
   return (
@@ -104,11 +112,16 @@ export default function Home() {
         {/* Section: Listagem */}
         <section className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Compromissos Ativos ({commitments.length})</h2>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>
+              Compromissos Ativos ({commitments.filter(c => c.status === CommitmentStatus.ACTIVE || c.status === CommitmentStatus.BACKLOG).length})
+            </h2>
             <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }} />
           </div>
 
-          <CommitmentList commitments={commitments} />
+          <CommitmentList
+            commitments={commitments.filter(c => c.status === CommitmentStatus.ACTIVE || c.status === CommitmentStatus.BACKLOG)}
+            onStatusChange={handleStatusUpdate}
+          />
         </section>
       </main>
 

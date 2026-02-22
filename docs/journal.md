@@ -15,3 +15,5 @@ Registro cronológico do desenvolvimento, decisões rápidas e progresso do sist
 - **Atividade:** Implementação da Persistência Local (CORE-005) usando `localStorage` e integrando ao ciclo de vida da página inicial com React Hooks.
 - **Correções & UX:** Resolvido bug de fuso horário (CORE-017), melhorada visibilidade do ícone de data (CORE-016) e implementado reset de formulário (CORE-018). Ciclo aprovado pelo usuário e enviado ao repositório.
 - **Arquitetura & UI:** Início da CORE-006. Modularização da listagem de compromissos em componentes específicos (`CommitmentList`, `CommitmentCard`) com melhorias na exibição de riscos e tipos de fluxo.
+- **Funcionalidade:** Implementação da Gestão de Estado (CORE-007). Adicionado controle interativo nos cards para transição de status com persistência automática. Implementada lógica de "Arquivamento Automático": compromissos marcados como DONE ou CANCELLED deixam de ser exibidos na lista ativa para manter o foco no fluxo de trabalho.
+- **Regra de Negócio:** Implementação da CORE-021. Novos compromissos agora são criados com o status `BACKLOG` por padrão, garantindo que todo fluxo inicie na fase de planejamento.

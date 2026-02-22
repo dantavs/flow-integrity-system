@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import CommitmentList from '@/components/CommitmentList';
 import { Commitment, CommitmentStatus } from '@/models/Commitment';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 describe('CommitmentList', () => {
     const mockCommitments: Commitment[] = [
@@ -53,10 +53,14 @@ describe('CommitmentList', () => {
         expect(screen.getByText('Projeto B • QA')).toBeDefined();
     });
 
-    it('should display the correct status badge', () => {
-        render(<CommitmentList commitments={mockCommitments} />);
+    it('should call onStatusChange when a status is updated', () => {
+        const handleStatusChange = vi.fn();
+        render(<CommitmentList commitments={mockCommitments} onStatusChange={handleStatusChange} />);
 
-        expect(screen.getByText('ACTIVE')).toBeDefined();
-        expect(screen.getByText('BACKLOG')).toBeDefined();
+        // Simular mudança no select
+        const statusSelects = screen.getAllByRole('combobox');
+        fireEvent.change(statusSelects[0], { target: { value: CommitmentStatus.DONE } });
+
+        expect(handleStatusChange).toHaveBeenCalledWith('1', CommitmentStatus.DONE);
     });
 });

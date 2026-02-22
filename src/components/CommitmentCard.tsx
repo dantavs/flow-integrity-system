@@ -1,14 +1,15 @@
 'use client';
 
 import React from 'react';
-import { Commitment } from '../models/Commitment';
+import { Commitment, CommitmentStatus } from '../models/Commitment';
 
 interface CommitmentCardProps {
     commitment: Commitment;
     index: number;
+    onStatusChange?: (id: string, newStatus: CommitmentStatus) => void;
 }
 
-const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index }) => {
+const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, onStatusChange }) => {
     const getTipoIcon = (tipo: string) => {
         switch (tipo) {
             case 'DELIVERY': return '🏁';
@@ -26,9 +27,17 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index })
         >
             <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                    <span className={`status-badge ${c.status === 'ACTIVE' ? 'status-active' : 'status-backlog'}`}>
-                        {c.status}
-                    </span>
+                    <select
+                        value={c.status}
+                        onChange={(e) => onStatusChange?.(c.id, e.target.value as CommitmentStatus)}
+                        className={`status-badge ${c.status === 'ACTIVE' ? 'status-active' : 'status-backlog'}`}
+                        style={{ border: 'none', cursor: 'pointer', appearance: 'none', WebkitAppearance: 'none' }}
+                    >
+                        <option value={CommitmentStatus.BACKLOG}>BACKLOG</option>
+                        <option value={CommitmentStatus.ACTIVE}>ACTIVE</option>
+                        <option value={CommitmentStatus.DONE}>DONE</option>
+                        <option value={CommitmentStatus.CANCELLED}>CANCELLED</option>
+                    </select>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ID: #{c.id}</span>
                 </div>
 

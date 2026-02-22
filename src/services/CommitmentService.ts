@@ -35,7 +35,7 @@ export function createCommitment(data: CreateCommitmentDTO, existingIds: string[
     return {
         ...data,
         id: nextId,
-        status: CommitmentStatus.ACTIVE,
+        status: CommitmentStatus.BACKLOG,
         hasImpedimento: false,
         criadoEm: now,
         renegociadoCount: 0

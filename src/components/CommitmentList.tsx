@@ -1,14 +1,15 @@
 'use client';
 
 import React from 'react';
-import { Commitment } from '../models/Commitment';
+import { Commitment, CommitmentStatus } from '../models/Commitment';
 import CommitmentCard from './CommitmentCard';
 
 interface CommitmentListProps {
     commitments: Commitment[];
+    onStatusChange?: (id: string, newStatus: CommitmentStatus) => void;
 }
 
-const CommitmentList: React.FC<CommitmentListProps> = ({ commitments }) => {
+const CommitmentList: React.FC<CommitmentListProps> = ({ commitments, onStatusChange }) => {
     if (commitments.length === 0) {
         return (
             <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)', width: '100%' }}>
@@ -25,7 +26,7 @@ const CommitmentList: React.FC<CommitmentListProps> = ({ commitments }) => {
             width: '100%'
         }}>
             {commitments.map((c, i) => (
-                <CommitmentCard key={c.id} commitment={c} index={i} />
+                <CommitmentCard key={c.id} commitment={c} index={i} onStatusChange={onStatusChange} />
             ))}
         </div>
     );

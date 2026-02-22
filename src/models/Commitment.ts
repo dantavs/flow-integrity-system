@@ -1,7 +1,8 @@
 export enum CommitmentStatus {
     BACKLOG = 'BACKLOG',
     ACTIVE = 'ACTIVE',
-    DONE = 'DONE'
+    DONE = 'DONE',
+    CANCELLED = 'CANCELLED'
 }
 
 export type CommitmentType = 'DELIVERY' | 'ALIGNMENT' | 'DECISION' | 'OP';

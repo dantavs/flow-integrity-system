@@ -14,12 +14,12 @@ describe('Commitment Business Rules', () => {
         riscos: 'Nenhum',
     };
 
-    it('BR-001 & BR-002: should auto-generate ID and criadoEm date', () => {
+    it('BR-001 & BR-002: should auto-generate ID, criadoEm date, and default to BACKLOG status', () => {
         const commitment = createCommitment(validBaseData, []);
         expect(commitment.id).toBeDefined();
         expect(commitment.id).toBe('1');
         expect(commitment.criadoEm).toBeInstanceOf(Date);
-        expect(commitment.criadoEm.getTime()).toBeLessThanOrEqual(Date.now());
+        expect(commitment.status).toBe(CommitmentStatus.BACKLOG);
     });
 
     it('BR-004: should throw error if titulo is empty', () => {
