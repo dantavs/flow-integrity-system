@@ -71,10 +71,15 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
     if (!data.titulo || data.titulo.trim() === '') {
         throw new Error('Título é obrigatório');
     }
+    if (!data.dataEsperada) {
+        throw new Error('Data de entrega é obrigatória');
+    }
 
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const expectedDate = new Date(data.dataEsperada.getFullYear(), data.dataEsperada.getMonth(), data.dataEsperada.getDate());
+    const expectedDate = new Date(data.dataEsperada.getFullYear ? data.dataEsperada.getFullYear() : new Date(data.dataEsperada).getFullYear(),
+        data.dataEsperada.getMonth ? data.dataEsperada.getMonth() : new Date(data.dataEsperada).getMonth(),
+        data.dataEsperada.getDate ? data.dataEsperada.getDate() : new Date(data.dataEsperada).getDate());
 
     // Se estiver mudando a data para uma diferente da que já tinha,
     // garantimos que não é pro passado (a antiga podia estar no passado e não tem problema se não mexer nela)

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import CommitmentForm from '../components/CommitmentForm';
 import CommitmentList from '../components/CommitmentList';
+import AuditTimeline from '../components/AuditTimeline';
 import { createCommitment, changeCommitmentStatus, editCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
 import { loadCommitments, saveCommitments } from '../services/PersistenceService';
 import { Commitment, CommitmentStatus } from '../models/Commitment';
@@ -19,6 +20,7 @@ export default function Home() {
     tipo: ''
   });
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [historyId, setHistoryId] = useState<string | null>(null);
 
   // Carregar dados iniciais
   useEffect(() => {
@@ -278,6 +280,7 @@ export default function Home() {
             commitments={currentCommitments}
             onStatusChange={handleStatusUpdate}
             onEdit={setEditingId}
+            onViewHistory={setHistoryId}
           />
         </section>
       </main>
@@ -310,6 +313,23 @@ export default function Home() {
                   stakeholders: uniqueStakeholders
                 }}
               />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {historyId && (
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setHistoryId(null) }}>
+          <div className="modal-content">
+            <button className="modal-close" onClick={() => setHistoryId(null)}>×</button>
+            <div style={{ padding: '2rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+                Trilha de Auditoria
+              </h2>
+              <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
+                Histórico imutável de eventos do compromisso #{historyId}
+              </p>
+              <AuditTimeline history={commitments.find(c => c.id === historyId)?.historico || []} />
             </div>
           </div>
         </div>

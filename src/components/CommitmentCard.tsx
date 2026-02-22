@@ -8,9 +8,10 @@ interface CommitmentCardProps {
     index: number;
     onStatusChange?: (id: string, newStatus: CommitmentStatus) => void;
     onEdit?: (id: string) => void;
+    onViewHistory?: (id: string) => void;
 }
 
-const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, onStatusChange, onEdit }) => {
+const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, onStatusChange, onEdit, onViewHistory }) => {
     const getTipoIcon = (tipo: string) => {
         switch (tipo) {
             case 'DELIVERY': return '🏁';
@@ -73,6 +74,27 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
                                 aria-label="Editar"
                             >
                                 ✏️
+                            </button>
+                        )}
+                        {onViewHistory && (
+                            <button
+                                onClick={() => onViewHistory(c.id)}
+                                style={{
+                                    background: 'transparent',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: 'var(--text-muted)',
+                                    fontSize: '1rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '4px',
+                                    borderRadius: '4px',
+                                }}
+                                title="Ver Histórico"
+                                aria-label="Histórico"
+                            >
+                                🕒
                             </button>
                         )}
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ID: #{c.id}</span>
