@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import CommitmentForm from '../components/CommitmentForm';
+import CommitmentList from '../components/CommitmentList';
 import { createCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
 import { loadCommitments, saveCommitments } from '../services/PersistenceService';
 import { Commitment } from '../models/Commitment';
@@ -107,47 +108,7 @@ export default function Home() {
             <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }} />
           </div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-            gap: '1.5rem'
-          }}>
-            {commitments.length === 0 ? (
-              <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)', gridColumn: '1 / -1' }}>
-                <p>Nenhum fluxo de integridade monitorado no momento.</p>
-              </div>
-            ) : (
-              commitments.map((c, i) => (
-                <div key={c.id} className="glass-card p-6 flex flex-col justify-between" style={{ animationDelay: `${0.4 + i * 0.1}s` }}>
-                  <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                      <span className={`status-badge ${c.status === 'ACTIVE' ? 'status-active' : 'status-backlog'}`}>
-                        {c.status}
-                      </span>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ID: #{c.id}</span>
-                    </div>
-                    <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', fontWeight: 600 }}>{c.titulo}</h3>
-                    <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-                      {c.projeto} • {c.area}
-                    </p>
-                  </div>
-
-                  <div style={{ marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                      <span>Stakeholder: <strong style={{ color: 'var(--text-primary)' }}>{c.stakeholder}</strong></span>
-                      <span>Owner: <strong style={{ color: 'var(--text-primary)' }}>{c.owner}</strong></span>
-                    </div>
-                    <div style={{ marginTop: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
-                      <span>📅</span>
-                      <span style={{ fontWeight: 500, color: 'var(--accent-secondary)' }}>
-                        {new Date(c.dataEsperada).toLocaleDateString('pt-BR')}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+          <CommitmentList commitments={commitments} />
         </section>
       </main>
 

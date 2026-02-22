@@ -11,9 +11,7 @@
 
 ## 📋 Planejado (Aguardando Início)
 
-### � Fase 1: Fundação
-- [ ] **CORE-006:** **Visualização de Lista:** Listar compromissos ativos em uma UI limpa.  
-  *(Início: - | Fim: -)*
+### 📦 Fase 1: Fundação
 - [ ] **CORE-007:** **Gestão de Estado:** Permitir a alteração de status (Pendente -> Em Progresso -> Concluído).  
   *(Início: - | Fim: -)*
 - [ ] **CORE-008:** **Feedback Visual:** Indicadores simples de que o compromisso foi salvo.  
@@ -21,6 +19,10 @@
 - [ ] **CORE-009:** **Refinamento de Estrutura do Backlog:** Otimizar formato do arquivo para extração facilitada de métricas e relatórios automáticos.  
   *(Início: - | Fim: -)*
 - [ ] **CORE-015:** **Auto-complete Inteligente:** Implementar sugestões dinâmicas para os campos `Owner`, `Stakeholder` e `Projeto` baseadas no histórico, permitindo novas entradas.  
+  *(Início: - | Fim: -)*
+- [ ] **CORE-019:** **Filtros de Lista:** Implementar filtragem por Projeto, Owner, Stakeholder e Tipo de Fluxo na visualização de lista.  
+  *(Início: - | Fim: -)*
+- [ ] **CORE-020:** **Ordenação Dinâmica:** Permitir ordenar a lista por Data de Entrega (mais próxima/distante) e Data de Criação.  
   *(Início: - | Fim: -)*
 
 ### 🚀 Fase 2: Segurança e Fluxo
@@ -30,6 +32,8 @@
 
 ## ✅ Concluído
 
+- [x] **CORE-006:** **Visualização de Lista:** Listar compromissos ativos em uma UI limpa.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-018:** **UX de Entrada:** Limpar o formulário automaticamente após a submissão bem-sucedida de um compromisso.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-017:** **Bugfix de Datas:** Corrigir erro de fuso horário que altera o dia selecionado (ex: seleciona 24 e aparece 23).  

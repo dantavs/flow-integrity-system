@@ -13,3 +13,5 @@ Registro cronológico do desenvolvimento, decisões rápidas e progresso do sist
 - **Atividade:** Criação da Interface de Entrada (CORE-004) com o componente `CommitmentForm` e integração na Home page, seguindo TDD.
 - **Atividade:** Refinamento Estético e Aprovação (CORE-014). Design Premium Dark e Glassmorphism aprovados. Novos acordos de "Aprovação Necessária" estabelecidos.
 - **Atividade:** Implementação da Persistência Local (CORE-005) usando `localStorage` e integrando ao ciclo de vida da página inicial com React Hooks.
+- **Correções & UX:** Resolvido bug de fuso horário (CORE-017), melhorada visibilidade do ícone de data (CORE-016) e implementado reset de formulário (CORE-018). Ciclo aprovado pelo usuário e enviado ao repositório.
+- **Arquitetura & UI:** Início da CORE-006. Modularização da listagem de compromissos em componentes específicos (`CommitmentList`, `CommitmentCard`) com melhorias na exibição de riscos e tipos de fluxo.
