@@ -8,14 +8,13 @@
 
 ## ⚡ Em Execução
 - [ ] **CORE-009:** **Refinamento de Estrutura do Backlog:** Otimizar formato do arquivo para extração facilitada de métricas e relatórios automáticos.  
-  *(Início: - | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
 ### 📦 Fase 1: Fundação
-- [ ] **CORE-015:** **Auto-complete Inteligente:** Implementar sugestões dinâmicas para os campos `Owner`, `Stakeholder` e `Projeto` baseadas no histórico, permitindo novas entradas.  
+- [ ] **CORE-009:** **Refinamento de Estrutura do Backlog:** Otimizar formato do arquivo para extração facilitada de métricas e relatórios automáticos.  
   *(Início: - | Fim: -)*
-- [ ] **CORE-019:** **Filtros de Lista:** Implementar filtragem por Projeto, Owner, Stakeholder e Tipo de Fluxo na visualização de lista.  
+- [ ] **CORE-015:** **Auto-complete Inteligente:** Implementar sugestões dinâmicas para os campos `Owner`, `Stakeholder` e `Projeto` baseadas no histórico, permitindo novas entradas.  
   *(Início: - | Fim: -)*
 
 ### 🚀 Fase 2: Segurança e Fluxo
@@ -25,6 +24,8 @@
 
 ## ✅ Concluído
 
+- [x] **CORE-019:** **Filtros de Lista:** Implementar filtragem por Projeto, Owner, Stakeholder e Tipo de Fluxo na visualização de lista.  
+  *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-008:** **Feedback Visual:** Implementar sistema de notificações (toasts) premium para confirmação de ações e feedback de salvamento.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-022:** **Visualização de Arquivados:** Adicionar link/atalho para visualizar compromissos Inativos (Done/Cancelled), avaliando modal vs toggle de visualização.  

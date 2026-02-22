@@ -12,6 +12,12 @@ export default function Home() {
   const [commitments, setCommitments] = useState<Commitment[]>([]);
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
   const [viewMode, setViewMode] = useState<'ACTIVE' | 'ARCHIVED'>('ACTIVE');
+  const [filters, setFilters] = useState({
+    projeto: '',
+    owner: '',
+    stakeholder: '',
+    tipo: ''
+  });
 
   // Carregar dados iniciais
   useEffect(() => {
@@ -54,7 +60,22 @@ export default function Home() {
     .filter(c => c.status === CommitmentStatus.DONE || c.status === CommitmentStatus.CANCELLED)
     .sort((a, b) => new Date(b.criadoEm).getTime() - new Date(a.criadoEm).getTime());
 
-  const currentCommitments = viewMode === 'ACTIVE' ? activeCommitments : archivedCommitments;
+  const applyFilters = (list: Commitment[]) => {
+    return list.filter(c => {
+      const matchProjeto = filters.projeto === '' || c.projeto === filters.projeto;
+      const matchOwner = filters.owner === '' || c.owner === filters.owner;
+      const matchStakeholder = filters.stakeholder === '' || c.stakeholder === filters.stakeholder;
+      const matchTipo = filters.tipo === '' || c.tipo === filters.tipo;
+      return matchProjeto && matchOwner && matchStakeholder && matchTipo;
+    });
+  };
+
+  const currentCommitments = applyFilters(viewMode === 'ACTIVE' ? activeCommitments : archivedCommitments);
+
+  // Extract unique values for filters
+  const uniqueProjetos = Array.from(new Set(commitments.map(c => c.projeto))).sort();
+  const uniqueOwners = Array.from(new Set(commitments.map(c => c.owner))).sort();
+  const uniqueStakeholders = Array.from(new Set(commitments.map(c => c.stakeholder))).sort();
 
   return (
     <div style={{
@@ -146,6 +167,81 @@ export default function Home() {
               >
                 Arquivados ({archivedCommitments.length})
               </button>
+            </div>
+
+            {/* Filtros */}
+            <div style={{
+              marginTop: '1.5rem',
+              padding: '1rem',
+              backgroundColor: 'rgba(255,255,255,0.02)',
+              borderRadius: '12px',
+              border: '1px solid var(--glass-border)',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '1rem'
+            }}>
+              <div style={{ flex: '1 1 200px' }}>
+                <select
+                  className="input-field"
+                  style={{ padding: '0.5rem' }}
+                  value={filters.projeto}
+                  onChange={(e) => setFilters(prev => ({ ...prev, projeto: e.target.value }))}
+                >
+                  <option value="">Todos os Projetos</option>
+                  {uniqueProjetos.map(p => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </div>
+              <div style={{ flex: '1 1 150px' }}>
+                <select
+                  className="input-field"
+                  style={{ padding: '0.5rem' }}
+                  value={filters.owner}
+                  onChange={(e) => setFilters(prev => ({ ...prev, owner: e.target.value }))}
+                >
+                  <option value="">Todos os Owners</option>
+                  {uniqueOwners.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </div>
+              <div style={{ flex: '1 1 150px' }}>
+                <select
+                  className="input-field"
+                  style={{ padding: '0.5rem' }}
+                  value={filters.stakeholder}
+                  onChange={(e) => setFilters(prev => ({ ...prev, stakeholder: e.target.value }))}
+                >
+                  <option value="">Todos os Stakeholders</option>
+                  {uniqueStakeholders.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div style={{ flex: '1 1 150px' }}>
+                <select
+                  className="input-field"
+                  style={{ padding: '0.5rem' }}
+                  value={filters.tipo}
+                  onChange={(e) => setFilters(prev => ({ ...prev, tipo: e.target.value }))}
+                >
+                  <option value="">Todos os Tipos</option>
+                  <option value="DELIVERY">Delivery</option>
+                  <option value="ALIGNMENT">Alinhamento</option>
+                  <option value="DECISION">Decisão</option>
+                  <option value="OP">OP</option>
+                </select>
+              </div>
+              {(filters.projeto || filters.owner || filters.stakeholder || filters.tipo) && (
+                <button
+                  onClick={() => setFilters({ projeto: '', owner: '', stakeholder: '', tipo: '' })}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--accent-primary)',
+                    fontSize: '0.85rem',
+                    cursor: 'pointer',
+                    textDecoration: 'underline'
+                  }}
+                >
+                  Limpar Filtros
+                </button>
+              )}
             </div>
           </div>
 
