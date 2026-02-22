@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import CommitmentForm from '../components/CommitmentForm';
 import CommitmentList from '../components/CommitmentList';
-import { createCommitment, changeCommitmentStatus, CreateCommitmentDTO } from '../services/CommitmentService';
+import { createCommitment, changeCommitmentStatus, editCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
 import { loadCommitments, saveCommitments } from '../services/PersistenceService';
 import { Commitment, CommitmentStatus } from '../models/Commitment';
 import Toast, { ToastType } from '../components/Toast';
@@ -18,6 +18,7 @@ export default function Home() {
     stakeholder: '',
     tipo: ''
   });
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   // Carregar dados iniciais
   useEffect(() => {
@@ -50,6 +51,24 @@ export default function Home() {
       c.id === id ? changeCommitmentStatus(c, newStatus) : c
     ));
     setToast({ message: `Status do fluxo #${id} atualizado com sucesso.`, type: 'INFO' });
+  };
+
+  const handleEditCommitmentSubmit = (data: CreateCommitmentDTO) => {
+    if (!editingId) return false;
+    try {
+      setCommitments(prev => prev.map(c => {
+        if (c.id === editingId) {
+          return editCommitment(c, data);
+        }
+        return c;
+      }));
+      setToast({ message: 'Compromisso atualizado com sucesso! 📝', type: 'SUCCESS' });
+      setEditingId(null);
+      return true;
+    } catch (error: any) {
+      setToast({ message: error.message, type: 'ERROR' });
+      return false;
+    }
   };
 
   const activeCommitments = commitments
@@ -255,6 +274,7 @@ export default function Home() {
           <CommitmentList
             commitments={currentCommitments}
             onStatusChange={handleStatusUpdate}
+            onEdit={setEditingId}
           />
         </section>
       </main>
@@ -269,6 +289,27 @@ export default function Home() {
           type={toast.type}
           onClose={() => setToast(null)}
         />
+      )}
+
+      {editingId && (
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setEditingId(null) }}>
+          <div className="modal-content">
+            <button className="modal-close" onClick={() => setEditingId(null)}>×</button>
+            <div style={{ padding: '2rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1.5rem' }}>Editar Compromisso #{editingId}</h2>
+              <CommitmentForm
+                initialData={commitments.find(c => c.id === editingId)}
+                onSubmit={handleEditCommitmentSubmit}
+                onCancel={() => setEditingId(null)}
+                suggestions={{
+                  projetos: uniqueProjetos,
+                  owners: uniqueOwners,
+                  stakeholders: uniqueStakeholders
+                }}
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

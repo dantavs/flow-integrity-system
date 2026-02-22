@@ -7,9 +7,10 @@ interface CommitmentCardProps {
     commitment: Commitment;
     index: number;
     onStatusChange?: (id: string, newStatus: CommitmentStatus) => void;
+    onEdit?: (id: string) => void;
 }
 
-const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, onStatusChange }) => {
+const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, onStatusChange, onEdit }) => {
     const getTipoIcon = (tipo: string) => {
         switch (tipo) {
             case 'DELIVERY': return '🏁';
@@ -52,7 +53,30 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
                         <option value={CommitmentStatus.DONE}>DONE</option>
                         <option value={CommitmentStatus.CANCELLED}>CANCELLED</option>
                     </select>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ID: #{c.id}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {onEdit && (
+                            <button
+                                onClick={() => onEdit(c.id)}
+                                style={{
+                                    background: 'transparent',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: 'var(--text-muted)',
+                                    fontSize: '1rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '4px',
+                                    borderRadius: '4px',
+                                }}
+                                title="Editar Compromisso"
+                                aria-label="Editar"
+                            >
+                                ✏️
+                            </button>
+                        )}
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ID: #{c.id}</span>
+                    </div>
                 </div>
 
                 <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', fontWeight: 600 }}>{c.titulo}</h3>

@@ -2,9 +2,12 @@
 
 import React, { useState } from 'react';
 import { CreateCommitmentDTO } from '../services/CommitmentService';
+import { Commitment } from '../models/Commitment';
 
 interface CommitmentFormProps {
     onSubmit: (data: CreateCommitmentDTO) => boolean;
+    initialData?: Commitment;
+    onCancel?: () => void;
     suggestions?: {
         projetos: string[];
         owners: string[];
@@ -24,8 +27,20 @@ const initialState: CreateCommitmentDTO = {
     riscos: '',
 };
 
-const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, suggestions }) => {
-    const [formData, setFormData] = useState<CreateCommitmentDTO>(initialState);
+const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, onCancel, suggestions }) => {
+    const defaultData = initialData ? {
+        titulo: initialData.titulo,
+        projeto: initialData.projeto,
+        area: initialData.area,
+        owner: initialData.owner,
+        stakeholder: initialData.stakeholder,
+        dataEsperada: initialData.dataEsperada instanceof Date ? initialData.dataEsperada : new Date(initialData.dataEsperada),
+        tipo: initialData.tipo,
+        impacto: initialData.impacto,
+        riscos: initialData.riscos
+    } : initialState;
+
+    const [formData, setFormData] = useState<CreateCommitmentDTO>(defaultData);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -41,7 +56,7 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, suggestions }
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const success = onSubmit(formData);
-        if (success) {
+        if (success && !initialData) {
             setFormData(initialState);
         }
     };
@@ -135,9 +150,10 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, suggestions }
                         type="date"
                         id="dataEsperada"
                         name="dataEsperada"
+                        value={formData.dataEsperada instanceof Date ? formData.dataEsperada.toISOString().split('T')[0] : new Date(formData.dataEsperada).toISOString().split('T')[0]}
                         onChange={handleChange}
                         className="input-field"
-                        min={new Date().toISOString().split('T')[0]}
+                        min={!initialData ? new Date().toISOString().split('T')[0] : undefined}
                         required
                     />
                 </div>
@@ -188,9 +204,14 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, suggestions }
                 />
             </div>
 
-            <div className="pt-4">
+            <div className="pt-4 flex gap-4">
+                {onCancel && (
+                    <button type="button" onClick={onCancel} className="btn-secondary w-full" style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'transparent', color: 'var(--text-primary)', cursor: 'pointer' }}>
+                        Cancelar
+                    </button>
+                )}
                 <button type="submit" className="btn-primary w-full">
-                    Garantir Compromisso
+                    {initialData ? "Salvar Alterações" : "Garantir Compromisso"}
                 </button>
             </div>
         </form>

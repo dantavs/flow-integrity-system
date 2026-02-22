@@ -7,7 +7,8 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-
+- [/] **CORE-027:** **Edição Completa do Compromisso:** Permitir que campos-chave (Data, Título, Owner, etc) sejam editados após a criação, registrando no histórico.
+  *(Início: 2026-02-22 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
@@ -18,7 +19,6 @@
 
 ### 🚀 Fase 2: Governança e Integridade
 - [ ] **CORE-026:** **Visualização de Histórico de Auditoria:** Criar um botão "Ver Histórico" na UI para exibir a linha do tempo (auditoria) de cada fluxo.
-- [ ] **CORE-027:** **Edição Completa do Compromisso:** Permitir que campos-chave (Data, Título, Owner, etc) sejam editados após a criação, registrando no histórico.
 - [ ] **CORE-025:** **Gestão Dinâmica de Riscos:** Evoluir o campo de riscos para uma estrutura com categorias, status de mitigação e impacto na matriz de risco.
 - [ ] **CORE-024:** **Score de Integridade de Fluxo:** Indicador visual da % de saúde do sistema.
 
