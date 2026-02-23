@@ -7,6 +7,7 @@ import AuditTimeline from '../components/AuditTimeline';
 import { createCommitment, changeCommitmentStatus, editCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
 import { loadCommitments, saveCommitments } from '../services/PersistenceService';
 import { Commitment, CommitmentStatus } from '../models/Commitment';
+import { calculateFlowHealth } from '../services/FlowHealthService';
 import Toast, { ToastType } from '../components/Toast';
 
 export default function Home() {
@@ -111,6 +112,7 @@ export default function Home() {
   };
 
   const currentCommitments = applyFilters(viewMode === 'ACTIVE' ? activeCommitments : archivedCommitments);
+  const flowHealth = calculateFlowHealth(commitments);
 
   // Extract unique values for filters
   const uniqueProjetos = Array.from(new Set(commitments.map(c => c.projeto))).sort();
@@ -184,6 +186,40 @@ export default function Home() {
 
         {/* Section: Listagem */}
         <section className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          <div
+            className="glass-card"
+            style={{
+              padding: '1rem 1.2rem',
+              marginBottom: '1.5rem',
+              borderLeft: `4px solid ${flowHealth.level === 'HEALTHY' ? '#10b981' : flowHealth.level === 'ATTENTION' ? '#f59e0b' : '#ef4444'}`,
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+              <div>
+                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Saúde do Fluxo</div>
+                <div style={{ fontSize: '1.8rem', fontWeight: 700 }}>{flowHealth.score}%</div>
+              </div>
+              <div style={{ flex: 1, minWidth: '220px' }}>
+                <div style={{ height: '10px', background: 'rgba(255,255,255,0.08)', borderRadius: '999px', overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      width: `${flowHealth.score}%`,
+                      height: '100%',
+                      background: flowHealth.level === 'HEALTHY'
+                        ? 'linear-gradient(90deg, #10b981, #34d399)'
+                        : flowHealth.level === 'ATTENTION'
+                          ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
+                          : 'linear-gradient(90deg, #ef4444, #f87171)',
+                    }}
+                  />
+                </div>
+                <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                  Ativos: {flowHealth.totalActive} | Vencidos: {flowHealth.breakdown.overdue} | Dependências pendentes: {flowHealth.breakdown.blockedByDependency} | Risco alto: {flowHealth.breakdown.highRisk} | Risco aberto: {flowHealth.breakdown.openRisk} | Reincidentes: {flowHealth.breakdown.recurrent}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div style={{ marginBottom: '2.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Gestão de Fluxos</h2>

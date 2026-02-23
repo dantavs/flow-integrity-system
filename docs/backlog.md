@@ -7,11 +7,14 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
+- [~] **CORE-024:** **Score de Integridade de Fluxo:** Indicador visual da % de saúde do sistema.
+  *(Início: 2026-02-23 | Fim: -)*
+- [~] **VIEW-001:** **Definição do Weekly Brief (Contrato de Métricas):** Formalizar regras de cálculo e critérios de inclusão para os 4 blocos: Entregas da próxima semana, Em risco, Bloqueados e Reincidentes.
+  *(Início: 2026-02-23 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
 ### 👁️ Fase 3: Visão Executiva (VIEW) — Weekly Brief
-- [ ] **VIEW-001:** **Definição do Weekly Brief (Contrato de Métricas):** Formalizar regras de cálculo e critérios de inclusão para os 4 blocos: Entregas da próxima semana, Em risco, Bloqueados e Reincidentes.
 - [ ] **VIEW-002:** **Camada de Agregação do Brief:** Implementar selectors/serviço que consolide os compromissos em um resumo semanal determinístico, sem opinião e sem inferência.
 - [ ] **VIEW-003:** **UI do Weekly Brief (v1):** Construir o bloco visual com os 4 indicadores estruturais, contagem e navegação para a lista filtrada correspondente.
 - [ ] **VIEW-004:** **Teste de Confiabilidade do Brief:** Cobrir com testes unitários os cenários de borda (sem dados, datas no limite da semana, bloqueios e reincidência).
@@ -29,7 +32,6 @@
 - [ ] **AI-003:** **Integrity Guardian (Insights):** Gerar relatórios de saúde do fluxo e comportamentos de risco (ex: saturação de owners).
 
 ### 🚀 Fase 2: Governança e Integridade
-- [ ] **CORE-024:** **Score de Integridade de Fluxo:** Indicador visual da % de saúde do sistema.
 
 ### 🛠️ Manutenção & Estabilidade
 
