@@ -7,8 +7,25 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
+- [~] **CORE-025:** **Gestão Dinâmica de Riscos:** Evoluir o campo de riscos para uma estrutura com categorias, status de mitigação e impacto na matriz de risco.
+  *(Início: 2026-02-23 | Fim: -)*
+- [~] **CORE-029:** **Entrada Progressiva (Riscos/Dependências):** Tornar blocos avançados colapsáveis para reduzir fricção no cadastro, abrindo apenas quando necessário.
+  *(Início: 2026-02-23 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
+
+### 👁️ Fase 3: Visão Executiva (VIEW) — Weekly Brief
+- [ ] **VIEW-001:** **Definição do Weekly Brief (Contrato de Métricas):** Formalizar regras de cálculo e critérios de inclusão para os 4 blocos: Entregas da próxima semana, Em risco, Bloqueados e Reincidentes.
+- [ ] **VIEW-002:** **Camada de Agregação do Brief:** Implementar selectors/serviço que consolide os compromissos em um resumo semanal determinístico, sem opinião e sem inferência.
+- [ ] **VIEW-003:** **UI do Weekly Brief (v1):** Construir o bloco visual com os 4 indicadores estruturais, contagem e navegação para a lista filtrada correspondente.
+- [ ] **VIEW-004:** **Teste de Confiabilidade do Brief:** Cobrir com testes unitários os cenários de borda (sem dados, datas no limite da semana, bloqueios e reincidência).
+
+### 🧠 Fase 3: Visão Executiva (VIEW) — Feed de Reflexões
+- [ ] **VIEW-005:** **Modelo de Reflexão e Taxonomia de Gatilhos:** Definir estrutura do item de reflexão (tipo, contexto, mensagem, ação sugerida) e padronizar os gatilhos da v1.
+- [ ] **VIEW-006:** **Motor de Regras do Feed (v1):** Implementar regras transparentes para os gatilhos iniciais: dependência concluída, múltiplos riscos por projeto, padrão de adiamento e impacto em projeto instável.
+- [ ] **VIEW-007:** **UI do Feed de Reflexões:** Exibir reflexões curtas e provocativas, com contexto mínimo e CTA para revisão do compromisso/projeto relacionado.
+- [ ] **VIEW-008:** **Controle de Ruído e Priorização Inicial:** Ordenar reflexões por relevância/recência e evitar duplicidade para manter o feed útil e não burocrático.
+- [ ] **VIEW-009:** **Teste de Integridade das Reflexões:** Validar em testes a geração correta das reflexões por gatilho e a ausência de falsos positivos críticos.
 
 ### 🤖 Inteligência e Automação (Flow Guardian)
 - [ ] **AI-001:** **Flow Advisor (Criação):** Analisar clareza, ambiguidade e riscos no momento do preenchimento do formulário.
@@ -16,8 +33,8 @@
 - [ ] **AI-003:** **Integrity Guardian (Insights):** Gerar relatórios de saúde do fluxo e comportamentos de risco (ex: saturação de owners).
 
 ### 🚀 Fase 2: Governança e Integridade
-- [ ] **CORE-025:** **Gestão Dinâmica de Riscos:** Evoluir o campo de riscos para uma estrutura com categorias, status de mitigação e impacto na matriz de risco.
 - [ ] **CORE-024:** **Score de Integridade de Fluxo:** Indicador visual da % de saúde do sistema.
+- [ ] **CORE-028:** **Sistema de Dependências entre Compromissos:** Permitir vínculo explícito de dependência entre compromissos (quem depende de quem), com visualização e impacto básico.
 
 ### 🛠️ Manutenção & Estabilidade
 

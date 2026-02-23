@@ -1,4 +1,4 @@
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+﻿import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { saveCommitments, loadCommitments } from '@/services/PersistenceService';
 import { Commitment, CommitmentStatus } from '@/models/Commitment';
 
@@ -17,7 +17,14 @@ describe('PersistenceService', () => {
             criadoEm: new Date('2026-02-22'),
             tipo: 'DELIVERY',
             impacto: 'MEDIUM',
-            riscos: '',
+            riscos: [{
+                id: 'r1',
+                descricao: 'Dependência externa',
+                categoria: 'DEPENDENCIA',
+                statusMitigacao: 'ABERTO',
+                probabilidade: 'MEDIUM',
+                impacto: 'HIGH',
+            }],
             renegociadoCount: 0,
             historico: []
         }
@@ -47,6 +54,19 @@ describe('PersistenceService', () => {
         expect(loaded.length).toBe(1);
         expect(loaded[0].titulo).toBe('Test 1');
         expect(loaded[0].dataEsperada).toBeInstanceOf(Date);
+        expect(loaded[0].riscos).toHaveLength(1);
+    });
+
+    it('should migrate legacy textual risk from localStorage', () => {
+        const legacy = [{
+            ...mockCommitments[0],
+            riscos: 'Risco legado em texto',
+        }];
+        vi.mocked(localStorage.getItem).mockReturnValue(JSON.stringify(legacy));
+
+        const loaded = loadCommitments();
+        expect(loaded[0].riscos).toHaveLength(1);
+        expect(loaded[0].riscos[0].descricao).toBe('Risco legado em texto');
     });
 
     it('should return empty array if no data in localStorage', () => {

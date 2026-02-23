@@ -14,7 +14,9 @@ describe('CommitmentForm', () => {
         expect(screen.getByLabelText(/Data de Entrega/i)).toBeDefined();
         expect(screen.getByLabelText(/Tipo de Fluxo/i)).toBeDefined();
         expect(screen.getByLabelText(/Impacto Sistêmico/i)).toBeDefined();
-        expect(screen.getByLabelText(/Riscos e Considerações/i)).toBeDefined();
+        expect(screen.queryByLabelText(/Descrição do risco #1/i)).toBeNull();
+        fireEvent.click(screen.getByRole('button', { name: /Riscos e Considerações \(Opcional\)/i }));
+        expect(screen.getByLabelText(/Descrição do risco #1/i)).toBeDefined();
         expect(screen.getByRole('button', { name: /Garantir Compromisso/i })).toBeDefined();
     });
 
@@ -30,13 +32,17 @@ describe('CommitmentForm', () => {
         fireEvent.change(screen.getByLabelText(/Data de Entrega/i), { target: { value: '2026-12-31' } });
         fireEvent.change(screen.getByLabelText(/Tipo de Fluxo/i), { target: { value: 'DELIVERY' } });
         fireEvent.change(screen.getByLabelText(/Impacto Sistêmico/i), { target: { value: 'HIGH' } });
-        fireEvent.change(screen.getByLabelText(/Riscos e Considerações/i), { target: { value: 'Nenhum' } });
+        fireEvent.click(screen.getByRole('button', { name: /Riscos e Considerações \(Opcional\)/i }));
+        fireEvent.change(screen.getByLabelText(/Descrição do risco #1/i), { target: { value: 'Dependência crítica' } });
 
         fireEvent.click(screen.getByRole('button', { name: /Garantir Compromisso/i }));
 
         expect(handleSubmit).toHaveBeenCalledWith(expect.objectContaining({
             titulo: 'Novo Compromisso',
             projeto: 'Projeto Alpha',
+            riscos: expect.arrayContaining([
+                expect.objectContaining({ descricao: 'Dependência crítica' })
+            ])
         }));
 
         expect(screen.getByLabelText(/Título do Compromisso/i)).toHaveValue('');

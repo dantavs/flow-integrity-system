@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+﻿import { render, screen, fireEvent } from '@testing-library/react';
 import CommitmentList from '@/components/CommitmentList';
 import { Commitment, CommitmentStatus } from '@/models/Commitment';
 import { describe, it, expect, vi } from 'vitest';
@@ -18,7 +18,7 @@ describe('CommitmentList', () => {
             criadoEm: new Date(),
             tipo: 'DELIVERY',
             impacto: 'MEDIUM',
-            riscos: '',
+            riscos: [],
             renegociadoCount: 0,
             historico: []
         },
@@ -35,7 +35,14 @@ describe('CommitmentList', () => {
             criadoEm: new Date(),
             tipo: 'ALIGNMENT',
             impacto: 'HIGH',
-            riscos: 'Falta de acesso',
+            riscos: [{
+                id: 'r2',
+                descricao: 'Falta de acesso',
+                categoria: 'DEPENDENCIA',
+                statusMitigacao: 'ABERTO',
+                probabilidade: 'HIGH',
+                impacto: 'MEDIUM',
+            }],
             renegociadoCount: 0,
             historico: []
         }
@@ -59,7 +66,6 @@ describe('CommitmentList', () => {
         const handleStatusChange = vi.fn();
         render(<CommitmentList commitments={mockCommitments} onStatusChange={handleStatusChange} />);
 
-        // Simular mudança no select
         const statusSelects = screen.getAllByRole('combobox');
         fireEvent.change(statusSelects[0], { target: { value: CommitmentStatus.DONE } });
 

@@ -7,6 +7,9 @@ export enum CommitmentStatus {
 
 export type CommitmentType = 'DELIVERY' | 'ALIGNMENT' | 'DECISION' | 'OP';
 export type CommitmentImpact = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+export type RiskCategory = 'PRAZO' | 'ESCOPO' | 'DEPENDENCIA' | 'RECURSOS' | 'QUALIDADE' | 'NEGOCIO' | 'OUTRO';
+export type RiskMitigationStatus = 'ABERTO' | 'EM_MITIGACAO' | 'MITIGADO' | 'ACEITO';
+export type RiskMatrixLevel = 'LOW' | 'MEDIUM' | 'HIGH';
 
 export type AuditEventType = 'CREATE' | 'STATUS_CHANGE' | 'EDIT' | 'RENEGOTIATION';
 
@@ -17,6 +20,15 @@ export interface AuditEvent {
     descricao: string;
     valorAnterior?: string;
     valorNovo?: string;
+}
+
+export interface CommitmentRisk {
+    id: string;
+    descricao: string;
+    categoria: RiskCategory;
+    statusMitigacao: RiskMitigationStatus;
+    probabilidade: RiskMatrixLevel;
+    impacto: RiskMatrixLevel;
 }
 
 export interface Commitment {
@@ -32,8 +44,13 @@ export interface Commitment {
     status: CommitmentStatus;
     hasImpedimento: boolean;
     listaImpedimentos?: string[];
-    riscos: string;
+    riscos: CommitmentRisk[];
     renegociadoCount?: number;
     criadoEm: Date;
     historico: AuditEvent[];
+}
+
+export function riskMatrixScore(risk: CommitmentRisk): number {
+    const map: Record<RiskMatrixLevel, number> = { LOW: 1, MEDIUM: 2, HIGH: 3 };
+    return map[risk.probabilidade] * map[risk.impacto];
 }

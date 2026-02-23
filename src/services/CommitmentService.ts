@@ -1,4 +1,13 @@
-import { Commitment, CommitmentStatus, CommitmentType, CommitmentImpact } from '../models/Commitment';
+﻿import {
+    Commitment,
+    CommitmentStatus,
+    CommitmentType,
+    CommitmentImpact,
+    CommitmentRisk,
+    RiskCategory,
+    RiskMitigationStatus,
+    RiskMatrixLevel,
+} from '../models/Commitment';
 
 export interface CreateCommitmentDTO {
     titulo: string;
@@ -9,7 +18,75 @@ export interface CreateCommitmentDTO {
     dataEsperada: Date;
     tipo: CommitmentType;
     impacto: CommitmentImpact;
-    riscos: string;
+    riscos: CommitmentRisk[];
+}
+
+const defaultRisk = (descricao: string): CommitmentRisk => ({
+    id: `risk-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    descricao,
+    categoria: 'OUTRO',
+    statusMitigacao: 'ABERTO',
+    probabilidade: 'MEDIUM',
+    impacto: 'MEDIUM',
+});
+
+function normalizeRiskCategory(value: unknown): RiskCategory {
+    const allowed: RiskCategory[] = ['PRAZO', 'ESCOPO', 'DEPENDENCIA', 'RECURSOS', 'QUALIDADE', 'NEGOCIO', 'OUTRO'];
+    return allowed.includes(value as RiskCategory) ? (value as RiskCategory) : 'OUTRO';
+}
+
+function normalizeRiskStatus(value: unknown): RiskMitigationStatus {
+    const allowed: RiskMitigationStatus[] = ['ABERTO', 'EM_MITIGACAO', 'MITIGADO', 'ACEITO'];
+    return allowed.includes(value as RiskMitigationStatus) ? (value as RiskMitigationStatus) : 'ABERTO';
+}
+
+function normalizeMatrixLevel(value: unknown): RiskMatrixLevel {
+    const allowed: RiskMatrixLevel[] = ['LOW', 'MEDIUM', 'HIGH'];
+    return allowed.includes(value as RiskMatrixLevel) ? (value as RiskMatrixLevel) : 'MEDIUM';
+}
+
+function sanitizeRisks(riscos: unknown): CommitmentRisk[] {
+    if (typeof riscos === 'string') {
+        const text = riscos.trim();
+        return text ? [defaultRisk(text)] : [];
+    }
+
+    if (!Array.isArray(riscos)) {
+        return [];
+    }
+
+    return riscos
+        .map((risk): CommitmentRisk | null => {
+            if (!risk || typeof risk !== 'object') return null;
+            const descricao = String((risk as any).descricao ?? '').trim();
+            if (!descricao) return null;
+
+            return {
+                id: String((risk as any).id || `risk-${Date.now()}-${Math.floor(Math.random() * 1000)}`),
+                descricao,
+                categoria: normalizeRiskCategory((risk as any).categoria),
+                statusMitigacao: normalizeRiskStatus((risk as any).statusMitigacao),
+                probabilidade: normalizeMatrixLevel((risk as any).probabilidade),
+                impacto: normalizeMatrixLevel((risk as any).impacto),
+            };
+        })
+        .filter((risk): risk is CommitmentRisk => risk !== null);
+}
+
+function risksChanged(a: CommitmentRisk[], b: CommitmentRisk[]): boolean {
+    if (a.length !== b.length) return true;
+
+    const toComparable = (risk: CommitmentRisk) => ({
+        descricao: risk.descricao,
+        categoria: risk.categoria,
+        statusMitigacao: risk.statusMitigacao,
+        probabilidade: risk.probabilidade,
+        impacto: risk.impacto,
+    });
+
+    const normalizedA = a.map(toComparable);
+    const normalizedB = b.map(toComparable);
+    return JSON.stringify(normalizedA) !== JSON.stringify(normalizedB);
 }
 
 export function createCommitment(data: CreateCommitmentDTO, existingIds: string[]): Commitment {
@@ -19,7 +96,6 @@ export function createCommitment(data: CreateCommitmentDTO, existingIds: string[
 
     const now = new Date();
 
-    // Normalizar datas para comparação (apenas dia, mês, ano para evitar problemas de ms)
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const expectedDate = new Date(data.dataEsperada.getFullYear(), data.dataEsperada.getMonth(), data.dataEsperada.getDate());
 
@@ -27,13 +103,13 @@ export function createCommitment(data: CreateCommitmentDTO, existingIds: string[
         throw new Error('A data esperada não pode estar no passado');
     }
 
-    // Geração de ID incremental simples
     const nextId = existingIds.length > 0
-        ? (Math.max(...existingIds.map(id => parseInt(id))) + 1).toString()
+        ? (Math.max(...existingIds.map(id => parseInt(id, 10))) + 1).toString()
         : '1';
 
     return {
         ...data,
+        riscos: sanitizeRisks(data.riscos),
         id: nextId,
         status: CommitmentStatus.BACKLOG,
         hasImpedimento: false,
@@ -43,8 +119,8 @@ export function createCommitment(data: CreateCommitmentDTO, existingIds: string[
             id: `evt-${Date.now()}`,
             tipo: 'CREATE',
             timestamp: now,
-            descricao: 'Compromisso criado com status BACKLOG'
-        }]
+            descricao: 'Compromisso criado com status BACKLOG',
+        }],
     };
 }
 
@@ -57,13 +133,13 @@ export function changeCommitmentStatus(commitment: Commitment, newStatus: Commit
         timestamp: new Date(),
         descricao: `Status alterado de ${commitment.status} para ${newStatus}`,
         valorAnterior: commitment.status,
-        valorNovo: newStatus
+        valorNovo: newStatus,
     };
 
     return {
         ...commitment,
         status: newStatus,
-        historico: [...(commitment.historico || []), event]
+        historico: [...(commitment.historico || []), event],
     };
 }
 
@@ -77,12 +153,12 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
 
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const expectedDate = new Date(data.dataEsperada.getFullYear ? data.dataEsperada.getFullYear() : new Date(data.dataEsperada).getFullYear(),
+    const expectedDate = new Date(
+        data.dataEsperada.getFullYear ? data.dataEsperada.getFullYear() : new Date(data.dataEsperada).getFullYear(),
         data.dataEsperada.getMonth ? data.dataEsperada.getMonth() : new Date(data.dataEsperada).getMonth(),
-        data.dataEsperada.getDate ? data.dataEsperada.getDate() : new Date(data.dataEsperada).getDate());
+        data.dataEsperada.getDate ? data.dataEsperada.getDate() : new Date(data.dataEsperada).getDate(),
+    );
 
-    // Se estiver mudando a data para uma diferente da que já tinha,
-    // garantimos que não é pro passado (a antiga podia estar no passado e não tem problema se não mexer nela)
     const oldExpectedDate = new Date(commitment.dataEsperada.getFullYear(), commitment.dataEsperada.getMonth(), commitment.dataEsperada.getDate());
 
     if (expectedDate.getTime() !== oldExpectedDate.getTime() && expectedDate < today) {
@@ -90,8 +166,9 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
     }
 
     const isRenegotiation = expectedDate.getTime() !== oldExpectedDate.getTime();
+    const normalizedRisks = sanitizeRisks(data.riscos);
+    const previousRisks = sanitizeRisks(commitment.riscos);
 
-    // Identificar mudanças para salvar na descrição 
     const changes: string[] = [];
     if (commitment.titulo !== data.titulo) changes.push(`Título: ${commitment.titulo} -> ${data.titulo}`);
     if (commitment.projeto !== data.projeto) changes.push(`Projeto: ${commitment.projeto} -> ${data.projeto}`);
@@ -100,24 +177,26 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
     if (commitment.tipo !== data.tipo) changes.push(`Tipo: ${commitment.tipo} -> ${data.tipo}`);
     if (commitment.impacto !== data.impacto) changes.push(`Impacto: ${commitment.impacto} -> ${data.impacto}`);
     if (isRenegotiation) changes.push(`Data: ${oldExpectedDate.toLocaleDateString()} -> ${expectedDate.toLocaleDateString()}`);
+    if (risksChanged(previousRisks, normalizedRisks)) changes.push(`Riscos: ${previousRisks.length} -> ${normalizedRisks.length}`);
 
-    if (changes.length === 0 && commitment.riscos === data.riscos && commitment.area === data.area) {
-        return commitment; // Nada mudou de fato
+    if (changes.length === 0 && commitment.area === data.area) {
+        return commitment;
     }
 
-    const eventDesc = changes.length > 0 ? `Campos editados:\n${changes.join('\n')}` : 'Compromisso editado (detalhes ou riscos)';
+    const eventDesc = changes.length > 0 ? `Campos editados:\n${changes.join('\n')}` : 'Compromisso editado';
 
     const event = {
         id: `evt-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
         tipo: isRenegotiation ? 'RENEGOTIATION' as const : 'EDIT' as const,
         timestamp: now,
-        descricao: eventDesc
+        descricao: eventDesc,
     };
 
     return {
         ...commitment,
         ...data,
+        riscos: normalizedRisks,
         renegociadoCount: isRenegotiation ? (commitment.renegociadoCount || 0) + 1 : commitment.renegociadoCount,
-        historico: [...(commitment.historico || []), event]
+        historico: [...(commitment.historico || []), event],
     };
 }

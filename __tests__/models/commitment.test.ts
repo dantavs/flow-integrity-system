@@ -1,4 +1,4 @@
-import { CommitmentStatus } from '@/models/Commitment';
+﻿import { CommitmentStatus } from '@/models/Commitment';
 import { createCommitment } from '@/services/CommitmentService';
 
 describe('Commitment Business Rules', () => {
@@ -8,10 +8,17 @@ describe('Commitment Business Rules', () => {
         area: 'Área Y',
         owner: 'Daniel',
         stakeholder: 'Stakeholder Z',
-        dataEsperada: new Date(Date.now() + 86400000), // Amanhã
+        dataEsperada: new Date(Date.now() + 86400000),
         tipo: 'DELIVERY' as const,
         impacto: 'MEDIUM' as const,
-        riscos: 'Nenhum',
+        riscos: [{
+            id: 'r1',
+            descricao: 'Dependência externa crítica',
+            categoria: 'DEPENDENCIA' as const,
+            statusMitigacao: 'ABERTO' as const,
+            probabilidade: 'HIGH' as const,
+            impacto: 'HIGH' as const,
+        }],
     };
 
     it('BR-001 & BR-002: should auto-generate ID, criadoEm date, and default to BACKLOG status', () => {
