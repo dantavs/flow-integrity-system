@@ -11,6 +11,7 @@ describe('PersistenceService', () => {
             area: 'Area 1',
             owner: 'Owner 1',
             stakeholder: 'Stk 1',
+            dependencias: [],
             dataEsperada: new Date('2026-12-31'),
             status: CommitmentStatus.ACTIVE,
             hasImpedimento: false,

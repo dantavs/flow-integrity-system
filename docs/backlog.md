@@ -7,9 +7,7 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [~] **CORE-025:** **Gestão Dinâmica de Riscos:** Evoluir o campo de riscos para uma estrutura com categorias, status de mitigação e impacto na matriz de risco.
-  *(Início: 2026-02-23 | Fim: -)*
-- [~] **CORE-029:** **Entrada Progressiva (Riscos/Dependências):** Tornar blocos avançados colapsáveis para reduzir fricção no cadastro, abrindo apenas quando necessário.
+- [~] **CORE-028:** **Sistema de Dependências entre Compromissos:** Permitir vínculo explícito de dependência entre compromissos (quem depende de quem), com visualização e impacto básico.
   *(Início: 2026-02-23 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
@@ -34,7 +32,6 @@
 
 ### 🚀 Fase 2: Governança e Integridade
 - [ ] **CORE-024:** **Score de Integridade de Fluxo:** Indicador visual da % de saúde do sistema.
-- [ ] **CORE-028:** **Sistema de Dependências entre Compromissos:** Permitir vínculo explícito de dependência entre compromissos (quem depende de quem), com visualização e impacto básico.
 
 ### 🛠️ Manutenção & Estabilidade
 
@@ -44,6 +41,8 @@
 ## ✅ Concluído
 
 ### 🚀 Fase 2: Governança e Integridade
+- [x] **CORE-025:** **Gestão Dinâmica de Riscos:** Evoluir o campo de riscos para uma estrutura com categorias, status de mitigação e impacto na matriz de risco.
+  *(Início: 2026-02-23 | Fim: 2026-02-23)*
 - [x] **CORE-026:** **Visualização de Histórico de Auditoria:** Criar um botão "Ver Histórico" na UI para exibir a linha do tempo (auditoria) de cada fluxo.
   *(Início: 2022-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-027:** **Edição Completa do Compromisso:** Permitir que campos-chave (Data, Título, Owner, etc) sejam editados após a criação, registrando no histórico.
@@ -55,6 +54,8 @@
 
 ### 🛠️ Manutenção & Estabilidade
 - [x] **FIX-001:** **Crash de Campos Obrigatórios:** Tratar erro fatal que quebra a aplicação caso o usuário limpe manualmente/zere o campo de 'Data de Entrega' (ou outros inputs restritos) durante cadastro ou edição.
+  *(Início: 2026-02-23 | Fim: 2026-02-23)*
+- [x] **CORE-029:** **Entrada Progressiva (Riscos/Dependências):** Tornar blocos avançados colapsáveis para reduzir fricção no cadastro, abrindo apenas quando necessário.
   *(Início: 2026-02-23 | Fim: 2026-02-23)*
 
 ### 📦 Fase 1: Fundação & UI Premium

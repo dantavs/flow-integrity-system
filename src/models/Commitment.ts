@@ -38,6 +38,7 @@ export interface Commitment {
     area: string;
     owner: string;
     stakeholder: string;
+    dependencias: string[];
     dataEsperada: Date;
     tipo: CommitmentType;
     impacto: CommitmentImpact;

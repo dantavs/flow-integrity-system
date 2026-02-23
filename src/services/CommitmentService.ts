@@ -15,6 +15,7 @@ export interface CreateCommitmentDTO {
     area: string;
     owner: string;
     stakeholder: string;
+    dependencias: string[];
     dataEsperada: Date;
     tipo: CommitmentType;
     impacto: CommitmentImpact;
@@ -89,6 +90,17 @@ function risksChanged(a: CommitmentRisk[], b: CommitmentRisk[]): boolean {
     return JSON.stringify(normalizedA) !== JSON.stringify(normalizedB);
 }
 
+function sanitizeDependencyIds(dependencias: unknown): string[] {
+    if (!Array.isArray(dependencias)) return [];
+    return Array.from(
+        new Set(
+            dependencias
+                .map(dep => String(dep).trim())
+                .filter(dep => dep !== '')
+        )
+    );
+}
+
 export function createCommitment(data: CreateCommitmentDTO, existingIds: string[]): Commitment {
     if (!data.titulo || data.titulo.trim() === '') {
         throw new Error('Título é obrigatório');
@@ -110,6 +122,7 @@ export function createCommitment(data: CreateCommitmentDTO, existingIds: string[
     return {
         ...data,
         riscos: sanitizeRisks(data.riscos),
+        dependencias: sanitizeDependencyIds(data.dependencias).filter(dep => dep !== nextId),
         id: nextId,
         status: CommitmentStatus.BACKLOG,
         hasImpedimento: false,
@@ -168,6 +181,8 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
     const isRenegotiation = expectedDate.getTime() !== oldExpectedDate.getTime();
     const normalizedRisks = sanitizeRisks(data.riscos);
     const previousRisks = sanitizeRisks(commitment.riscos);
+    const normalizedDependencies = sanitizeDependencyIds(data.dependencias).filter(dep => dep !== commitment.id);
+    const previousDependencies = sanitizeDependencyIds(commitment.dependencias);
 
     const changes: string[] = [];
     if (commitment.titulo !== data.titulo) changes.push(`Título: ${commitment.titulo} -> ${data.titulo}`);
@@ -178,6 +193,7 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
     if (commitment.impacto !== data.impacto) changes.push(`Impacto: ${commitment.impacto} -> ${data.impacto}`);
     if (isRenegotiation) changes.push(`Data: ${oldExpectedDate.toLocaleDateString()} -> ${expectedDate.toLocaleDateString()}`);
     if (risksChanged(previousRisks, normalizedRisks)) changes.push(`Riscos: ${previousRisks.length} -> ${normalizedRisks.length}`);
+    if (JSON.stringify(previousDependencies) !== JSON.stringify(normalizedDependencies)) changes.push(`Dependências: ${previousDependencies.length} -> ${normalizedDependencies.length}`);
 
     if (changes.length === 0 && commitment.area === data.area) {
         return commitment;
@@ -196,6 +212,7 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
         ...commitment,
         ...data,
         riscos: normalizedRisks,
+        dependencias: normalizedDependencies,
         renegociadoCount: isRenegotiation ? (commitment.renegociadoCount || 0) + 1 : commitment.renegociadoCount,
         historico: [...(commitment.historico || []), event],
     };

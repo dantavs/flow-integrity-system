@@ -19,6 +19,12 @@ interface CommitmentFormProps {
         owners: string[];
         stakeholders: string[];
     };
+    dependencyOptions?: Array<{
+        id: string;
+        titulo: string;
+        status: string;
+        projeto?: string;
+    }>;
 }
 
 type CommitmentFormState = Omit<CreateCommitmentDTO, 'dataEsperada'> & {
@@ -47,17 +53,19 @@ const createInitialState = (): CommitmentFormState => ({
     area: '',
     owner: '',
     stakeholder: '',
+    dependencias: [],
     dataEsperada: '',
     tipo: 'DELIVERY',
     impacto: 'MEDIUM',
     riscos: [createEmptyRisk('risk-1')],
 });
 
-const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, onCancel, suggestions }) => {
+const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, onCancel, suggestions, dependencyOptions = [] }) => {
     const nextRiskIdRef = useRef(2);
     const [todayMinDate, setTodayMinDate] = useState('');
     const [showRisks, setShowRisks] = useState(Boolean(initialData?.riscos?.length));
     const [showDependencies, setShowDependencies] = useState(false);
+    const [dependencyQuery, setDependencyQuery] = useState('');
 
     const getNextRiskId = () => {
         const id = `risk-${nextRiskIdRef.current}`;
@@ -71,6 +79,7 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
         area: initialData.area,
         owner: initialData.owner,
         stakeholder: initialData.stakeholder,
+        dependencias: initialData.dependencias || [],
         dataEsperada: toLocalDateInput(
             initialData.dataEsperada instanceof Date
                 ? initialData.dataEsperada
@@ -123,6 +132,18 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
         setFormData(prev => {
             const next = prev.riscos.filter(risk => risk.id !== riskId);
             return { ...prev, riscos: next.length ? next : [createEmptyRisk(getNextRiskId())] };
+        });
+    };
+
+    const toggleDependency = (dependencyId: string) => {
+        setFormData(prev => {
+            const exists = prev.dependencias.includes(dependencyId);
+            return {
+                ...prev,
+                dependencias: exists
+                    ? prev.dependencias.filter(id => id !== dependencyId)
+                    : [...prev.dependencias, dependencyId],
+            };
         });
     };
 
@@ -326,8 +347,44 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
                 </button>
 
                 {showDependencies && (
-                    <div id="dependency-section" style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                        O vínculo de dependências entre compromissos será habilitado no item CORE-028.
+                    <div id="dependency-section" className="space-y-3">
+                        {dependencyOptions.length === 0 ? (
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                                Nenhum compromisso elegível para dependência no momento.
+                            </div>
+                        ) : (
+                            <div style={{ display: 'grid', gap: '0.5rem' }}>
+                                <input
+                                    type="text"
+                                    className="input-field"
+                                    placeholder="Pesquisar por ID, título ou projeto..."
+                                    value={dependencyQuery}
+                                    onChange={(e) => setDependencyQuery(e.target.value)}
+                                />
+                                {dependencyOptions
+                                    .filter(dep => {
+                                        if (!dependencyQuery.trim()) return true;
+                                        const q = dependencyQuery.toLowerCase();
+                                        return (
+                                            dep.id.toLowerCase().includes(q) ||
+                                            dep.titulo.toLowerCase().includes(q) ||
+                                            (dep.projeto || '').toLowerCase().includes(q)
+                                        );
+                                    })
+                                    .map(dep => (
+                                    <label key={dep.id} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.45rem 0.6rem', border: '1px solid var(--glass-border)', borderRadius: '8px' }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={formData.dependencias.includes(dep.id)}
+                                            onChange={() => toggleDependency(dep.id)}
+                                        />
+                                        <span style={{ fontSize: '0.9rem' }}>
+                                            #{dep.id} - {dep.titulo} ({dep.status})
+                                        </span>
+                                    </label>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
             </section>

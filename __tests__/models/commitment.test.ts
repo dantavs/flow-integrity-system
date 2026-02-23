@@ -8,6 +8,7 @@ describe('Commitment Business Rules', () => {
         area: 'Área Y',
         owner: 'Daniel',
         stakeholder: 'Stakeholder Z',
+        dependencias: [],
         dataEsperada: new Date(Date.now() + 86400000),
         tipo: 'DELIVERY' as const,
         impacto: 'MEDIUM' as const,

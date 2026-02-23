@@ -12,6 +12,7 @@ interface CommitmentCardProps {
 }
 
 const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, onStatusChange, onEdit, onViewHistory }) => {
+    const dependencies = c.dependencias || [];
     const getTipoIcon = (tipo: string) => {
         switch (tipo) {
             case 'DELIVERY': return '🏁';
@@ -89,6 +90,18 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
                                 </li>
                             ))}
                         </ul>
+                    </div>
+                )}
+
+                {dependencies.length > 0 && (
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.7rem' }}>
+                        <strong>🔗 Dependências:</strong> {dependencies.map(id => `#${id}`).join(', ')}
+                    </div>
+                )}
+
+                {c.hasImpedimento && dependencies.length > 0 && (
+                    <div style={{ fontSize: '0.78rem', color: '#f59e0b', marginBottom: '0.8rem' }}>
+                        Dependência pendente detectada.
                     </div>
                 )}
             </div>

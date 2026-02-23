@@ -54,6 +54,7 @@ export function loadCommitments(): Commitment[] {
             ...c,
             dataEsperada: new Date(c.dataEsperada),
             criadoEm: new Date(c.criadoEm),
+            dependencias: Array.isArray(c.dependencias) ? c.dependencias.map((d: unknown) => String(d)) : [],
             riscos: normalizeRisks(c.riscos),
             historico: (c.historico || []).map((h: any) => ({
                 ...h,

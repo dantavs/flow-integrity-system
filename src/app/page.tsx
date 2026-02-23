@@ -10,6 +10,21 @@ import { Commitment, CommitmentStatus } from '../models/Commitment';
 import Toast, { ToastType } from '../components/Toast';
 
 export default function Home() {
+  const applyDependencyIntegrity = (list: Commitment[]): Commitment[] => {
+    const byId = new Map(list.map(c => [c.id, c]));
+    return list.map(c => {
+      const hasPendingDependency = (c.dependencias || []).some(depId => {
+        const dep = byId.get(depId);
+        if (!dep) return false;
+        return dep.status !== CommitmentStatus.DONE && dep.status !== CommitmentStatus.CANCELLED;
+      });
+      return {
+        ...c,
+        hasImpedimento: hasPendingDependency,
+      };
+    });
+  };
+
   const [commitments, setCommitments] = useState<Commitment[]>([]);
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
   const [viewMode, setViewMode] = useState<'ACTIVE' | 'ARCHIVED'>('ACTIVE');
@@ -25,7 +40,8 @@ export default function Home() {
   // Carregar dados iniciais
   useEffect(() => {
     const data = loadCommitments();
-    setCommitments(data);
+    setCommitments(applyDependencyIntegrity(data));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Salvar sempre que a lista mudar
@@ -39,7 +55,7 @@ export default function Home() {
     try {
       const existingIds = commitments.map(c => c.id);
       const newCommitment = createCommitment(data, existingIds);
-      setCommitments(prev => [...prev, newCommitment]);
+      setCommitments(prev => applyDependencyIntegrity([...prev, newCommitment]));
       setToast({ message: 'Compromisso registrado com sucesso! ✨', type: 'SUCCESS' });
       return true;
     } catch (error: any) {
@@ -49,9 +65,9 @@ export default function Home() {
   };
 
   const handleStatusUpdate = (id: string, newStatus: CommitmentStatus) => {
-    setCommitments(prev => prev.map(c =>
+    setCommitments(prev => applyDependencyIntegrity(prev.map(c =>
       c.id === id ? changeCommitmentStatus(c, newStatus) : c
-    ));
+    )));
     setToast({ message: `Status do fluxo #${id} atualizado com sucesso.`, type: 'INFO' });
   };
 
@@ -63,9 +79,9 @@ export default function Home() {
 
       const updatedCommitment = editCommitment(commitmentToEdit, data);
 
-      setCommitments(prev => prev.map(c =>
+      setCommitments(prev => applyDependencyIntegrity(prev.map(c =>
         c.id === editingId ? updatedCommitment : c
-      ));
+      )));
 
       setToast({ message: 'Compromisso atualizado com sucesso! 📝', type: 'SUCCESS' });
       setEditingId(null);
@@ -100,6 +116,12 @@ export default function Home() {
   const uniqueProjetos = Array.from(new Set(commitments.map(c => c.projeto))).sort();
   const uniqueOwners = Array.from(new Set(commitments.map(c => c.owner))).sort();
   const uniqueStakeholders = Array.from(new Set(commitments.map(c => c.stakeholder))).sort();
+  const dependencyOptions = activeCommitments.map(c => ({
+    id: c.id,
+    titulo: c.titulo,
+    status: c.status,
+    projeto: c.projeto,
+  }));
 
   return (
     <div style={{
@@ -155,6 +177,7 @@ export default function Home() {
                 owners: uniqueOwners,
                 stakeholders: uniqueStakeholders
               }}
+              dependencyOptions={dependencyOptions}
             />
           </div>
         </section>
@@ -312,6 +335,7 @@ export default function Home() {
                   owners: uniqueOwners,
                   stakeholders: uniqueStakeholders
                 }}
+                dependencyOptions={dependencyOptions.filter(d => d.id !== editingId)}
               />
             </div>
           </div>
