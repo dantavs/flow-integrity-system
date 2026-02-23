@@ -7,8 +7,6 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [~] **CORE-028:** **Sistema de Dependências entre Compromissos:** Permitir vínculo explícito de dependência entre compromissos (quem depende de quem), com visualização e impacto básico.
-  *(Início: 2026-02-23 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
@@ -41,6 +39,8 @@
 ## ✅ Concluído
 
 ### 🚀 Fase 2: Governança e Integridade
+- [x] **CORE-028:** **Sistema de Dependências entre Compromissos:** Permitir vínculo explícito de dependência entre compromissos (quem depende de quem), com visualização e impacto básico.
+  *(Início: 2026-02-23 | Fim: 2026-02-23)*
 - [x] **CORE-025:** **Gestão Dinâmica de Riscos:** Evoluir o campo de riscos para uma estrutura com categorias, status de mitigação e impacto na matriz de risco.
   *(Início: 2026-02-23 | Fim: 2026-02-23)*
 - [x] **CORE-026:** **Visualização de Histórico de Auditoria:** Criar um botão "Ver Histórico" na UI para exibir a linha do tempo (auditoria) de cada fluxo.
