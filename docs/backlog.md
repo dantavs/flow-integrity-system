@@ -7,10 +7,6 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [~] **CORE-024:** **Score de Integridade de Fluxo:** Indicador visual da % de saúde do sistema.
-  *(Início: 2026-02-23 | Fim: -)*
-- [~] **VIEW-001:** **Definição do Weekly Brief (Contrato de Métricas):** Formalizar regras de cálculo e critérios de inclusão para os 4 blocos: Entregas da próxima semana, Em risco, Bloqueados e Reincidentes.
-  *(Início: 2026-02-23 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
@@ -40,7 +36,13 @@
 
 ## ✅ Concluído
 
+### 👁️ Fase 3: Visão Executiva (VIEW)
+- [x] **VIEW-001:** **Definição do Weekly Brief (Contrato de Métricas):** Formalizar regras de cálculo e critérios de inclusão para os blocos de Entregas da próxima semana, Em risco, Bloqueados, Reincidentes e Concluídos recentes.
+  *(Início: 2026-02-23 | Fim: 2026-02-23)*
+
 ### 🚀 Fase 2: Governança e Integridade
+- [x] **CORE-024:** **Score de Integridade de Fluxo:** Indicador visual da % de saúde do sistema.
+  *(Início: 2026-02-23 | Fim: 2026-02-23)*
 - [x] **CORE-028:** **Sistema de Dependências entre Compromissos:** Permitir vínculo explícito de dependência entre compromissos (quem depende de quem), com visualização e impacto básico.
   *(Início: 2026-02-23 | Fim: 2026-02-23)*
 - [x] **CORE-025:** **Gestão Dinâmica de Riscos:** Evoluir o campo de riscos para uma estrutura com categorias, status de mitigação e impacto na matriz de risco.
