@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { CreateCommitmentDTO } from '../services/CommitmentService';
@@ -15,49 +15,72 @@ interface CommitmentFormProps {
     };
 }
 
-const initialState: CreateCommitmentDTO = {
+type CommitmentFormState = Omit<CreateCommitmentDTO, 'dataEsperada'> & {
+    dataEsperada: string;
+};
+
+const toLocalDateInput = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+const createInitialState = (): CommitmentFormState => ({
     titulo: '',
     projeto: '',
     area: '',
     owner: '',
     stakeholder: '',
-    dataEsperada: new Date(),
+    dataEsperada: toLocalDateInput(new Date()),
     tipo: 'DELIVERY',
     impacto: 'MEDIUM',
     riscos: '',
-};
+});
 
 const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, onCancel, suggestions }) => {
-    const defaultData = initialData ? {
+    const defaultData: CommitmentFormState = initialData ? {
         titulo: initialData.titulo,
         projeto: initialData.projeto,
         area: initialData.area,
         owner: initialData.owner,
         stakeholder: initialData.stakeholder,
-        dataEsperada: initialData.dataEsperada instanceof Date ? initialData.dataEsperada : new Date(initialData.dataEsperada),
+        dataEsperada: toLocalDateInput(
+            initialData.dataEsperada instanceof Date
+                ? initialData.dataEsperada
+                : new Date(initialData.dataEsperada)
+        ),
         tipo: initialData.tipo,
         impacto: initialData.impacto,
         riscos: initialData.riscos
-    } : initialState;
+    } : createInitialState();
 
-    const [formData, setFormData] = useState<CreateCommitmentDTO>(defaultData);
+    const [formData, setFormData] = useState<CommitmentFormState>(defaultData);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-
-        if (name === 'dataEsperada') {
-            // Adicionar T00:00:00 garante que a data seja interpretada no fuso horário local
-            setFormData(prev => ({ ...prev, [name]: new Date(value + 'T00:00:00') }));
-        } else {
-            setFormData(prev => ({ ...prev, [name]: value }));
-        }
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const success = onSubmit(formData);
+
+        if (!formData.dataEsperada) {
+            return;
+        }
+
+        const parsedDate = new Date(`${formData.dataEsperada}T00:00:00`);
+        if (Number.isNaN(parsedDate.getTime())) {
+            return;
+        }
+
+        const success = onSubmit({
+            ...formData,
+            dataEsperada: parsedDate,
+        });
+
         if (success && !initialData) {
-            setFormData(initialState);
+            setFormData(createInitialState());
         }
     };
 
@@ -150,10 +173,10 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
                         type="date"
                         id="dataEsperada"
                         name="dataEsperada"
-                        value={formData.dataEsperada instanceof Date ? formData.dataEsperada.toISOString().split('T')[0] : new Date(formData.dataEsperada).toISOString().split('T')[0]}
+                        value={formData.dataEsperada}
                         onChange={handleChange}
                         className="input-field"
-                        min={new Date().toISOString().split('T')[0]}
+                        min={toLocalDateInput(new Date())}
                         required
                     />
                 </div>
@@ -211,7 +234,7 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
                     </button>
                 )}
                 <button type="submit" className="btn-primary w-full">
-                    {initialData ? "Salvar Alterações" : "Garantir Compromisso"}
+                    {initialData ? 'Salvar Alterações' : 'Garantir Compromisso'}
                 </button>
             </div>
         </form>

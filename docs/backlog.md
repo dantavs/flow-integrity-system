@@ -1,4 +1,4 @@
-# Backlog do Projeto
+﻿# Backlog do Projeto
 
 **Legenda de Status:**
 - `[ ]` Pendente
@@ -7,9 +7,6 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [x] **CORE-026:** **Visualização de Histórico de Auditoria:** Criar um botão "Ver Histórico" na UI para exibir a linha do tempo (auditoria) de cada fluxo.
-   *(Início: 2022-02-22 | Fim: 2026-02-22)*
-  *(Início: 2026-02-22 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
@@ -23,20 +20,25 @@
 - [ ] **CORE-024:** **Score de Integridade de Fluxo:** Indicador visual da % de saúde do sistema.
 
 ### 🛠️ Manutenção & Estabilidade
-- [ ] **FIX-001:** **Crash de Campos Obrigatórios:** Tratar erro fatal que quebra a aplicação caso o usuário limpe manualmente/zere o campo de 'Data de Entrega' (ou outros inputs restritos) durante cadastro ou edição.
 
 ### 🛠️ Evolução da Estrutura de Gestão
 - [ ] **CORE-009:** **Otimização de Backlog p/ Métricas:** Refinar formato do .md para KPIs automáticos.
 
 ## ✅ Concluído
 
-### � Fase 2: Governança e Integridade
+### 🚀 Fase 2: Governança e Integridade
+- [x] **CORE-026:** **Visualização de Histórico de Auditoria:** Criar um botão "Ver Histórico" na UI para exibir a linha do tempo (auditoria) de cada fluxo.
+  *(Início: 2022-02-22 | Fim: 2026-02-22)*
 - [x] **CORE-027:** **Edição Completa do Compromisso:** Permitir que campos-chave (Data, Título, Owner, etc) sejam editados após a criação, registrando no histórico.
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **SAFE-005:** **Governança de Prazos:** Reforçar regras de negócio para impedir que datas de entrega sejam definidas ou alteradas para o passado.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **SAFE-004:** **Trilha de Auditoria Universal:** Sistema de registro de eventos imutável para toda e qualquer mudança em um compromisso.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
+
+### 🛠️ Manutenção & Estabilidade
+- [x] **FIX-001:** **Crash de Campos Obrigatórios:** Tratar erro fatal que quebra a aplicação caso o usuário limpe manualmente/zere o campo de 'Data de Entrega' (ou outros inputs restritos) durante cadastro ou edição.
+  *(Início: 2026-02-23 | Fim: 2026-02-23)*
 
 ### 📦 Fase 1: Fundação & UI Premium
 - [x] **CORE-015:** **Auto-complete Inteligente:** Implementar sugestões dinâmicas para os campos `Owner`, `Stakeholder` e `Projeto` baseadas no histórico, permitindo novas entradas.  
@@ -83,3 +85,5 @@
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **SAFE-003:** Criar sistema de categorias/tags para compromissos.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
+
+

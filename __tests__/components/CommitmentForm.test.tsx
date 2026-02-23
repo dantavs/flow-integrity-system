@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+﻿import { render, screen, fireEvent } from '@testing-library/react';
 import CommitmentForm from '@/components/CommitmentForm';
 import { vi } from 'vitest';
 
@@ -39,7 +39,6 @@ describe('CommitmentForm', () => {
             projeto: 'Projeto Alpha',
         }));
 
-        // Verificar reset
         expect(screen.getByLabelText(/Título do Compromisso/i)).toHaveValue('');
         expect(screen.getByLabelText(/Projeto/i)).toHaveValue('');
     });
@@ -48,7 +47,6 @@ describe('CommitmentForm', () => {
         const handleSubmit = vi.fn().mockReturnValue(false);
         render(<CommitmentForm onSubmit={handleSubmit} />);
 
-        // Preencher campos para passar pela validação nativa do HTML
         fireEvent.change(screen.getByLabelText(/Título do Compromisso/i), { target: { value: 'Compromisso Falho' } });
         fireEvent.change(screen.getByLabelText(/Projeto/i), { target: { value: 'Projeto Erro' } });
         fireEvent.change(screen.getByLabelText(/Área Responsável/i), { target: { value: 'TI' } });
@@ -59,7 +57,18 @@ describe('CommitmentForm', () => {
         fireEvent.click(screen.getByRole('button', { name: /Garantir Compromisso/i }));
 
         expect(handleSubmit).toHaveBeenCalled();
-        // Não deve resetar
         expect(screen.getByLabelText(/Título do Compromisso/i)).toHaveValue('Compromisso Falho');
+    });
+
+    it('should not crash when date input is manually cleared', () => {
+        render(<CommitmentForm onSubmit={vi.fn()} />);
+
+        const dateInput = screen.getByLabelText(/Data de Entrega/i);
+
+        expect(() => {
+            fireEvent.change(dateInput, { target: { value: '' } });
+        }).not.toThrow();
+
+        expect(dateInput).toHaveValue('');
     });
 });

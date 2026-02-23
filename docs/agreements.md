@@ -1,15 +1,17 @@
-# Acordos de Trabalho (Working Agreements)
+﻿# Acordos de Trabalho (Working Agreements)
 
 Este documento estabelece as práticas e rituais que garantem a **Integridade do Fluxo** de trabalho no desenvolvimento deste projeto.
 
 ## 🛠️ Desenvolvimento e Git
 - **TDD (Test Driven Development):** Adotar o ciclo Vermelho-Verde-Refatorar usando **Vitest** como motor de testes. Primeiro o teste falhando, depois o código mínimo para passar, e então a limpeza.
-- **Commit por Tarefa:** Sempre realizar o commit e push imediatamente após a conclusão de uma tarefa do backlog.
+- **Commit por Tarefa:** Cada tarefa aprovada deve ser versionada em commit próprio, com mensagem clara e rastreável.
 
 ## 📋 Gestão de Fluxo
-- **Backlog Antecipado:** Todo novo requisito ou funcionalidade solicitada que não esteja no backlog deve ser adicionado como uma tarefa na seção "Planejado" antes de ser implementado. **Novos itens NUNCA devem ser adicionados diretamente em "Em Execução"**. Apenas um item deve constar em "Em Execução" por vez, mediante alinhamento prévio.
-- **Aprovação Necessária:** Uma tarefa só é marcada como concluída no `backlog.md` e enviada para o repositório remoto (`push`) após a aprovação explícita do usuário.
-- **Backlog Vivo:** Toda atividade realizada deve ter sua data de início e fim devidamente registradas no `backlog.md`.
+- **Backlog Antecipado:** Todo novo requisito ou funcionalidade solicitada que não esteja no backlog deve ser adicionado na seção `Planejado` antes de ser implementado.
+- **Início da Execução:** Antes de começar a implementação, mover o item para a seção `Em Execução` com status `[/]`.
+- **Fim da Implementação:** Ao terminar tecnicamente a tarefa, manter o item no backlog com status `[~]` (`Aguardando Aprovação`).
+- **Aprovação e Push:** Após aprovação explícita do usuário, realizar o `push` para o GitHub e somente então marcar como `[x]`, movendo o item para a seção `Concluído`.
+- **Backlog Vivo:** Toda atividade realizada deve ter data de início e fim devidamente registradas no `backlog.md`.
 - **Rastro de Valor:** Ao final de uma sessão ou entrega importante, o `journal.md` deve ser atualizado com o que foi feito e eventuais insights.
 
 ## 📐 Qualidade e Design
