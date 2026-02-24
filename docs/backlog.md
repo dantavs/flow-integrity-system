@@ -7,16 +7,6 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [~] **VIEW-005:** **Modelo de Reflexão e Taxonomia de Gatilhos** ([doc](feed-reflexoes-plan.md#view-005---modelo-de-reflexao-e-taxonomia-de-gatilhos))
-  *(Início: 2026-02-24 | Fim: -)*
-- [~] **VIEW-006:** **Motor de Regras do Feed (v1)** ([doc](feed-reflexoes-plan.md#view-006---motor-de-regras-do-feed-v1))
-  *(Início: 2026-02-24 | Fim: -)*
-- [~] **VIEW-007:** **UI do Feed de Reflexões** ([doc](feed-reflexoes-plan.md#view-007---ui-do-feed-de-reflexoes))
-  *(Início: 2026-02-24 | Fim: -)*
-- [~] **VIEW-008:** **Controle de Ruído e Priorização Inicial** ([doc](feed-reflexoes-plan.md#view-008---controle-de-ruido-e-priorizacao-inicial))
-  *(Início: 2026-02-24 | Fim: -)*
-- [~] **VIEW-009:** **Teste de Integridade das Reflexões** ([doc](feed-reflexoes-plan.md#view-009---teste-de-integridade-das-reflexoes))
-  *(Início: 2026-02-24 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
@@ -40,6 +30,16 @@
 ## ✅ Concluído
 
 ### 👁️ Fase 3: Visão Executiva (VIEW)
+- [x] **VIEW-009:** **Teste de Integridade das Reflexões** ([doc](feed-reflexoes-plan.md#view-009---teste-de-integridade-das-reflexoes))
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **VIEW-008:** **Controle de Ruído e Priorização Inicial** ([doc](feed-reflexoes-plan.md#view-008---controle-de-ruido-e-priorizacao-inicial))
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **VIEW-007:** **UI do Feed de Reflexões** ([doc](feed-reflexoes-plan.md#view-007---ui-do-feed-de-reflexoes))
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **VIEW-006:** **Motor de Regras do Feed (v1)** ([doc](feed-reflexoes-plan.md#view-006---motor-de-regras-do-feed-v1))
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **VIEW-005:** **Modelo de Reflexão e Taxonomia de Gatilhos** ([doc](feed-reflexoes-plan.md#view-005---modelo-de-reflexao-e-taxonomia-de-gatilhos))
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
 - [x] **VIEW-004:** **Hardening de Testes do Brief:** Expandir cobertura de borda e regressão após MVP (sem dados, datas no limite da semana, bloqueios e reincidência).
   *(Início: 2026-02-24 | Fim: 2026-02-24)*
 - [x] **VIEW-003:** **UI do Resumo Semanal (v1):** Construir o bloco visual com os 4 indicadores estruturais, contagem e navegação para a lista filtrada correspondente.
