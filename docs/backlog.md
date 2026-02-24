@@ -7,14 +7,6 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [~] **VIEW-001A:** **Regra de Execução TDD (Weekly Brief):** Para cada regra nova do brief, criar primeiro teste falhando (vermelho), depois implementar (verde) e por fim refatorar.
-  *(Início: 2026-02-24 | Fim: -)*
-- [~] **VIEW-002:** **Camada de Agregação do Brief:** Implementar selectors/serviço que consolide os compromissos em um resumo semanal determinístico, sem opinião e sem inferência.
-  *(Início: 2026-02-24 | Fim: -)*
-- [~] **VIEW-003:** **UI do Weekly Brief (v1):** Construir o bloco visual com os 4 indicadores estruturais, contagem e navegação para a lista filtrada correspondente.
-  *(Início: 2026-02-24 | Fim: -)*
-- [~] **VIEW-004:** **Hardening de Testes do Brief:** Expandir cobertura de borda e regressão após MVP (sem dados, datas no limite da semana, bloqueios e reincidência).
-  *(Início: 2026-02-24 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
@@ -43,6 +35,14 @@
 ## ✅ Concluído
 
 ### 👁️ Fase 3: Visão Executiva (VIEW)
+- [x] **VIEW-004:** **Hardening de Testes do Brief:** Expandir cobertura de borda e regressão após MVP (sem dados, datas no limite da semana, bloqueios e reincidência).
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **VIEW-003:** **UI do Weekly Brief (v1):** Construir o bloco visual com os 4 indicadores estruturais, contagem e navegação para a lista filtrada correspondente.
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **VIEW-002:** **Camada de Agregação do Brief:** Implementar selectors/serviço que consolide os compromissos em um resumo semanal determinístico, sem opinião e sem inferência.
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **VIEW-001A:** **Regra de Execução TDD (Weekly Brief):** Para cada regra nova do brief, criar primeiro teste falhando (vermelho), depois implementar (verde) e por fim refatorar.
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
 - [x] **VIEW-001:** **Definição do Weekly Brief (Contrato de Métricas):** Formalizar regras de cálculo e critérios de inclusão para os blocos de Entregas da próxima semana, Em risco, Bloqueados, Reincidentes e Concluídos recentes.
   *(Início: 2026-02-23 | Fim: 2026-02-23)*
 
