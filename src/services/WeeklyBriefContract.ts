@@ -1,8 +1,8 @@
 ﻿export const WEEKLY_BRIEF_CONTRACT_VERSION = 'v1';
 
 export const WEEKLY_BRIEF_THRESHOLDS = {
-    nextWeekStartOffsetDays: 1,
-    nextWeekEndOffsetDays: 7,
+    nextWeekStartOffsetDays: 0,
+    nextWeekEndOffsetDays: 6,
     recentCompletedWindowDays: 7,
     recurrentRenegotiationMin: 2,
     highRiskMatrixScoreMin: 6,
@@ -24,8 +24,8 @@ export interface WeeklyBriefBlockDefinition {
 export const WEEKLY_BRIEF_BLOCKS: WeeklyBriefBlockDefinition[] = [
     {
         key: 'NEXT_WEEK_DELIVERIES',
-        label: 'Entregas da próxima semana',
-        description: 'Compromissos ativos com data esperada entre D+1 e D+7.',
+        label: 'Entregas da semana',
+        description: 'Compromissos ativos com data esperada entre D0 e D+6.',
     },
     {
         key: 'AT_RISK',

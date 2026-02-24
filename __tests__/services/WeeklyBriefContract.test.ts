@@ -11,8 +11,8 @@ describe('WeeklyBriefContract', () => {
     });
 
     it('should keep deterministic thresholds', () => {
-        expect(WEEKLY_BRIEF_THRESHOLDS.nextWeekStartOffsetDays).toBe(1);
-        expect(WEEKLY_BRIEF_THRESHOLDS.nextWeekEndOffsetDays).toBe(7);
+        expect(WEEKLY_BRIEF_THRESHOLDS.nextWeekStartOffsetDays).toBe(0);
+        expect(WEEKLY_BRIEF_THRESHOLDS.nextWeekEndOffsetDays).toBe(6);
         expect(WEEKLY_BRIEF_THRESHOLDS.recentCompletedWindowDays).toBe(7);
         expect(WEEKLY_BRIEF_THRESHOLDS.recurrentRenegotiationMin).toBe(2);
         expect(WEEKLY_BRIEF_THRESHOLDS.highRiskMatrixScoreMin).toBe(6);

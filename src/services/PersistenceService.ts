@@ -1,6 +1,7 @@
 ﻿import { Commitment, CommitmentRisk } from '../models/Commitment';
 
 const LEGACY_STORAGE_KEY = 'flow_integrity_commitments';
+const REFLECTION_FEED_STATE_BASE_KEY = 'flow_integrity_reflection_feed_state';
 
 export type AppEnvironment = 'dev' | 'prod';
 
@@ -10,6 +11,10 @@ export function getAppEnvironment(): AppEnvironment {
 
 export function getCommitmentsStorageKey(): string {
     return `${LEGACY_STORAGE_KEY}_${getAppEnvironment()}`;
+}
+
+export function getReflectionFeedStateKey(): string {
+    return `${REFLECTION_FEED_STATE_BASE_KEY}_${getAppEnvironment()}`;
 }
 
 function normalizeRisks(riscos: unknown): CommitmentRisk[] {
@@ -95,4 +100,22 @@ export function loadCommitments(): Commitment[] {
 export function clearCommitmentsStorage(): void {
     if (typeof window === 'undefined') return;
     localStorage.removeItem(getCommitmentsStorageKey());
+}
+
+export function loadReflectionFeedState(): Record<string, string> {
+    if (typeof window === 'undefined') return {};
+    const data = localStorage.getItem(getReflectionFeedStateKey());
+    if (!data) return {};
+
+    try {
+        const parsed = JSON.parse(data) as Record<string, string>;
+        return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch {
+        return {};
+    }
+}
+
+export function saveReflectionFeedState(state: Record<string, string>): void {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(getReflectionFeedStateKey(), JSON.stringify(state));
 }

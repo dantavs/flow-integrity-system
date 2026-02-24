@@ -24,12 +24,12 @@ describe('WeeklyBriefService', () => {
         ...overrides,
     });
 
-    it('builds next week deliveries with inclusive boundaries (D+1 to D+7)', () => {
+    it('builds week deliveries with inclusive boundaries (D0 to D+6)', () => {
         const commitments = [
-            make({ id: '1', dataEsperada: new Date('2026-02-25T00:00:00') }), // D+1
-            make({ id: '2', dataEsperada: new Date('2026-03-03T00:00:00') }), // D+7
-            make({ id: '3', dataEsperada: new Date('2026-02-24T00:00:00') }), // D
-            make({ id: '4', dataEsperada: new Date('2026-03-04T00:00:00') }), // D+8
+            make({ id: '1', dataEsperada: new Date('2026-02-24T00:00:00') }), // D0
+            make({ id: '2', dataEsperada: new Date('2026-03-02T00:00:00') }), // D+6
+            make({ id: '3', dataEsperada: new Date('2026-03-03T00:00:00') }), // D+7
+            make({ id: '4', dataEsperada: new Date('2026-02-23T00:00:00') }), // D-1
         ];
 
         const brief = buildWeeklyBrief(commitments as any, now);

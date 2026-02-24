@@ -4,10 +4,14 @@ Este documento estabelece as práticas e rituais que garantem a **Integridade do
 
 ## 🛠️ Desenvolvimento e Git
 - **TDD (Test Driven Development):** Adotar o ciclo Vermelho-Verde-Refatorar usando **Vitest** como motor de testes. Primeiro o teste falhando, depois o código mínimo para passar, e então a limpeza.
+- **Escopo do TDD:** O ciclo TDD é obrigatório para todo o projeto.
 - **Commit por Tarefa:** Cada tarefa aprovada deve ser versionada em commit próprio, com mensagem clara e rastreável.
+- **Regra de Granularidade:** Não implementar múltiplas regras novas em lote sem cobertura inicial. A unidade de entrega é `regra + teste correspondente`.
 
 ## 📋 Gestão de Fluxo
 - **Backlog Antecipado:** Todo novo requisito ou funcionalidade solicitada que não esteja no backlog deve ser adicionado na seção `Planejado` antes de ser implementado.
+- **Registro Automático de Solicitações:** Sempre que o usuário solicitar qualquer ajuste/evolução/correção, criar item no `backlog.md` mesmo sem pedido explícito de registro.
+- **Granularidade de Registro:** Se uma solicitação tiver mais de uma entrega independente, desdobrar em múltiplos itens no backlog.
 - **Início da Execução:** Antes de começar a implementação, mover o item para a seção `Em Execução` com status `[/]`.
 - **Fim da Implementação:** Ao terminar tecnicamente a tarefa, manter o item no backlog com status `[~]` (`Aguardando Aprovação`).
 - **Aprovação e Push:** Após aprovação explícita do usuário, realizar o `push` para o GitHub e somente então marcar como `[x]`, movendo o item para a seção `Concluído`.

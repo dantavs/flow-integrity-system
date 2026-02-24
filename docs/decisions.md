@@ -1,28 +1,30 @@
-# Decisões de Arquitetura (ADR)
+﻿# DecisÃµes de Arquitetura (ADR)
 
-Este arquivo registra as decisões arquiteturais significativas tomadas durante o projeto.
+Este arquivo registra as decisÃµes arquiteturais significativas tomadas durante o projeto.
 
 ## [2026-02-22] 01: Escolha do Framework Web
-- **Decisão:** Uso de Next.js com App Router.
+- **DecisÃ£o:** Uso de Next.js com App Router.
 - **Contexto:** Necessidade de agilidade no desenvolvimento frontend e backend integrados.
-- **Consequências:** SSR disponível nativamente, roteamento otimizado.
+- **ConsequÃªncias:** SSR disponÃ­vel nativamente, roteamento otimizado.
 
-## [2026-02-22] 02: Linguagem de Programação
-- **Decisão:** TypeScript.
-- **Contexto:** Garantir a integridade do código e facilitar refatorações em um sistema de fluxos complexos.
-- **Consequências:** Maior segurança de tipos e melhor experiência de desenvolvimento.
+## [2026-02-22] 02: Linguagem de ProgramaÃ§Ã£o
+- **DecisÃ£o:** TypeScript.
+- **Contexto:** Garantir a integridade do cÃ³digo e facilitar refatoraÃ§Ãµes em um sistema de fluxos complexos.
+- **ConsequÃªncias:** Maior seguranÃ§a de tipos e melhor experiÃªncia de desenvolvimento.
 
-## [2026-02-22] 03: Estrutura de Documentação
-- **Decisão:** Documentação viva em arquivos Markdown dentro da pasta `/docs`.
-- **Contexto:** Manter a documentação próxima ao código para facilitar a manutenção e versionamento.
-- **Consequências:** Histórico de evolução do produto acessível via Git.
+## [2026-02-22] 03: Estrutura de DocumentaÃ§Ã£o
+- **DecisÃ£o:** DocumentaÃ§Ã£o viva em arquivos Markdown dentro da pasta `/docs`.
+- **Contexto:** Manter a documentaÃ§Ã£o prÃ³xima ao cÃ³digo para facilitar a manutenÃ§Ã£o e versionamento.
+- **ConsequÃªncias:** HistÃ³rico de evoluÃ§Ã£o do produto acessÃ­vel via Git.
 
 ## [2026-02-22] 04: Motor de Testes
-- **Decisão:** Substituição do Jest pelo **Vitest**.
-- **Contexto:** Dificuldades técnicas na configuração do Jest com Next.js 15+ e TypeScript em ambientes com espaços no path. Vitest oferece melhor integração com o ecossistema moderno e é mais veloz.
-- **Consequências:** Configuração simplificada, maior velocidade de execução e compatibilidade nativa com ESM.
+- **DecisÃ£o:** SubstituiÃ§Ã£o do Jest pelo **Vitest**.
+- **Contexto:** Dificuldades tÃ©cnicas na configuraÃ§Ã£o do Jest com Next.js 15+ e TypeScript em ambientes com espaÃ§os no path. Vitest oferece melhor integraÃ§Ã£o com o ecossistema moderno e Ã© mais veloz.
+- **ConsequÃªncias:** ConfiguraÃ§Ã£o simplificada, maior velocidade de execuÃ§Ã£o e compatibilidade nativa com ESM.
 
-## [2026-02-23] 05: Contrato Determinístico do Weekly Brief (VIEW-001)
-- **Decisão:** Definir o Weekly Brief v1 por contrato explícito de métricas e thresholds fixos, sem interpretação por IA.
-- **Contexto:** Necessidade de garantir leitura objetiva e reproduzível dos 4 blocos (Entregas da próxima semana, Em risco, Bloqueados, Reincidentes) antes da etapa de agregação (VIEW-002).
-- **Consequências:** Regras transparentes e auditáveis, menor ambiguidade de implementação e base estável para evolução futura.
+## [2026-02-23] 05: Contrato DeterminÃ­stico do Resumo Semanal (VIEW-001)
+- **DecisÃ£o:** Definir o Resumo Semanal v1 por contrato explÃ­cito de mÃ©tricas e thresholds fixos, sem interpretaÃ§Ã£o por IA.
+- **Contexto:** Necessidade de garantir leitura objetiva e reproduzÃ­vel dos 4 blocos (Entregas da prÃ³xima semana, Em risco, Bloqueados, Reincidentes) antes da etapa de agregaÃ§Ã£o (VIEW-002).
+- **ConsequÃªncias:** Regras transparentes e auditÃ¡veis, menor ambiguidade de implementaÃ§Ã£o e base estÃ¡vel para evoluÃ§Ã£o futura.
+
+

@@ -1,85 +1,85 @@
-﻿# Contrato de Métricas — Weekly Brief (VIEW-001)
+﻿# Contrato de Metricas - Resumo Semanal (VIEW-001)
 
-Define as regras oficiais para o Weekly Brief v1. Este contrato é determinístico e não usa interpretação de IA.
+Define as regras oficiais para o Resumo Semanal v1. Este contrato e deterministico e nao usa interpretacao de IA.
 
 ## Objetivo
 
 Padronizar a leitura semanal do fluxo em 5 blocos:
-- Entregas da próxima semana
+- Entregas da semana
 - Em risco
 - Bloqueados
 - Reincidentes
-- Concluídos nos últimos 7 dias
+- Concluidos nos ultimos 7 dias
 
 ## Escopo de Dados
 
-### Itens elegíveis (base operacional)
+### Itens elegiveis (base operacional)
 - Apenas compromissos com status `BACKLOG` ou `ACTIVE`.
-- Compromissos `DONE` e `CANCELLED` são excluídos de todos os blocos do Weekly Brief.
+- Compromissos `DONE` e `CANCELLED` sao excluidos de todos os blocos do Resumo Semanal.
 
 ### Datas
-- Todas as comparações usam a data local normalizada para `00:00:00`.
-- Janela da próxima semana: `D+1` até `D+7` (inclusive), onde `D` é o dia atual.
+- Todas as comparacoes usam a data local normalizada para `00:00:00`.
+- Janela da semana: `D0` ate `D+6` (inclusive), onde `D` e o dia atual.
 
-## Blocos do Weekly Brief
+## Blocos do Resumo Semanal
 
-### 1) Entregas da próxima semana
-Critério de inclusão:
-- Item elegível pela base (ativo)
-- `dataEsperada` entre `D+1` e `D+7` (inclusive)
+### 1) Entregas da semana
+Criterio de inclusao:
+- Item elegivel pela base (ativo)
+- `dataEsperada` entre `D0` e `D+6` (inclusive)
 
-Ordenação recomendada:
+Ordenacao recomendada:
 - `dataEsperada` ascendente
 - Em empate, `id` ascendente
 
 ### 2) Em risco
-Critério de inclusão:
-- Item elegível pela base (ativo)
-- E pelo menos uma condição abaixo:
+Criterio de inclusao:
+- Item elegivel pela base (ativo)
+- E pelo menos uma condicao abaixo:
 1. `dataEsperada < D` (vencido)
 2. `hasImpedimento = true`
 3. Existe risco aberto (`ABERTO` ou `EM_MITIGACAO`) com score de matriz `>= 6`
 4. `renegociadoCount >= 2`
 
-Observação:
-- O score de matriz de risco é `probabilidade x impacto` com mapeamento `LOW=1`, `MEDIUM=2`, `HIGH=3`.
+Observacao:
+- O score de matriz de risco e `probabilidade x impacto` com mapeamento `LOW=1`, `MEDIUM=2`, `HIGH=3`.
 
 ### 3) Bloqueados
-Critério de inclusão:
-- Item elegível pela base (ativo)
+Criterio de inclusao:
+- Item elegivel pela base (ativo)
 - E `hasImpedimento = true`
 
-Observação:
-- No estado atual do produto, `hasImpedimento` já incorpora impacto básico de dependências pendentes.
+Observacao:
+- No estado atual do produto, `hasImpedimento` ja incorpora impacto basico de dependencias pendentes.
 
 ### 4) Reincidentes
-Critério de inclusão:
-- Item elegível pela base (ativo)
+Criterio de inclusao:
+- Item elegivel pela base (ativo)
 - E `renegociadoCount >= 2`
 
-### 5) Concluídos nos últimos 7 dias (progresso)
-Critério de inclusão:
+### 5) Concluidos nos ultimos 7 dias (progresso)
+Criterio de inclusao:
 - Compromisso com status `DONE`
-- `dataConclusao` (fallback: último evento `STATUS_CHANGE` para `DONE`) entre `D-7` e `D` (inclusive)
+- `dataConclusao` (fallback: ultimo evento `STATUS_CHANGE` para `DONE`) entre `D-7` e `D` (inclusive)
 
-Observação:
-- Este bloco é exclusivamente de progresso e não participa de risco/saúde do fluxo.
+Observacao:
+- Este bloco e exclusivamente de progresso e nao participa de risco/saude do fluxo.
 
 ## Regras Gerais
 
-- Um mesmo compromisso pode aparecer em múltiplos blocos.
-- O contrato define critérios de inclusão e não impõe deduplicação entre blocos.
-- Quando um campo opcional não existir, usar fallback seguro:
+- Um mesmo compromisso pode aparecer em multiplos blocos.
+- O contrato define criterios de inclusao e nao impoe deduplicacao entre blocos.
+- Quando um campo opcional nao existir, usar fallback seguro:
   - `renegociadoCount` ausente => `0`
   - `riscos` ausente => `[]`
   - `hasImpedimento` ausente => `false`
-- Se não houver timestamp confiável de conclusão, o item não entra no bloco de concluídos recentes.
+- Se nao houver timestamp confiavel de conclusao, o item nao entra no bloco de concluidos recentes.
 
-## Saída Esperada (VIEW-002)
+## Saida Esperada (VIEW-002)
 
-O agregador deverá produzir, para cada bloco:
+O agregador devera produzir, para cada bloco:
 - `total`
 - `ids`
 - `items` ordenados
 
-Sem texto opinativo, sem inferência não rastreável.
+Sem texto opinativo, sem inferencia nao rastreavel.

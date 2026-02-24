@@ -5,6 +5,9 @@ import {
     clearCommitmentsStorage,
     getAppEnvironment,
     getCommitmentsStorageKey,
+    getReflectionFeedStateKey,
+    loadReflectionFeedState,
+    saveReflectionFeedState,
 } from '@/services/PersistenceService';
 import { Commitment, CommitmentStatus } from '@/models/Commitment';
 
@@ -59,6 +62,10 @@ describe('PersistenceService', () => {
         );
     });
 
+    it('should expose environment key for reflection feed state', () => {
+        expect(getReflectionFeedStateKey()).toBe('flow_integrity_reflection_feed_state_dev');
+    });
+
     it('should load commitments from environment storage key', () => {
         const serialized = JSON.stringify(mockCommitments);
         vi.mocked(localStorage.getItem).mockImplementation((key: string) => {
@@ -111,5 +118,23 @@ describe('PersistenceService', () => {
         vi.mocked(localStorage.getItem).mockReturnValue(null);
         const loaded = loadCommitments();
         expect(loaded).toEqual([]);
+    });
+
+    it('should save and load reflection feed state', () => {
+        const state = {
+            'POSTPONEMENT_PATTERN:1': '2026-02-24T10:00:00.000Z',
+        };
+
+        saveReflectionFeedState(state);
+        expect(localStorage.setItem).toHaveBeenCalledWith(
+            'flow_integrity_reflection_feed_state_dev',
+            JSON.stringify(state),
+        );
+
+        vi.mocked(localStorage.getItem).mockImplementation((key: string) => {
+            if (key === 'flow_integrity_reflection_feed_state_dev') return JSON.stringify(state);
+            return null;
+        });
+        expect(loadReflectionFeedState()).toEqual(state);
     });
 });

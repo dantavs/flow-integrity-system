@@ -7,17 +7,22 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
+- [~] **VIEW-005:** **Modelo de Reflexão e Taxonomia de Gatilhos** ([doc](feed-reflexoes-plan.md#view-005---modelo-de-reflexao-e-taxonomia-de-gatilhos))
+  *(Início: 2026-02-24 | Fim: -)*
+- [~] **VIEW-006:** **Motor de Regras do Feed (v1)** ([doc](feed-reflexoes-plan.md#view-006---motor-de-regras-do-feed-v1))
+  *(Início: 2026-02-24 | Fim: -)*
+- [~] **VIEW-007:** **UI do Feed de Reflexões** ([doc](feed-reflexoes-plan.md#view-007---ui-do-feed-de-reflexoes))
+  *(Início: 2026-02-24 | Fim: -)*
+- [~] **VIEW-008:** **Controle de Ruído e Priorização Inicial** ([doc](feed-reflexoes-plan.md#view-008---controle-de-ruido-e-priorizacao-inicial))
+  *(Início: 2026-02-24 | Fim: -)*
+- [~] **VIEW-009:** **Teste de Integridade das Reflexões** ([doc](feed-reflexoes-plan.md#view-009---teste-de-integridade-das-reflexoes))
+  *(Início: 2026-02-24 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
-### 👁️ Fase 3: Visão Executiva (VIEW) — Weekly Brief
+### 👁️ Fase 3: Visão Executiva (VIEW) — Resumo Semanal
 
 ### 🧠 Fase 3: Visão Executiva (VIEW) — Feed de Reflexões
-- [ ] **VIEW-005:** **Modelo de Reflexão e Taxonomia de Gatilhos:** Definir estrutura do item de reflexão (tipo, contexto, mensagem, ação sugerida) e padronizar os gatilhos da v1.
-- [ ] **VIEW-006:** **Motor de Regras do Feed (v1):** Implementar regras transparentes para os gatilhos iniciais: dependência concluída, múltiplos riscos por projeto, padrão de adiamento e impacto em projeto instável.
-- [ ] **VIEW-007:** **UI do Feed de Reflexões:** Exibir reflexões curtas e provocativas, com contexto mínimo e CTA para revisão do compromisso/projeto relacionado.
-- [ ] **VIEW-008:** **Controle de Ruído e Priorização Inicial:** Ordenar reflexões por relevância/recência e evitar duplicidade para manter o feed útil e não burocrático.
-- [ ] **VIEW-009:** **Teste de Integridade das Reflexões:** Validar em testes a geração correta das reflexões por gatilho e a ausência de falsos positivos críticos.
 
 ### 🤖 Inteligência e Automação (Flow Guardian)
 - [ ] **AI-001:** **Flow Advisor (Criação):** Analisar clareza, ambiguidade e riscos no momento do preenchimento do formulário.
@@ -37,13 +42,13 @@
 ### 👁️ Fase 3: Visão Executiva (VIEW)
 - [x] **VIEW-004:** **Hardening de Testes do Brief:** Expandir cobertura de borda e regressão após MVP (sem dados, datas no limite da semana, bloqueios e reincidência).
   *(Início: 2026-02-24 | Fim: 2026-02-24)*
-- [x] **VIEW-003:** **UI do Weekly Brief (v1):** Construir o bloco visual com os 4 indicadores estruturais, contagem e navegação para a lista filtrada correspondente.
+- [x] **VIEW-003:** **UI do Resumo Semanal (v1):** Construir o bloco visual com os 4 indicadores estruturais, contagem e navegação para a lista filtrada correspondente.
   *(Início: 2026-02-24 | Fim: 2026-02-24)*
 - [x] **VIEW-002:** **Camada de Agregação do Brief:** Implementar selectors/serviço que consolide os compromissos em um resumo semanal determinístico, sem opinião e sem inferência.
   *(Início: 2026-02-24 | Fim: 2026-02-24)*
-- [x] **VIEW-001A:** **Regra de Execução TDD (Weekly Brief):** Para cada regra nova do brief, criar primeiro teste falhando (vermelho), depois implementar (verde) e por fim refatorar.
+- [x] **VIEW-001A:** **Regra de Execução TDD (Resumo Semanal):** Para cada regra nova do brief, criar primeiro teste falhando (vermelho), depois implementar (verde) e por fim refatorar.
   *(Início: 2026-02-24 | Fim: 2026-02-24)*
-- [x] **VIEW-001:** **Definição do Weekly Brief (Contrato de Métricas):** Formalizar regras de cálculo e critérios de inclusão para os blocos de Entregas da próxima semana, Em risco, Bloqueados, Reincidentes e Concluídos recentes.
+- [x] **VIEW-001:** **Definição do Resumo Semanal (Contrato de Métricas):** Formalizar regras de cálculo e critérios de inclusão para os blocos de Entregas da semana, Em risco, Bloqueados, Reincidentes e Concluídos recentes.
   *(Início: 2026-02-23 | Fim: 2026-02-23)*
 
 ### 🚀 Fase 2: Governança e Integridade
@@ -119,5 +124,6 @@
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 - [x] **SAFE-003:** Criar sistema de categorias/tags para compromissos.  
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
+
 
 

@@ -5,11 +5,21 @@ import CommitmentForm from '../components/CommitmentForm';
 import CommitmentList from '../components/CommitmentList';
 import AuditTimeline from '../components/AuditTimeline';
 import { createCommitment, changeCommitmentStatus, editCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
-import { clearCommitmentsStorage, getAppEnvironment, getCommitmentsStorageKey, loadCommitments, saveCommitments } from '../services/PersistenceService';
+import {
+  clearCommitmentsStorage,
+  getAppEnvironment,
+  getCommitmentsStorageKey,
+  loadCommitments,
+  loadReflectionFeedState,
+  saveCommitments,
+  saveReflectionFeedState
+} from '../services/PersistenceService';
 import { Commitment, CommitmentStatus } from '../models/Commitment';
 import { calculateFlowHealth } from '../services/FlowHealthService';
 import { buildWeeklyBrief } from '../services/WeeklyBriefService';
 import { WEEKLY_BRIEF_BLOCKS, WeeklyBriefBlockKey } from '../services/WeeklyBriefContract';
+import { buildReflectionFeed } from '../services/ReflectionEngine';
+import { ReflectionAction, ReflectionItem } from '../services/ReflectionContract';
 import Toast, { ToastType } from '../components/Toast';
 
 export default function Home() {
@@ -34,6 +44,8 @@ export default function Home() {
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
   const [viewMode, setViewMode] = useState<'ACTIVE' | 'ARCHIVED'>('ACTIVE');
   const [selectedBriefBlock, setSelectedBriefBlock] = useState<WeeklyBriefBlockKey | null>(null);
+  const [reflectionCooldownState, setReflectionCooldownState] = useState<Record<string, string>>({});
+  const [reflectionFocusCommitmentId, setReflectionFocusCommitmentId] = useState<string | null>(null);
   const [filters, setFilters] = useState({
     projeto: '',
     owner: '',
@@ -47,6 +59,7 @@ export default function Home() {
   useEffect(() => {
     const data = loadCommitments();
     setCommitments(applyDependencyIntegrity(data));
+    setReflectionCooldownState(loadReflectionFeedState());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -130,8 +143,13 @@ export default function Home() {
   };
 
   const weeklyBrief = useMemo(() => buildWeeklyBrief(commitments), [commitments]);
+  const reflectionFeed = useMemo(
+    () => buildReflectionFeed(commitments, new Date(), { cooldownByDedupKey: reflectionCooldownState }),
+    [commitments, reflectionCooldownState],
+  );
   const currentBaseList = viewMode === 'ACTIVE' ? activeCommitments : archivedCommitments;
   const currentCommitments = applyFilters(currentBaseList).filter(c => {
+    if (reflectionFocusCommitmentId) return c.id === reflectionFocusCommitmentId;
     if (!selectedBriefBlock) return true;
     return weeklyBrief.blocks[selectedBriefBlock].ids.includes(c.id);
   });
@@ -147,6 +165,33 @@ export default function Home() {
     status: c.status,
     projeto: c.projeto,
   }));
+
+  const markReflectionAsSeen = (dedupKey: string) => {
+    const next = {
+      ...reflectionCooldownState,
+      [dedupKey]: new Date().toISOString(),
+    };
+    setReflectionCooldownState(next);
+    saveReflectionFeedState(next);
+  };
+
+  const handleReflectionAction = (reflection: ReflectionItem, action: ReflectionAction) => {
+    markReflectionAsSeen(reflection.dedupKey);
+    setViewMode('ACTIVE');
+
+    if (action.type === 'FILTER_PROJECT' && action.projeto) {
+      setReflectionFocusCommitmentId(null);
+      setFilters(prev => ({ ...prev, projeto: action.projeto || '' }));
+      setToast({ message: `Feed: foco aplicado no projeto "${action.projeto}".`, type: 'INFO' });
+      return;
+    }
+
+    if (action.type === 'OPEN_COMMITMENT' && action.commitmentId) {
+      setReflectionFocusCommitmentId(action.commitmentId);
+      setSelectedBriefBlock(null);
+      setToast({ message: `Feed: foco aplicado no compromisso #${action.commitmentId}.`, type: 'INFO' });
+    }
+  };
 
   return (
     <div style={{
@@ -276,7 +321,7 @@ export default function Home() {
 
           <div style={{ marginBottom: '1.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Weekly Brief</h2>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Resumo Semanal</h2>
               <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }} />
             </div>
             <div style={{
@@ -323,6 +368,48 @@ export default function Home() {
                 );
               })}
             </div>
+          </div>
+
+          <div style={{ marginBottom: '1.8rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Feed de Reflexões</h2>
+              <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }} />
+            </div>
+            {reflectionFeed.items.length === 0 ? (
+              <div className="glass-card" style={{ padding: '1rem 1.1rem', color: 'var(--text-secondary)' }}>
+                Sem reflexões críticas no momento.
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.8rem' }}>
+                {reflectionFeed.items.map(reflection => (
+                  <div key={reflection.id} className="glass-card" style={{ padding: '0.9rem 1rem', borderLeft: `3px solid ${reflection.severity === 'HIGH' ? '#ef4444' : reflection.severity === 'MEDIUM' ? '#f59e0b' : '#06b6d4'}` }}>
+                    <div style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.35rem' }}>{reflection.message}</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.55rem' }}>{reflection.context}</div>
+                    <div style={{ display: 'flex', gap: '0.55rem', flexWrap: 'wrap' }}>
+                      {reflection.actions.map((action, idx) => (
+                        <button
+                          key={`${reflection.id}-${idx}`}
+                          type="button"
+                          className="tab-inactive"
+                          style={{
+                            padding: '6px 12px',
+                            borderRadius: '16px',
+                            fontSize: '0.78rem',
+                            fontWeight: 500,
+                            cursor: 'pointer',
+                            border: '1px solid var(--glass-border)',
+                            transition: 'all 0.3s ease'
+                          }}
+                          onClick={() => handleReflectionAction(reflection, action)}
+                        >
+                          {action.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div style={{ marginBottom: '2.5rem' }}>
@@ -381,6 +468,24 @@ export default function Home() {
                   }}
                 >
                   Limpar Brief
+                </button>
+              )}
+              {reflectionFocusCommitmentId && (
+                <button
+                  type="button"
+                  onClick={() => setReflectionFocusCommitmentId(null)}
+                  className="tab-inactive"
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    border: '1px solid var(--glass-border)',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  Limpar Foco Feed
                 </button>
               )}
             </div>
