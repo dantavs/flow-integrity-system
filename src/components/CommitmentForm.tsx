@@ -14,6 +14,7 @@ interface CommitmentFormProps {
     onSubmit: (data: CreateCommitmentDTO) => boolean;
     initialData?: Commitment;
     onCancel?: () => void;
+    layoutMode?: 'default' | 'modal';
     suggestions?: {
         projetos: string[];
         owners: string[];
@@ -29,6 +30,15 @@ interface CommitmentFormProps {
 
 type CommitmentFormState = Omit<CreateCommitmentDTO, 'dataEsperada'> & {
     dataEsperada: string;
+};
+
+type AdvisorFeedback = {
+    qualityScore: number;
+    ambiguities: string[];
+    riskHints: string[];
+    rewriteSuggestions: string[];
+    recommendedActions: string[];
+    why: string;
 };
 
 const toLocalDateInput = (date: Date): string => {
@@ -60,12 +70,22 @@ const createInitialState = (): CommitmentFormState => ({
     riscos: [createEmptyRisk('risk-1')],
 });
 
-const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, onCancel, suggestions, dependencyOptions = [] }) => {
+const CommitmentForm: React.FC<CommitmentFormProps> = ({
+    onSubmit,
+    initialData,
+    onCancel,
+    layoutMode = 'default',
+    suggestions,
+    dependencyOptions = [],
+}) => {
     const nextRiskIdRef = useRef(2);
     const [todayMinDate, setTodayMinDate] = useState('');
     const [showRisks, setShowRisks] = useState(Boolean(initialData?.riscos?.length));
     const [showDependencies, setShowDependencies] = useState(false);
     const [dependencyQuery, setDependencyQuery] = useState('');
+    const [advisorLoading, setAdvisorLoading] = useState(false);
+    const [advisorError, setAdvisorError] = useState<string | null>(null);
+    const [advisorFeedback, setAdvisorFeedback] = useState<AdvisorFeedback | null>(null);
 
     const getNextRiskId = () => {
         const id = `risk-${nextRiskIdRef.current}`;
@@ -173,6 +193,54 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
             });
             setShowRisks(false);
             setShowDependencies(false);
+            setAdvisorFeedback(null);
+            setAdvisorError(null);
+        }
+    };
+
+    const handleAnalyzeWithAI = async () => {
+        setAdvisorLoading(true);
+        setAdvisorError(null);
+
+        try {
+            const response = await fetch('/api/guardian/advisor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    titulo: formData.titulo,
+                    projeto: formData.projeto,
+                    owner: formData.owner,
+                    stakeholder: formData.stakeholder,
+                    dataEsperada: formData.dataEsperada,
+                    tipo: formData.tipo,
+                    impacto: formData.impacto,
+                    riscos: formData.riscos.map(risk => risk.descricao).filter(text => text.trim() !== ''),
+                    dependencias: formData.dependencias,
+                    dependencyContext: dependencyOptions
+                        .filter(dep => formData.dependencias.includes(dep.id))
+                        .map(dep => ({
+                            id: dep.id,
+                            titulo: dep.titulo,
+                            projeto: dep.projeto,
+                            status: dep.status,
+                        })),
+                }),
+            });
+
+            const payload = await response.json() as any;
+
+            if (payload.status === 'ok' && payload.result) {
+                setAdvisorFeedback(payload.result as AdvisorFeedback);
+                return;
+            }
+
+            setAdvisorFeedback(null);
+            setAdvisorError(payload.reason || 'Advisor indisponível no momento.');
+        } catch {
+            setAdvisorFeedback(null);
+            setAdvisorError('Falha ao analisar com IA no momento.');
+        } finally {
+            setAdvisorLoading(false);
         }
     };
 
@@ -200,8 +268,11 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
     ];
 
     return (
-        <form onSubmit={handleSubmit} className="glass-card p-8 space-y-6 w-full animate-fade-in">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+            onSubmit={handleSubmit}
+            className={`glass-card p-8 w-full animate-fade-in commitment-form-root ${layoutMode === 'modal' ? 'commitment-form-modal' : ''}`}
+        >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 commitment-main-block">
                 <div className="space-y-1">
                     <label htmlFor="titulo">Título do Compromisso</label>
                     <input type="text" id="titulo" name="titulo" placeholder="O que será entregue?" value={formData.titulo} onChange={handleChange} className="input-field" required />
@@ -256,7 +327,7 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
                 </div>
             </div>
 
-            <section className="space-y-3" style={{ border: '1px solid var(--glass-border)', borderRadius: '10px', padding: '0.8rem' }}>
+            <section className="space-y-3 commitment-main-block" style={{ border: '1px solid var(--glass-border)', borderRadius: '10px', padding: '0.8rem' }}>
                 <button
                     type="button"
                     onClick={() => setShowRisks(prev => !prev)}
@@ -280,8 +351,8 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
 
                         {formData.riscos.map((risk, idx) => (
                             <div key={risk.id} style={{ border: '1px solid var(--glass-border)', borderRadius: '10px', padding: '0.8rem', background: 'rgba(255,255,255,0.02)' }}>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <div className="space-y-1" style={{ gridColumn: '1 / -1' }}>
+                                <div className="grid grid-cols-1 md:grid-cols-2 risk-fields-grid">
+                                    <div className="space-y-1 risk-field" style={{ gridColumn: '1 / -1' }}>
                                         <label htmlFor={`risk-desc-${risk.id}`}>Descrição do risco #{idx + 1}</label>
                                         <textarea
                                             id={`risk-desc-${risk.id}`}
@@ -293,28 +364,28 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
                                         />
                                     </div>
 
-                                    <div className="space-y-1">
+                                    <div className="space-y-1 risk-field">
                                         <label>Categoria</label>
                                         <select className="input-field" value={risk.categoria} onChange={(e) => updateRisk(risk.id, 'categoria', e.target.value)}>
                                             {categoryOptions.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
                                         </select>
                                     </div>
 
-                                    <div className="space-y-1">
+                                    <div className="space-y-1 risk-field">
                                         <label>Status de mitigação</label>
                                         <select className="input-field" value={risk.statusMitigacao} onChange={(e) => updateRisk(risk.id, 'statusMitigacao', e.target.value)}>
                                             {statusOptions.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
                                         </select>
                                     </div>
 
-                                    <div className="space-y-1">
+                                    <div className="space-y-1 risk-field">
                                         <label>Probabilidade</label>
                                         <select className="input-field" value={risk.probabilidade} onChange={(e) => updateRisk(risk.id, 'probabilidade', e.target.value)}>
                                             {matrixOptions.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
                                         </select>
                                     </div>
 
-                                    <div className="space-y-1">
+                                    <div className="space-y-1 risk-field">
                                         <label>Impacto (matriz)</label>
                                         <select className="input-field" value={risk.impacto} onChange={(e) => updateRisk(risk.id, 'impacto', e.target.value)}>
                                             {matrixOptions.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
@@ -333,7 +404,7 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
                 )}
             </section>
 
-            <section className="space-y-3" style={{ border: '1px solid var(--glass-border)', borderRadius: '10px', padding: '0.8rem' }}>
+            <section className="space-y-3 commitment-main-block" style={{ border: '1px solid var(--glass-border)', borderRadius: '10px', padding: '0.8rem' }}>
                 <button
                     type="button"
                     onClick={() => setShowDependencies(prev => !prev)}
@@ -389,7 +460,57 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({ onSubmit, initialData, 
                 )}
             </section>
 
-            <div className="pt-4 flex gap-4">
+            <section className="space-y-3 commitment-advisor-block" style={{ border: '1px solid var(--glass-border)', borderRadius: '10px', padding: '0.8rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
+                    <div>
+                        <div style={{ fontWeight: 600 }}>Flow Advisor (IA)</div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Analisa clareza e riscos do compromisso antes de salvar.</div>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={handleAnalyzeWithAI}
+                        className="btn-secondary"
+                        disabled={advisorLoading}
+                        style={{ width: 'auto', padding: '0.45rem 0.85rem', opacity: advisorLoading ? 0.8 : 1 }}
+                    >
+                        {advisorLoading ? 'Analisando...' : 'Analisar com IA'}
+                    </button>
+                </div>
+
+                {advisorError && (
+                    <div style={{ color: '#f59e0b', fontSize: '0.85rem' }}>
+                        {advisorError}
+                    </div>
+                )}
+
+                {advisorFeedback && (
+                    <div style={{ border: '1px solid var(--glass-border)', borderRadius: '8px', padding: '0.75rem' }}>
+                        <div style={{ fontSize: '0.9rem', marginBottom: '0.5rem' }}>
+                            Qualidade estimada: <strong>{advisorFeedback.qualityScore}%</strong>
+                        </div>
+                        <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '0.5rem' }}>
+                            {advisorFeedback.why}
+                        </div>
+                        {advisorFeedback.ambiguities.length > 0 && (
+                            <div style={{ marginBottom: '0.35rem', fontSize: '0.85rem' }}>
+                                Ambiguidades: {advisorFeedback.ambiguities.join(' | ')}
+                            </div>
+                        )}
+                        {advisorFeedback.recommendedActions.length > 0 && (
+                            <div style={{ marginBottom: '0.35rem', fontSize: '0.85rem' }}>
+                                Ações sugeridas: {advisorFeedback.recommendedActions.join(' | ')}
+                            </div>
+                        )}
+                        {advisorFeedback.rewriteSuggestions.length > 0 && (
+                            <div style={{ fontSize: '0.85rem' }}>
+                                Sugestões de escrita: {advisorFeedback.rewriteSuggestions.join(' | ')}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </section>
+
+            <div className="pt-4 flex gap-4 commitment-main-block">
                 {onCancel && (
                     <button type="button" onClick={onCancel} className="btn-secondary w-full" style={{ padding: '0.75rem 1.5rem', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'transparent', color: 'var(--text-primary)', cursor: 'pointer' }}>
                         Cancelar

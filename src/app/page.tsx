@@ -589,7 +589,7 @@ export default function Home() {
 
       {editingId && (
         <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setEditingId(null) }}>
-          <div className="modal-content">
+          <div className="modal-content modal-content-form">
             <button className="modal-close" onClick={() => setEditingId(null)}>×</button>
             <div style={{ padding: '2rem' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1.5rem' }}>Editar Compromisso #{editingId}</h2>
@@ -597,6 +597,7 @@ export default function Home() {
                 initialData={commitments.find(c => c.id === editingId)}
                 onSubmit={handleEditCommitmentSubmit}
                 onCancel={() => setEditingId(null)}
+                layoutMode="modal"
                 suggestions={{
                   projetos: uniqueProjetos,
                   owners: uniqueOwners,
