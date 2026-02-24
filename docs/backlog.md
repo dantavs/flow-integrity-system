@@ -7,16 +7,6 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [~] **AI-000:** **Plano de Implementação do Flow Guardian:** Definir arquitetura, execução da IA, configuração por ambiente, segurança, observabilidade e roadmap de entrega para AI-001/AI-002/AI-003. ([doc](flow-guardian-plan.md))
-  *(Início: 2026-02-24 | Fim: -)*
-- [~] **AI-001:** **Flow Advisor (Criação):** Analisar clareza, ambiguidade e riscos no momento do preenchimento do formulário. ([doc](flow-guardian-plan.md#ai-001---flow-advisor-criacao))
-  *(Início: 2026-02-24 | Fim: -)*
-- [~] **AI-001B:** **Refinamento de Layout do Modal (Flow Advisor):** Reorganizar modal de criação/edição com painel lateral do advisor para reduzir ou eliminar scroll global.
-  *(Início: 2026-02-24 | Fim: -)*
-- [~] **AI-001C:** **Ajustes de Espaçamento na Área de Riscos:** Corrigir espaçamento horizontal entre campos da mesma linha e distância vertical entre labels e campos de linhas consecutivas.
-  *(Início: 2026-02-24 | Fim: -)*
-- [~] **AI-001D:** **Contexto de Dependências no Advisor:** Enviar títulos/metadata das dependências selecionadas para melhorar a análise de IA.
-  *(Início: 2026-02-24 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
@@ -31,6 +21,18 @@
 - [ ] **CORE-009:** **Otimização de Backlog p/ Métricas:** Refinar formato do .md para KPIs automáticos.
 
 ## ✅ Concluído
+
+### 🤖 Inteligência e Automação (Flow Guardian)
+- [x] **AI-001D:** **Contexto de Dependências no Advisor:** Enviar títulos/metadata das dependências selecionadas para melhorar a análise de IA.
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **AI-001C:** **Ajustes de Espaçamento na Área de Riscos:** Corrigir espaçamento horizontal entre campos da mesma linha e distância vertical entre labels e campos de linhas consecutivas.
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **AI-001B:** **Refinamento de Layout do Modal (Flow Advisor):** Reorganizar modal de criação/edição com painel lateral do advisor para reduzir ou eliminar scroll global.
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **AI-001:** **Flow Advisor (Criação):** Analisar clareza, ambiguidade e riscos no momento do preenchimento do formulário. ([doc](flow-guardian-plan.md#ai-001---flow-advisor-criacao))
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **AI-000:** **Plano de Implementação do Flow Guardian:** Definir arquitetura, execução da IA, configuração por ambiente, segurança, observabilidade e roadmap de entrega para AI-001/AI-002/AI-003. ([doc](flow-guardian-plan.md))
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
 
 ### 👁️ Fase 3: Visão Executiva (VIEW)
 - [x] **VIEW-009:** **Teste de Integridade das Reflexões** ([doc](feed-reflexoes-plan.md#view-009---teste-de-integridade-das-reflexoes))
