@@ -5,12 +5,14 @@ import CommitmentForm from '../components/CommitmentForm';
 import CommitmentList from '../components/CommitmentList';
 import AuditTimeline from '../components/AuditTimeline';
 import { createCommitment, changeCommitmentStatus, editCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
-import { loadCommitments, saveCommitments } from '../services/PersistenceService';
+import { clearCommitmentsStorage, getAppEnvironment, getCommitmentsStorageKey, loadCommitments, saveCommitments } from '../services/PersistenceService';
 import { Commitment, CommitmentStatus } from '../models/Commitment';
 import { calculateFlowHealth } from '../services/FlowHealthService';
 import Toast, { ToastType } from '../components/Toast';
 
 export default function Home() {
+  const appEnv = getAppEnvironment();
+  const storageKey = getCommitmentsStorageKey();
   const applyDependencyIntegrity = (list: Commitment[]): Commitment[] => {
     const byId = new Map(list.map(c => [c.id, c]));
     return list.map(c => {
@@ -93,6 +95,19 @@ export default function Home() {
     }
   };
 
+  const handleDevClearBase = () => {
+    const ok = window.confirm(
+      `Confirma limpar a base local do ambiente ${appEnv.toUpperCase()}?\n` +
+      `Chave: ${storageKey}\n\n` +
+      'Essa ação não afeta o outro ambiente.'
+    );
+    if (!ok) return;
+
+    clearCommitmentsStorage();
+    setCommitments([]);
+    setToast({ message: `Base local ${appEnv.toUpperCase()} limpa com sucesso.`, type: 'INFO' });
+  };
+
   const activeCommitments = commitments
     .filter(c => c.status === CommitmentStatus.ACTIVE || c.status === CommitmentStatus.BACKLOG)
     .sort((a, b) => new Date(a.dataEsperada).getTime() - new Date(b.dataEsperada).getTime());
@@ -156,6 +171,22 @@ export default function Home() {
       }} />
 
       <header style={{ width: '100%', maxWidth: '800px', textAlign: 'center', marginBottom: '5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+          <span
+            style={{
+              fontSize: '0.75rem',
+              padding: '4px 10px',
+              borderRadius: '999px',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              border: '1px solid var(--glass-border)',
+              color: appEnv === 'prod' ? '#f59e0b' : '#06b6d4',
+              background: 'rgba(255,255,255,0.04)',
+            }}
+          >
+            Ambiente: {appEnv}
+          </span>
+        </div>
         <h1 style={{ fontSize: '3.5rem', fontWeight: 700, marginBottom: '1rem' }}>
           Flow <span className="premium-gradient">Integrity</span>
         </h1>
@@ -181,6 +212,21 @@ export default function Home() {
               }}
               dependencyOptions={dependencyOptions}
             />
+            {appEnv === 'dev' && (
+              <div style={{ marginTop: '0.8rem', textAlign: 'right' }}>
+                <div style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', marginBottom: '0.4rem' }}>
+                  Ação restrita ao ambiente atual ({storageKey}).
+                </div>
+                <button
+                  type="button"
+                  onClick={handleDevClearBase}
+                  className="btn-secondary"
+                  style={{ width: 'auto', padding: '0.45rem 0.75rem' }}
+                >
+                  Limpar Base Local (DEV)
+                </button>
+              </div>
+            )}
           </div>
         </section>
 

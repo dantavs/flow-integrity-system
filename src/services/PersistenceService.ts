@@ -1,6 +1,16 @@
 ﻿import { Commitment, CommitmentRisk } from '../models/Commitment';
 
-const STORAGE_KEY = 'flow_integrity_commitments';
+const LEGACY_STORAGE_KEY = 'flow_integrity_commitments';
+
+export type AppEnvironment = 'dev' | 'prod';
+
+export function getAppEnvironment(): AppEnvironment {
+    return process.env.NEXT_PUBLIC_APP_ENV === 'prod' ? 'prod' : 'dev';
+}
+
+export function getCommitmentsStorageKey(): string {
+    return `${LEGACY_STORAGE_KEY}_${getAppEnvironment()}`;
+}
 
 function normalizeRisks(riscos: unknown): CommitmentRisk[] {
     if (typeof riscos === 'string') {
@@ -39,30 +49,50 @@ function normalizeRisks(riscos: unknown): CommitmentRisk[] {
 
 export function saveCommitments(commitments: Commitment[]): void {
     if (typeof window === 'undefined') return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(commitments));
+    localStorage.setItem(getCommitmentsStorageKey(), JSON.stringify(commitments));
+}
+
+function parseCommitments(raw: string): Commitment[] {
+    const commitments = JSON.parse(raw) as any[];
+    return commitments.map(c => ({
+        ...c,
+        dataEsperada: new Date(c.dataEsperada),
+        criadoEm: new Date(c.criadoEm),
+        dependencias: Array.isArray(c.dependencias) ? c.dependencias.map((d: unknown) => String(d)) : [],
+        riscos: normalizeRisks(c.riscos),
+        historico: (c.historico || []).map((h: any) => ({
+            ...h,
+            timestamp: new Date(h.timestamp),
+        })),
+    }));
 }
 
 export function loadCommitments(): Commitment[] {
     if (typeof window === 'undefined') return [];
 
-    const data = localStorage.getItem(STORAGE_KEY);
+    const envKey = getCommitmentsStorageKey();
+    const envData = localStorage.getItem(envKey);
+    const legacyData = localStorage.getItem(LEGACY_STORAGE_KEY);
+    const data = envData || legacyData;
+
     if (!data) return [];
 
     try {
-        const commitments = JSON.parse(data) as any[];
-        return commitments.map(c => ({
-            ...c,
-            dataEsperada: new Date(c.dataEsperada),
-            criadoEm: new Date(c.criadoEm),
-            dependencias: Array.isArray(c.dependencias) ? c.dependencias.map((d: unknown) => String(d)) : [],
-            riscos: normalizeRisks(c.riscos),
-            historico: (c.historico || []).map((h: any) => ({
-                ...h,
-                timestamp: new Date(h.timestamp),
-            })),
-        }));
+        const parsed = parseCommitments(data);
+
+        // Migra silenciosamente dados legados para a chave segmentada do ambiente atual.
+        if (!envData && legacyData) {
+            localStorage.setItem(envKey, legacyData);
+        }
+
+        return parsed;
     } catch (error) {
         console.error('Falha ao carregar compromissos do localStorage:', error);
         return [];
     }
+}
+
+export function clearCommitmentsStorage(): void {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(getCommitmentsStorageKey());
 }

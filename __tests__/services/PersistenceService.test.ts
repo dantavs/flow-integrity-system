@@ -1,5 +1,11 @@
 ﻿import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { saveCommitments, loadCommitments } from '@/services/PersistenceService';
+import {
+    saveCommitments,
+    loadCommitments,
+    clearCommitmentsStorage,
+    getAppEnvironment,
+    getCommitmentsStorageKey,
+} from '@/services/PersistenceService';
 import { Commitment, CommitmentStatus } from '@/models/Commitment';
 
 describe('PersistenceService', () => {
@@ -35,21 +41,30 @@ describe('PersistenceService', () => {
         vi.stubGlobal('localStorage', {
             getItem: vi.fn(),
             setItem: vi.fn(),
+            removeItem: vi.fn(),
             clear: vi.fn(),
         });
     });
 
-    it('should save commitments to localStorage', () => {
+    it('should expose dev as default environment', () => {
+        expect(getAppEnvironment()).toBe('dev');
+        expect(getCommitmentsStorageKey()).toBe('flow_integrity_commitments_dev');
+    });
+
+    it('should save commitments to environment storage key', () => {
         saveCommitments(mockCommitments);
         expect(localStorage.setItem).toHaveBeenCalledWith(
-            'flow_integrity_commitments',
+            'flow_integrity_commitments_dev',
             expect.any(String)
         );
     });
 
-    it('should load commitments from localStorage', () => {
+    it('should load commitments from environment storage key', () => {
         const serialized = JSON.stringify(mockCommitments);
-        vi.mocked(localStorage.getItem).mockReturnValue(serialized);
+        vi.mocked(localStorage.getItem).mockImplementation((key: string) => {
+            if (key === 'flow_integrity_commitments_dev') return serialized;
+            return null;
+        });
 
         const loaded = loadCommitments();
         expect(loaded.length).toBe(1);
@@ -58,16 +73,38 @@ describe('PersistenceService', () => {
         expect(loaded[0].riscos).toHaveLength(1);
     });
 
+    it('should fallback to legacy key and migrate data', () => {
+        const serialized = JSON.stringify(mockCommitments);
+        vi.mocked(localStorage.getItem).mockImplementation((key: string) => {
+            if (key === 'flow_integrity_commitments_dev') return null;
+            if (key === 'flow_integrity_commitments') return serialized;
+            return null;
+        });
+
+        const loaded = loadCommitments();
+
+        expect(loaded.length).toBe(1);
+        expect(localStorage.setItem).toHaveBeenCalledWith('flow_integrity_commitments_dev', serialized);
+    });
+
     it('should migrate legacy textual risk from localStorage', () => {
         const legacy = [{
             ...mockCommitments[0],
             riscos: 'Risco legado em texto',
         }];
-        vi.mocked(localStorage.getItem).mockReturnValue(JSON.stringify(legacy));
+        vi.mocked(localStorage.getItem).mockImplementation((key: string) => {
+            if (key === 'flow_integrity_commitments_dev') return JSON.stringify(legacy);
+            return null;
+        });
 
         const loaded = loadCommitments();
         expect(loaded[0].riscos).toHaveLength(1);
         expect(loaded[0].riscos[0].descricao).toBe('Risco legado em texto');
+    });
+
+    it('should clear commitments from environment storage key', () => {
+        clearCommitmentsStorage();
+        expect(localStorage.removeItem).toHaveBeenCalledWith('flow_integrity_commitments_dev');
     });
 
     it('should return empty array if no data in localStorage', () => {

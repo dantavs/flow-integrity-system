@@ -30,6 +30,7 @@
 ### 🚀 Fase 2: Governança e Integridade
 
 ### 🛠️ Manutenção & Estabilidade
+- [ ] **CORE-032:** **Processo de Release DEV -> PROD:** Definir checklist e gatilhos de release para validar em DEV antes de disponibilizar em PROD.
 
 ### 🛠️ Evolução da Estrutura de Gestão
 - [ ] **CORE-009:** **Otimização de Backlog p/ Métricas:** Refinar formato do .md para KPIs automáticos.
@@ -57,6 +58,10 @@
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 
 ### 🛠️ Manutenção & Estabilidade
+- [x] **CORE-030:** **Segregação de Ambientes (DEV/PROD):** Isolar dados por ambiente (`localStorage` por chave), com fallback de migração e sinalização visual do ambiente ativo.
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
+- [x] **CORE-031:** **Ferramentas de Base em DEV:** Adicionar ação explícita para limpar base local no ambiente de desenvolvimento sem impactar produção.
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
 - [x] **FIX-001:** **Crash de Campos Obrigatórios:** Tratar erro fatal que quebra a aplicação caso o usuário limpe manualmente/zere o campo de 'Data de Entrega' (ou outros inputs restritos) durante cadastro ou edição.
   *(Início: 2026-02-23 | Fim: 2026-02-23)*
 - [x] **CORE-029:** **Entrada Progressiva (Riscos/Dependências):** Tornar blocos avançados colapsáveis para reduzir fricção no cadastro, abrindo apenas quando necessário.
