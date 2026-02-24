@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import CommitmentForm from '../components/CommitmentForm';
 import CommitmentList from '../components/CommitmentList';
 import AuditTimeline from '../components/AuditTimeline';
@@ -8,6 +8,8 @@ import { createCommitment, changeCommitmentStatus, editCommitment, CreateCommitm
 import { clearCommitmentsStorage, getAppEnvironment, getCommitmentsStorageKey, loadCommitments, saveCommitments } from '../services/PersistenceService';
 import { Commitment, CommitmentStatus } from '../models/Commitment';
 import { calculateFlowHealth } from '../services/FlowHealthService';
+import { buildWeeklyBrief } from '../services/WeeklyBriefService';
+import { WEEKLY_BRIEF_BLOCKS, WeeklyBriefBlockKey } from '../services/WeeklyBriefContract';
 import Toast, { ToastType } from '../components/Toast';
 
 export default function Home() {
@@ -31,6 +33,7 @@ export default function Home() {
   const [commitments, setCommitments] = useState<Commitment[]>([]);
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
   const [viewMode, setViewMode] = useState<'ACTIVE' | 'ARCHIVED'>('ACTIVE');
+  const [selectedBriefBlock, setSelectedBriefBlock] = useState<WeeklyBriefBlockKey | null>(null);
   const [filters, setFilters] = useState({
     projeto: '',
     owner: '',
@@ -126,7 +129,12 @@ export default function Home() {
     });
   };
 
-  const currentCommitments = applyFilters(viewMode === 'ACTIVE' ? activeCommitments : archivedCommitments);
+  const weeklyBrief = useMemo(() => buildWeeklyBrief(commitments), [commitments]);
+  const currentBaseList = viewMode === 'ACTIVE' ? activeCommitments : archivedCommitments;
+  const currentCommitments = applyFilters(currentBaseList).filter(c => {
+    if (!selectedBriefBlock) return true;
+    return weeklyBrief.blocks[selectedBriefBlock].ids.includes(c.id);
+  });
   const flowHealth = calculateFlowHealth(commitments);
 
   // Extract unique values for filters
@@ -266,6 +274,57 @@ export default function Home() {
             </div>
           </div>
 
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Weekly Brief</h2>
+              <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }} />
+            </div>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
+              gap: '0.8rem',
+            }}>
+              {WEEKLY_BRIEF_BLOCKS.map(block => {
+                const isSelected = selectedBriefBlock === block.key;
+                const tone = block.key === 'AT_RISK' || block.key === 'BLOCKED'
+                  ? '#ef4444'
+                  : block.key === 'RECURRENT'
+                    ? '#f59e0b'
+                    : '#06b6d4';
+                return (
+                  <button
+                    key={block.key}
+                    type="button"
+                    onClick={() => {
+                      if (isSelected) {
+                        setSelectedBriefBlock(null);
+                        return;
+                      }
+                      setSelectedBriefBlock(block.key);
+                      setViewMode(block.key === 'RECENT_COMPLETED' ? 'ARCHIVED' : 'ACTIVE');
+                    }}
+                    className="glass-card"
+                    style={{
+                      textAlign: 'left',
+                      padding: '0.85rem',
+                      border: `1px solid ${isSelected ? tone : 'var(--glass-border)'}`,
+                      background: isSelected ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.03)',
+                      cursor: 'pointer',
+                    }}
+                    title={block.description}
+                  >
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
+                      {block.label}
+                    </div>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 700, color: isSelected ? tone : 'var(--text-primary)' }}>
+                      {weeklyBrief.blocks[block.key].total}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <div style={{ marginBottom: '2.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Gestão de Fluxos</h2>
@@ -274,7 +333,10 @@ export default function Home() {
 
             <div style={{ display: 'flex', gap: '1rem' }}>
               <button
-                onClick={() => setViewMode('ACTIVE')}
+                onClick={() => {
+                  setViewMode('ACTIVE');
+                  if (selectedBriefBlock === 'RECENT_COMPLETED') setSelectedBriefBlock(null);
+                }}
                 className={viewMode === 'ACTIVE' ? 'tab-active' : 'tab-inactive'}
                 style={{
                   padding: '8px 16px',
@@ -303,6 +365,24 @@ export default function Home() {
               >
                 Arquivados ({archivedCommitments.length})
               </button>
+              {selectedBriefBlock && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedBriefBlock(null)}
+                  className="tab-inactive"
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    border: '1px solid var(--glass-border)',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  Limpar Brief
+                </button>
+              )}
             </div>
 
             {/* Filtros */}

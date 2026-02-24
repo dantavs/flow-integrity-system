@@ -7,16 +7,18 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [~] **CORE-032:** **Processo de Release DEV -> PROD:** Definir checklist e gatilhos de release para validar em DEV antes de disponibilizar em PROD.
+- [~] **VIEW-001A:** **Regra de Execução TDD (Weekly Brief):** Para cada regra nova do brief, criar primeiro teste falhando (vermelho), depois implementar (verde) e por fim refatorar.
+  *(Início: 2026-02-24 | Fim: -)*
+- [~] **VIEW-002:** **Camada de Agregação do Brief:** Implementar selectors/serviço que consolide os compromissos em um resumo semanal determinístico, sem opinião e sem inferência.
+  *(Início: 2026-02-24 | Fim: -)*
+- [~] **VIEW-003:** **UI do Weekly Brief (v1):** Construir o bloco visual com os 4 indicadores estruturais, contagem e navegação para a lista filtrada correspondente.
+  *(Início: 2026-02-24 | Fim: -)*
+- [~] **VIEW-004:** **Hardening de Testes do Brief:** Expandir cobertura de borda e regressão após MVP (sem dados, datas no limite da semana, bloqueios e reincidência).
   *(Início: 2026-02-24 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
 ### 👁️ Fase 3: Visão Executiva (VIEW) — Weekly Brief
-- [ ] **VIEW-001A:** **Regra de Execução TDD (Weekly Brief):** Para cada regra nova do brief, criar primeiro teste falhando (vermelho), depois implementar (verde) e por fim refatorar.
-- [ ] **VIEW-002:** **Camada de Agregação do Brief:** Implementar selectors/serviço que consolide os compromissos em um resumo semanal determinístico, sem opinião e sem inferência.
-- [ ] **VIEW-003:** **UI do Weekly Brief (v1):** Construir o bloco visual com os 4 indicadores estruturais, contagem e navegação para a lista filtrada correspondente.
-- [ ] **VIEW-004:** **Hardening de Testes do Brief:** Expandir cobertura de borda e regressão após MVP (sem dados, datas no limite da semana, bloqueios e reincidência).
 
 ### 🧠 Fase 3: Visão Executiva (VIEW) — Feed de Reflexões
 - [ ] **VIEW-005:** **Modelo de Reflexão e Taxonomia de Gatilhos:** Definir estrutura do item de reflexão (tipo, contexto, mensagem, ação sugerida) e padronizar os gatilhos da v1.
@@ -33,6 +35,7 @@
 ### 🚀 Fase 2: Governança e Integridade
 
 ### 🛠️ Manutenção & Estabilidade
+- [ ] **CORE-033:** **Implementação Operacional de Release DEV -> PROD:** Implementar automações/checagens do processo de release descrito em `docs/release-process.md`.
 
 ### 🛠️ Evolução da Estrutura de Gestão
 - [ ] **CORE-009:** **Otimização de Backlog p/ Métricas:** Refinar formato do .md para KPIs automáticos.
@@ -60,6 +63,8 @@
   *(Início: 2026-02-22 | Fim: 2026-02-22)*
 
 ### 🛠️ Manutenção & Estabilidade
+- [x] **CORE-032:** **Processo de Release DEV -> PROD:** Definir checklist e gatilhos de release para validar em DEV antes de disponibilizar em PROD.
+  *(Início: 2026-02-24 | Fim: 2026-02-24)*
 - [x] **CORE-030:** **Segregação de Ambientes (DEV/PROD):** Isolar dados por ambiente (`localStorage` por chave), com fallback de migração e sinalização visual do ambiente ativo.
   *(Início: 2026-02-24 | Fim: 2026-02-24)*
 - [x] **CORE-031:** **Ferramentas de Base em DEV:** Adicionar ação explícita para limpar base local no ambiente de desenvolvimento sem impactar produção.
