@@ -10,16 +10,10 @@
 
 ## 📋 Planejado (Aguardando Início)
 
-### 👁️ Fase 3: Visão Executiva (VIEW) — Resumo Semanal
-
-### 🧠 Fase 3: Visão Executiva (VIEW) — Feed de Reflexões
-
 ### 🤖 Inteligência e Automação (Flow Guardian)
 - [ ] **AI-001:** **Flow Advisor (Criação):** Analisar clareza, ambiguidade e riscos no momento do preenchimento do formulário.
 - [ ] **AI-002:** **Graph Engine (Correlação):** Mapear dependências invisíveis entre compromissos e alertar sobre efeitos em cascata.
 - [ ] **AI-003:** **Integrity Guardian (Insights):** Gerar relatórios de saúde do fluxo e comportamentos de risco (ex: saturação de owners).
-
-### 🚀 Fase 2: Governança e Integridade
 
 ### 🛠️ Manutenção & Estabilidade
 - [ ] **CORE-033:** **Implementação Operacional de Release DEV -> PROD:** Implementar automações/checagens do processo de release descrito em `docs/release-process.md`.
