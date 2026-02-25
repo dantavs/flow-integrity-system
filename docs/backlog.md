@@ -10,14 +10,16 @@
 
 ## 📋 Planejado (Aguardando Início)
 
-### 🤖 Inteligência e Automação (Flow Guardian)
-- [ ] **AI-003:** **Integrity Guardian (Insights):** Gerar relatórios de saúde do fluxo e comportamentos de risco (ex: saturação de owners). ([doc](flow-guardian-plan.md#ai-003---integrity-guardian-insights))
-
 ### 🛠️ Manutenção & Estabilidade
 - [ ] **CORE-033:** **Implementação Operacional de Release DEV -> PROD:** Implementar automações/checagens do processo de release descrito em `docs/release-process.md`.
 
 ### 🛠️ Evolução da Estrutura de Gestão
 - [ ] **CORE-009:** **Otimização de Backlog p/ Métricas:** Refinar formato do .md para KPIs automáticos.
+
+## 🧪 Aguardando Aprovação
+- [~] **AI-003:** **Integrity Guardian (Insights):** Gerar relatórios de saúde do fluxo e comportamentos de risco (ex: saturação de owners). ([doc](flow-guardian-plan.md#ai-003---integrity-guardian-insights))
+- [~] **FIX-002:** **Correção de Encoding no Feed de Reflexões:** Ajustar textos com caracteres corrompidos (acentos) exibidos no feed.
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
 
 ## ✅ Concluído
 

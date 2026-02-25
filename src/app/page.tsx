@@ -21,6 +21,7 @@ import { WEEKLY_BRIEF_BLOCKS, WeeklyBriefBlockKey } from '../services/WeeklyBrie
 import { buildReflectionFeed } from '../services/ReflectionEngine';
 import { ReflectionAction, ReflectionItem } from '../services/ReflectionContract';
 import { GraphAnalysisResult } from '../services/GuardianGraphService';
+import { IntegrityInsightsResult } from '../services/GuardianInsightsService';
 import Toast, { ToastType } from '../components/Toast';
 
 export default function Home() {
@@ -50,6 +51,9 @@ export default function Home() {
   const [graphLoading, setGraphLoading] = useState(false);
   const [graphError, setGraphError] = useState<string | null>(null);
   const [graphResult, setGraphResult] = useState<GraphAnalysisResult | null>(null);
+  const [insightsLoading, setInsightsLoading] = useState(false);
+  const [insightsError, setInsightsError] = useState<string | null>(null);
+  const [insightsResult, setInsightsResult] = useState<IntegrityInsightsResult | null>(null);
   const [filters, setFilters] = useState({
     projeto: '',
     owner: '',
@@ -218,6 +222,30 @@ export default function Home() {
       setGraphError('Falha ao analisar correlações no momento.');
     } finally {
       setGraphLoading(false);
+    }
+  };
+
+  const handleInsightsAnalysis = async () => {
+    setInsightsLoading(true);
+    setInsightsError(null);
+    try {
+      const response = await fetch('/api/guardian/insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ commitments }),
+      });
+      const payload = await response.json() as any;
+      if (payload.status === 'ok' && payload.result) {
+        setInsightsResult(payload.result as IntegrityInsightsResult);
+        return;
+      }
+      setInsightsResult(null);
+      setInsightsError(payload.reason || 'Falha ao gerar insights executivos.');
+    } catch {
+      setInsightsResult(null);
+      setInsightsError('Falha ao gerar insights executivos no momento.');
+    } finally {
+      setInsightsLoading(false);
     }
   };
 
@@ -497,6 +525,68 @@ export default function Home() {
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+
+          <div style={{ marginBottom: '1.8rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Integrity Guardian (Insights)</h2>
+              <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }} />
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={handleInsightsAnalysis}
+                disabled={insightsLoading}
+                style={{ width: 'auto', padding: '0.45rem 0.85rem', opacity: insightsLoading ? 0.8 : 1 }}
+              >
+                {insightsLoading ? 'Gerando...' : 'Gerar Insights'}
+              </button>
+            </div>
+
+            {insightsError && (
+              <div className="glass-card" style={{ padding: '0.8rem 1rem', color: '#f59e0b' }}>
+                {insightsError}
+              </div>
+            )}
+
+            {!insightsError && !insightsResult && (
+              <div className="glass-card" style={{ padding: '0.8rem 1rem', color: 'var(--text-secondary)' }}>
+                Execute a analise para visualizar sinais de saturacao, reincidencia e risco sistemico.
+              </div>
+            )}
+
+            {insightsResult && (
+              <div style={{ display: 'grid', gap: '0.8rem' }}>
+                <div className="glass-card" style={{ padding: '0.8rem 1rem' }}>
+                  <div style={{ fontWeight: 600, marginBottom: '0.3rem' }}>Sinais do Sistema</div>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                    Ativos: {insightsResult.systemSignals.totals.active} | Vencidos: {insightsResult.systemSignals.totals.overdue} | Bloqueados: {insightsResult.systemSignals.totals.blocked} | Risco alto aberto: {insightsResult.systemSignals.totals.highRiskOpen} | Reincidentes: {insightsResult.systemSignals.totals.recurrent}
+                  </div>
+                </div>
+
+                {insightsResult.insights.length === 0 ? (
+                  <div className="glass-card" style={{ padding: '0.8rem 1rem', color: 'var(--text-secondary)' }}>
+                    Nenhum insight critico foi identificado neste momento.
+                  </div>
+                ) : (
+                  insightsResult.insights.map(insight => (
+                    <div key={insight.id} className="glass-card" style={{ padding: '0.8rem 1rem', borderLeft: `3px solid ${insight.severity === 'HIGH' ? '#ef4444' : insight.severity === 'MEDIUM' ? '#f59e0b' : '#06b6d4'}` }}>
+                      <div style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                        {insight.headline}
+                      </div>
+                      <div style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '0.3rem' }}>
+                        Evidencia: {insight.evidence}
+                      </div>
+                      <div style={{ color: 'var(--text-secondary)', fontSize: '0.82rem', marginBottom: '0.3rem' }}>
+                        Acao recomendada: {insight.recommendedAction}
+                      </div>
+                      <div style={{ color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
+                        Why: {insight.why}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             )}
           </div>
