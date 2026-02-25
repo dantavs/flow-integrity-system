@@ -1,4 +1,4 @@
-import { Commitment, CommitmentStatus, riskMatrixScore } from '../models/Commitment';
+﻿import { Commitment, CommitmentStatus, riskMatrixScore } from '../models/Commitment';
 import {
     REFLECTION_FEED_THRESHOLDS,
     ReflectionItem,
@@ -75,6 +75,7 @@ export function buildReflectionFeed(
         if (isUnstableSignal(commitment, today)) acc[commitment.projeto] += 1;
         return acc;
     }, {} as Record<string, number>);
+    const newCommitmentsByProject: Record<string, Commitment[]> = {};
 
     const reflections: ReflectionItem[] = [];
 
@@ -98,8 +99,8 @@ export function buildReflectionFeed(
                 triggerType: 'DEPENDENCY_COMPLETED',
                 severity: scoreToSeverity(score),
                 score,
-                message: `Dependência concluída: revisar próximo passo de "${commitment.titulo}".`,
-                context: `${completedDeps.length} dependência(s) concluída(s) nos últimos ${REFLECTION_FEED_THRESHOLDS.dependencyDoneWindowDays} dias.`,
+                message: `DependÃªncia concluÃ­da: revisar prÃ³ximo passo de "${commitment.titulo}".`,
+                context: `${completedDeps.length} dependÃªncia(s) concluÃ­da(s) nos Ãºltimos ${REFLECTION_FEED_THRESHOLDS.dependencyDoneWindowDays} dias.`,
                 why: 'Compromisso ativo depende de item que mudou para DONE recentemente.',
                 relatedCommitmentIds: [commitment.id, ...completedDeps.map(dep => dep.id)],
                 relatedProject: commitment.projeto,
@@ -120,9 +121,9 @@ export function buildReflectionFeed(
                 triggerType: 'POSTPONEMENT_PATTERN',
                 severity: scoreToSeverity(score),
                 score,
-                message: `Padrão de adiamento em "${commitment.titulo}".`,
-                context: `${commitment.renegociadoCount || 0} renegociação(ões) registrada(s).`,
-                why: 'Quantidade de renegociações acima do limite definido para reincidência.',
+                message: `PadrÃ£o de adiamento em "${commitment.titulo}".`,
+                context: `${commitment.renegociadoCount || 0} renegociaÃ§Ã£o(Ãµes) registrada(s).`,
+                why: 'Quantidade de renegociaÃ§Ãµes acima do limite definido para reincidÃªncia.',
                 relatedCommitmentIds: [commitment.id],
                 relatedProject: commitment.projeto,
                 actions: [
@@ -137,26 +138,37 @@ export function buildReflectionFeed(
         const isNewCommitment = createdAt >= newCommitmentStart && createdAt <= today;
         const projectIsUnstable = (projectSignals[commitment.projeto] || 0) >= REFLECTION_FEED_THRESHOLDS.unstableProjectSignalMin;
         if (isNewCommitment && projectIsUnstable) {
-            const dedupKey = `NEW_COMMITMENT_ON_UNSTABLE_PROJECT:${commitment.id}`;
-            const score = 96;
-            reflections.push({
-                id: dedupKey,
-                dedupKey,
-                triggerType: 'NEW_COMMITMENT_ON_UNSTABLE_PROJECT',
-                severity: scoreToSeverity(score),
-                score,
-                message: `Novo compromisso em projeto instável: validar capacidade real.`,
-                context: `Projeto "${commitment.projeto}" possui ${projectSignals[commitment.projeto]} sinais ativos de instabilidade.`,
-                why: 'Compromisso criado recentemente em projeto com múltiplos sinais de risco operacional.',
-                relatedCommitmentIds: [commitment.id],
-                relatedProject: commitment.projeto,
-                actions: [
-                    { type: 'OPEN_COMMITMENT', label: 'Revisar compromisso', commitmentId: commitment.id },
-                    { type: 'FILTER_PROJECT', label: 'Ver projeto', projeto: commitment.projeto },
-                ],
-                createdAt: new Date(now),
-            });
+            if (!newCommitmentsByProject[commitment.projeto]) newCommitmentsByProject[commitment.projeto] = [];
+            newCommitmentsByProject[commitment.projeto].push(commitment);
         }
+    });
+
+    Object.entries(newCommitmentsByProject).forEach(([projeto, newCommitments]) => {
+        if (newCommitments.length === 0) return;
+
+        const latestCommitment = newCommitments
+            .slice()
+            .sort((a, b) => new Date(b.criadoEm).getTime() - new Date(a.criadoEm).getTime())[0];
+        const dedupKey = `NEW_COMMITMENT_ON_UNSTABLE_PROJECT:${projeto}`;
+        const score = 96;
+
+        reflections.push({
+            id: dedupKey,
+            dedupKey,
+            triggerType: 'NEW_COMMITMENT_ON_UNSTABLE_PROJECT',
+            severity: scoreToSeverity(score),
+            score,
+            message: 'Novo compromisso em projeto instável: validar capacidade real.',
+            context: `Projeto "${projeto}" possui ${projectSignals[projeto]} sinais ativos de instabilidade e ${newCommitments.length} novo(s) compromisso(s) recente(s).`,
+            why: 'Compromissos recentes foram criados em projeto com múltiplos sinais de risco operacional.',
+            relatedCommitmentIds: newCommitments.map(commitment => commitment.id),
+            relatedProject: projeto,
+            actions: [
+                { type: 'OPEN_COMMITMENT', label: 'Revisar compromisso', commitmentId: latestCommitment.id },
+                { type: 'FILTER_PROJECT', label: 'Ver projeto', projeto },
+            ],
+            createdAt: new Date(now),
+        });
     });
 
     const activeByProject = active.reduce((acc, commitment) => {
@@ -182,7 +194,7 @@ export function buildReflectionFeed(
                 severity: scoreToSeverity(score),
                 score,
                 message: `Projeto "${projeto}" concentra riscos abertos.`,
-                context: `${openRiskCount} risco(s) aberto(s) distribuído(s) em ${projectCommitments.length} compromisso(s) ativo(s).`,
+                context: `${openRiskCount} risco(s) aberto(s) distribuÃ­do(s) em ${projectCommitments.length} compromisso(s) ativo(s).`,
                 why: 'Volume de risco aberto por projeto acima do threshold definido.',
                 relatedCommitmentIds: projectCommitments.map(commitment => commitment.id),
                 relatedProject: projeto,
@@ -222,3 +234,4 @@ export function buildReflectionFeed(
         items: ranked,
     };
 }
+

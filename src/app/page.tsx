@@ -20,6 +20,7 @@ import { buildWeeklyBrief } from '../services/WeeklyBriefService';
 import { WEEKLY_BRIEF_BLOCKS, WeeklyBriefBlockKey } from '../services/WeeklyBriefContract';
 import { buildReflectionFeed } from '../services/ReflectionEngine';
 import { ReflectionAction, ReflectionItem } from '../services/ReflectionContract';
+import { GraphAnalysisResult } from '../services/GuardianGraphService';
 import Toast, { ToastType } from '../components/Toast';
 
 export default function Home() {
@@ -46,6 +47,9 @@ export default function Home() {
   const [selectedBriefBlock, setSelectedBriefBlock] = useState<WeeklyBriefBlockKey | null>(null);
   const [reflectionCooldownState, setReflectionCooldownState] = useState<Record<string, string>>({});
   const [reflectionFocusCommitmentId, setReflectionFocusCommitmentId] = useState<string | null>(null);
+  const [graphLoading, setGraphLoading] = useState(false);
+  const [graphError, setGraphError] = useState<string | null>(null);
+  const [graphResult, setGraphResult] = useState<GraphAnalysisResult | null>(null);
   const [filters, setFilters] = useState({
     projeto: '',
     owner: '',
@@ -190,6 +194,30 @@ export default function Home() {
       setReflectionFocusCommitmentId(action.commitmentId);
       setSelectedBriefBlock(null);
       setToast({ message: `Feed: foco aplicado no compromisso #${action.commitmentId}.`, type: 'INFO' });
+    }
+  };
+
+  const handleGraphAnalysis = async () => {
+    setGraphLoading(true);
+    setGraphError(null);
+    try {
+      const response = await fetch('/api/guardian/graph', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ commitments }),
+      });
+      const payload = await response.json() as any;
+      if (payload.status === 'ok' && payload.result) {
+        setGraphResult(payload.result as GraphAnalysisResult);
+        return;
+      }
+      setGraphResult(null);
+      setGraphError(payload.reason || 'Falha ao analisar correlações.');
+    } catch {
+      setGraphResult(null);
+      setGraphError('Falha ao analisar correlações no momento.');
+    } finally {
+      setGraphLoading(false);
     }
   };
 
@@ -405,6 +433,67 @@ export default function Home() {
                           {action.label}
                         </button>
                       ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div style={{ marginBottom: '1.8rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Graph Engine (Correlação)</h2>
+              <div style={{ flex: 1, height: '1px', background: 'var(--glass-border)' }} />
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={handleGraphAnalysis}
+                disabled={graphLoading}
+                style={{ width: 'auto', padding: '0.45rem 0.85rem', opacity: graphLoading ? 0.8 : 1 }}
+              >
+                {graphLoading ? 'Analisando...' : 'Analisar Correlações'}
+              </button>
+            </div>
+
+            {graphError && (
+              <div className="glass-card" style={{ padding: '0.8rem 1rem', color: '#f59e0b' }}>
+                {graphError}
+              </div>
+            )}
+
+            {!graphError && !graphResult && (
+              <div className="glass-card" style={{ padding: '0.8rem 1rem', color: 'var(--text-secondary)' }}>
+                Execute a análise para visualizar dependências implícitas e possíveis efeitos em cascata.
+              </div>
+            )}
+
+            {graphResult && (
+              <div style={{ display: 'grid', gap: '0.8rem' }}>
+                <div className="glass-card" style={{ padding: '0.8rem 1rem' }}>
+                  <div style={{ fontWeight: 600, marginBottom: '0.3rem' }}>Resumo</div>
+                  <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                    {graphResult.edges.length} correlação(ões) | {graphResult.clusters.length} cluster(s) de cascata
+                  </div>
+                </div>
+
+                {graphResult.edges.slice(0, 6).map(edge => (
+                  <div key={edge.id} className="glass-card" style={{ padding: '0.8rem 1rem' }}>
+                    <div style={{ fontSize: '0.92rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                      {edge.kind === 'EXPLICIT_DEPENDENCY' ? 'Dependência explícita' : 'Correlação implícita'}: #{edge.sourceId} {'->'} #{edge.targetId}
+                    </div>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
+                      Confiança: {Math.round(edge.confidence * 100)}% | {edge.reasons.join(' | ')}
+                    </div>
+                  </div>
+                ))}
+
+                {graphResult.clusters.slice(0, 4).map(cluster => (
+                  <div key={cluster.projeto} className="glass-card" style={{ padding: '0.8rem 1rem', borderLeft: `3px solid ${cluster.severity === 'HIGH' ? '#ef4444' : '#f59e0b'}` }}>
+                    <div style={{ fontSize: '0.92rem', fontWeight: 600, marginBottom: '0.25rem' }}>
+                      Cluster de cascata: {cluster.projeto}
+                    </div>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
+                      {cluster.why}
                     </div>
                   </div>
                 ))}

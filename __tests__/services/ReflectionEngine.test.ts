@@ -100,6 +100,29 @@ describe('ReflectionEngine', () => {
         expect(feed.items.some(item => item.triggerType === 'NEW_COMMITMENT_ON_UNSTABLE_PROJECT' && item.relatedCommitmentIds.includes('new-1'))).toBe(true);
     });
 
+    it('deduplicates unstable-project reflection when multiple new commitments are in same project', () => {
+        const risk = {
+            id: 'r3',
+            descricao: 'Risco alto',
+            categoria: 'PRAZO',
+            statusMitigacao: 'ABERTO',
+            probabilidade: 'HIGH',
+            impacto: 'HIGH',
+        };
+        const commitments = [
+            make({ id: 's1', projeto: 'Projeto Unico', hasImpedimento: true }),
+            make({ id: 's2', projeto: 'Projeto Unico', riscos: [risk] }),
+            make({ id: 'new-a', projeto: 'Projeto Unico', criadoEm: new Date('2026-02-24T07:00:00') }),
+            make({ id: 'new-b', projeto: 'Projeto Unico', criadoEm: new Date('2026-02-24T07:30:00') }),
+            make({ id: 'new-c', projeto: 'Projeto Unico', criadoEm: new Date('2026-02-24T08:00:00') }),
+        ];
+
+        const feed = buildReflectionFeed(commitments as any, now);
+        const unstableItems = feed.items.filter(item => item.triggerType === 'NEW_COMMITMENT_ON_UNSTABLE_PROJECT');
+        expect(unstableItems).toHaveLength(1);
+        expect(unstableItems[0].relatedCommitmentIds.sort()).toEqual(['new-a', 'new-b', 'new-c']);
+    });
+
     it('applies dedup, cooldown and max items limit', () => {
         const commitments = [
             make({ id: 'p1', titulo: 'P1', renegociadoCount: 3 }),

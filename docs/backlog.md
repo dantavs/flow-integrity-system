@@ -7,11 +7,14 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
+- [~] **AI-004:** **Deduplicação do Feed de Reflexões (Projeto Instável):** Evitar repetição da mesma reflexão quando múltiplos compromissos novos do mesmo projeto disparam o mesmo gatilho.
+  *(Início: 2026-02-25 | Fim: -)*
+- [~] **AI-002:** **Graph Engine (Correlação):** Mapear dependências invisíveis entre compromissos e alertar sobre efeitos em cascata. ([doc](flow-guardian-plan.md#ai-002---graph-engine-correlacao))
+  *(Início: 2026-02-25 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
 ### 🤖 Inteligência e Automação (Flow Guardian)
-- [ ] **AI-002:** **Graph Engine (Correlação):** Mapear dependências invisíveis entre compromissos e alertar sobre efeitos em cascata. ([doc](flow-guardian-plan.md#ai-002---graph-engine-correlacao))
 - [ ] **AI-003:** **Integrity Guardian (Insights):** Gerar relatórios de saúde do fluxo e comportamentos de risco (ex: saturação de owners). ([doc](flow-guardian-plan.md#ai-003---integrity-guardian-insights))
 
 ### 🛠️ Manutenção & Estabilidade
