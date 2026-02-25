@@ -7,10 +7,6 @@
 - `[x]` Concluído
 
 ## ⚡ Em Execução
-- [~] **AI-004:** **Deduplicação do Feed de Reflexões (Projeto Instável):** Evitar repetição da mesma reflexão quando múltiplos compromissos novos do mesmo projeto disparam o mesmo gatilho.
-  *(Início: 2026-02-25 | Fim: -)*
-- [~] **AI-002:** **Graph Engine (Correlação):** Mapear dependências invisíveis entre compromissos e alertar sobre efeitos em cascata. ([doc](flow-guardian-plan.md#ai-002---graph-engine-correlacao))
-  *(Início: 2026-02-25 | Fim: -)*
 
 ## 📋 Planejado (Aguardando Início)
 
@@ -26,6 +22,10 @@
 ## ✅ Concluído
 
 ### 🤖 Inteligência e Automação (Flow Guardian)
+- [x] **AI-004:** **Deduplicação do Feed de Reflexões (Projeto Instável):** Evitar repetição da mesma reflexão quando múltiplos compromissos novos do mesmo projeto disparam o mesmo gatilho.
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
+- [x] **AI-002:** **Graph Engine (Correlação):** Mapear dependências invisíveis entre compromissos e alertar sobre efeitos em cascata. ([doc](flow-guardian-plan.md#ai-002---graph-engine-correlacao))
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
 - [x] **AI-001D:** **Contexto de Dependências no Advisor:** Enviar títulos/metadata das dependências selecionadas para melhorar a análise de IA.
   *(Início: 2026-02-24 | Fim: 2026-02-24)*
 - [x] **AI-001C:** **Ajustes de Espaçamento na Área de Riscos:** Corrigir espaçamento horizontal entre campos da mesma linha e distância vertical entre labels e campos de linhas consecutivas.
