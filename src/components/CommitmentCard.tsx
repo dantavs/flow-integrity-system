@@ -78,6 +78,11 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
                 </div>
 
                 <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', fontWeight: 600 }}>{c.titulo}</h3>
+                {c.descricao && c.descricao.trim() !== '' && (
+                    <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '0.7rem', whiteSpace: 'pre-wrap' }}>
+                        {c.descricao}
+                    </p>
+                )}
                 <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>{c.projeto} • {c.area}</p>
 
                 {c.riscos.length > 0 && (

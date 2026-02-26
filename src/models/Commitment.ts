@@ -34,6 +34,7 @@ export interface CommitmentRisk {
 export interface Commitment {
     id: string;
     titulo: string;
+    descricao?: string;
     projeto: string;
     area: string;
     owner: string;

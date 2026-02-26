@@ -17,6 +17,8 @@
 - [ ] **CORE-009:** **Otimização de Backlog p/ Métricas:** Refinar formato do .md para KPIs automáticos.
 
 ## 🧪 Aguardando Aprovação
+- [~] **CORE-034:** **Descrição no Compromisso + Contexto para IA:** Adicionar campo de descrição no compromisso e enviar esse conteúdo para o Flow Advisor.
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
 
 ## ✅ Concluído
 

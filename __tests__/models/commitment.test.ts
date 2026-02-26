@@ -4,6 +4,7 @@ import { createCommitment } from '@/services/CommitmentService';
 describe('Commitment Business Rules', () => {
     const validBaseData = {
         titulo: 'Compromisso Válido',
+        descricao: 'Descrição de contexto do compromisso.',
         projeto: 'Projeto X',
         area: 'Área Y',
         owner: 'Daniel',

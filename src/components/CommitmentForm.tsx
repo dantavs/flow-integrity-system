@@ -59,6 +59,7 @@ const createEmptyRisk = (id: string): CommitmentRisk => ({
 
 const createInitialState = (): CommitmentFormState => ({
     titulo: '',
+    descricao: '',
     projeto: '',
     area: '',
     owner: '',
@@ -95,6 +96,7 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({
 
     const defaultData: CommitmentFormState = initialData ? {
         titulo: initialData.titulo,
+        descricao: initialData.descricao || '',
         projeto: initialData.projeto,
         area: initialData.area,
         owner: initialData.owner,
@@ -208,6 +210,7 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     titulo: formData.titulo,
+                    descricao: formData.descricao,
                     projeto: formData.projeto,
                     owner: formData.owner,
                     stakeholder: formData.stakeholder,
@@ -276,6 +279,19 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({
                 <div className="space-y-1">
                     <label htmlFor="titulo">Título do Compromisso</label>
                     <input type="text" id="titulo" name="titulo" placeholder="O que será entregue?" value={formData.titulo} onChange={handleChange} className="input-field" required />
+                </div>
+
+                <div className="space-y-1" style={{ gridColumn: '1 / -1' }}>
+                    <label htmlFor="descricao">Descrição</label>
+                    <textarea
+                        id="descricao"
+                        name="descricao"
+                        placeholder="Detalhe o escopo, critérios de aceite e contexto principal"
+                        value={formData.descricao}
+                        onChange={handleChange}
+                        className="input-field"
+                        style={{ minHeight: '88px', resize: 'vertical' }}
+                    />
                 </div>
 
                 <div className="space-y-1">

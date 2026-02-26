@@ -6,6 +6,7 @@ describe('CommitmentService - editCommitment', () => {
     const baseCommitment: Commitment = {
         id: 'c1',
         titulo: 'Entregar API',
+        descricao: 'Escopo inicial da API.',
         projeto: 'Flow',
         area: 'Backend',
         owner: 'Alice',
@@ -24,6 +25,7 @@ describe('CommitmentService - editCommitment', () => {
 
     const newData: CreateCommitmentDTO = {
         titulo: 'Entregar API v2',
+        descricao: 'Expandir endpoint e cobertura.',
         projeto: 'Flow',
         area: 'Backend',
         owner: 'Alice',

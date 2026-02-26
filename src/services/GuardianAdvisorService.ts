@@ -2,6 +2,7 @@ import { CommitmentImpact, CommitmentType } from '../models/Commitment';
 
 export interface AdvisorInput {
     titulo: string;
+    descricao: string;
     projeto: string;
     owner: string;
     stakeholder: string;

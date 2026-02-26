@@ -7,6 +7,7 @@ import {
 
 const sampleInput: AdvisorInput = {
     titulo: 'Entregar dashboard executivo',
+    descricao: 'Consolidar indicadores de fluxo com critérios claros de aceite.',
     projeto: 'Flow v2',
     owner: 'Daniel',
     stakeholder: 'Diretoria',

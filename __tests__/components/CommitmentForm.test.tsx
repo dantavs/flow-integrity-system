@@ -7,6 +7,7 @@ describe('CommitmentForm', () => {
         render(<CommitmentForm onSubmit={vi.fn()} />);
 
         expect(screen.getByLabelText(/Título do Compromisso/i)).toBeDefined();
+        expect(screen.getByLabelText(/Descrição/i)).toBeDefined();
         expect(screen.getByLabelText(/Projeto/i)).toBeDefined();
         expect(screen.getByLabelText(/Área Responsável/i)).toBeDefined();
         expect(screen.getByLabelText(/Owner \(Quem entrega\)/i)).toBeDefined();
@@ -25,6 +26,7 @@ describe('CommitmentForm', () => {
         render(<CommitmentForm onSubmit={handleSubmit} />);
 
         fireEvent.change(screen.getByLabelText(/Título do Compromisso/i), { target: { value: 'Novo Compromisso' } });
+        fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Contexto detalhado' } });
         fireEvent.change(screen.getByLabelText(/Projeto/i), { target: { value: 'Projeto Alpha' } });
         fireEvent.change(screen.getByLabelText(/Área Responsável/i), { target: { value: 'Engenharia' } });
         fireEvent.change(screen.getByLabelText(/Owner \(Quem entrega\)/i), { target: { value: 'Daniel' } });
@@ -39,6 +41,7 @@ describe('CommitmentForm', () => {
 
         expect(handleSubmit).toHaveBeenCalledWith(expect.objectContaining({
             titulo: 'Novo Compromisso',
+            descricao: 'Contexto detalhado',
             projeto: 'Projeto Alpha',
             riscos: expect.arrayContaining([
                 expect.objectContaining({ descricao: 'Dependência crítica' })
@@ -46,6 +49,7 @@ describe('CommitmentForm', () => {
         }));
 
         expect(screen.getByLabelText(/Título do Compromisso/i)).toHaveValue('');
+        expect(screen.getByLabelText(/Descrição/i)).toHaveValue('');
         expect(screen.getByLabelText(/Projeto/i)).toHaveValue('');
     });
 
@@ -54,6 +58,7 @@ describe('CommitmentForm', () => {
         render(<CommitmentForm onSubmit={handleSubmit} />);
 
         fireEvent.change(screen.getByLabelText(/Título do Compromisso/i), { target: { value: 'Compromisso Falho' } });
+        fireEvent.change(screen.getByLabelText(/Descrição/i), { target: { value: 'Descrição preservada' } });
         fireEvent.change(screen.getByLabelText(/Projeto/i), { target: { value: 'Projeto Erro' } });
         fireEvent.change(screen.getByLabelText(/Área Responsável/i), { target: { value: 'TI' } });
         fireEvent.change(screen.getByLabelText(/Owner \(Quem entrega\)/i), { target: { value: 'Daniel' } });
@@ -64,6 +69,7 @@ describe('CommitmentForm', () => {
 
         expect(handleSubmit).toHaveBeenCalled();
         expect(screen.getByLabelText(/Título do Compromisso/i)).toHaveValue('Compromisso Falho');
+        expect(screen.getByLabelText(/Descrição/i)).toHaveValue('Descrição preservada');
     });
 
     it('should not crash when date input is manually cleared', () => {

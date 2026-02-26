@@ -11,6 +11,7 @@
 
 export interface CreateCommitmentDTO {
     titulo: string;
+    descricao: string;
     projeto: string;
     area: string;
     owner: string;
@@ -121,6 +122,7 @@ export function createCommitment(data: CreateCommitmentDTO, existingIds: string[
 
     return {
         ...data,
+        descricao: String(data.descricao || '').trim(),
         riscos: sanitizeRisks(data.riscos),
         dependencias: sanitizeDependencyIds(data.dependencias).filter(dep => dep !== nextId),
         id: nextId,
@@ -186,6 +188,7 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
 
     const changes: string[] = [];
     if (commitment.titulo !== data.titulo) changes.push(`Título: ${commitment.titulo} -> ${data.titulo}`);
+    if ((commitment.descricao || '') !== (data.descricao || '')) changes.push('Descrição atualizada');
     if (commitment.projeto !== data.projeto) changes.push(`Projeto: ${commitment.projeto} -> ${data.projeto}`);
     if (commitment.owner !== data.owner) changes.push(`Owner: ${commitment.owner} -> ${data.owner}`);
     if (commitment.stakeholder !== data.stakeholder) changes.push(`Stakeholder: ${commitment.stakeholder} -> ${data.stakeholder}`);
@@ -211,6 +214,7 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
     return {
         ...commitment,
         ...data,
+        descricao: String(data.descricao || '').trim(),
         riscos: normalizedRisks,
         dependencias: normalizedDependencies,
         renegociadoCount: isRenegotiation ? (commitment.renegociadoCount || 0) + 1 : commitment.renegociadoCount,

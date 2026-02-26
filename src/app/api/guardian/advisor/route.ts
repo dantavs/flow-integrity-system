@@ -10,6 +10,7 @@ function validateInput(body: any): AdvisorInput | null {
 
     return {
         titulo: String(body.titulo || ''),
+        descricao: String(body.descricao || ''),
         projeto: String(body.projeto || ''),
         owner: String(body.owner || ''),
         stakeholder: String(body.stakeholder || ''),
