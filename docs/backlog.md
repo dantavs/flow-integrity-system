@@ -17,8 +17,6 @@
 - [ ] **CORE-009:** **Otimização de Backlog p/ Métricas:** Refinar formato do .md para KPIs automáticos.
 
 ## 🧪 Aguardando Aprovação
-- [~] **CORE-034:** **Descrição no Compromisso + Contexto para IA:** Adicionar campo de descrição no compromisso e enviar esse conteúdo para o Flow Advisor.
-  *(Início: 2026-02-25 | Fim: 2026-02-25)*
 
 ## ✅ Concluído
 
@@ -63,6 +61,8 @@
   *(Início: 2026-02-23 | Fim: 2026-02-23)*
 
 ### 🚀 Fase 2: Governança e Integridade
+- [x] **CORE-034:** **Descrição no Compromisso + Contexto para IA:** Adicionar campo de descrição no compromisso e enviar esse conteúdo para o Flow Advisor.
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
 - [x] **CORE-024:** **Score de Integridade de Fluxo:** Indicador visual da % de saúde do sistema.
   *(Início: 2026-02-23 | Fim: 2026-02-23)*
 - [x] **CORE-028:** **Sistema de Dependências entre Compromissos:** Permitir vínculo explícito de dependência entre compromissos (quem depende de quem), com visualização e impacto básico.
