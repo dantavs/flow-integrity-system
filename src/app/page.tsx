@@ -22,6 +22,7 @@ import { buildReflectionFeed } from '../services/ReflectionEngine';
 import { ReflectionAction, ReflectionItem } from '../services/ReflectionContract';
 import { GraphAnalysisResult } from '../services/GuardianGraphService';
 import { IntegrityInsightsResult } from '../services/GuardianInsightsService';
+import { generatePreMortemContext, runPreMortemAnalysis } from '../services/PreMortemService';
 import Toast, { ToastType } from '../components/Toast';
 
 export default function Home() {
@@ -54,6 +55,7 @@ export default function Home() {
   const [insightsLoading, setInsightsLoading] = useState(false);
   const [insightsError, setInsightsError] = useState<string | null>(null);
   const [insightsResult, setInsightsResult] = useState<IntegrityInsightsResult | null>(null);
+  const [preMortemLoadingById, setPreMortemLoadingById] = useState<Record<string, boolean>>({});
   const [filters, setFilters] = useState({
     projeto: '',
     owner: '',
@@ -246,6 +248,33 @@ export default function Home() {
       setInsightsError('Falha ao gerar insights executivos no momento.');
     } finally {
       setInsightsLoading(false);
+    }
+  };
+
+  const handleRunPreMortem = async (id: string) => {
+    const commitment = commitments.find(item => item.id === id);
+    if (!commitment) return;
+
+    setPreMortemLoadingById(prev => ({ ...prev, [id]: true }));
+    try {
+      const relatedEvents = commitments
+        .filter(item => item.projeto === commitment.projeto)
+        .flatMap(item => item.historico || []);
+      const context = generatePreMortemContext(commitment, commitments, relatedEvents);
+      const result = await runPreMortemAnalysis(context);
+
+      setCommitments(prev => prev.map(item => item.id === id ? {
+        ...item,
+        preMortem: {
+          ...result,
+          generatedAt: new Date().toISOString(),
+        },
+      } : item));
+      setToast({ message: `Pre-Mortem atualizado para #${id}.`, type: 'INFO' });
+    } catch (error: any) {
+      setToast({ message: error?.message || 'Falha ao executar Pre-Mortem.', type: 'ERROR' });
+    } finally {
+      setPreMortemLoadingById(prev => ({ ...prev, [id]: false }));
     }
   };
 
@@ -750,6 +779,8 @@ export default function Home() {
             onStatusChange={handleStatusUpdate}
             onEdit={setEditingId}
             onViewHistory={setHistoryId}
+            onRunPreMortem={handleRunPreMortem}
+            preMortemLoadingById={preMortemLoadingById}
           />
         </section>
       </main>

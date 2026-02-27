@@ -9,9 +9,11 @@ interface CommitmentCardProps {
     onStatusChange?: (id: string, newStatus: CommitmentStatus) => void;
     onEdit?: (id: string) => void;
     onViewHistory?: (id: string) => void;
+    onRunPreMortem?: (id: string) => void;
+    preMortemLoading?: boolean;
 }
 
-const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, onStatusChange, onEdit, onViewHistory }) => {
+const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, onStatusChange, onEdit, onViewHistory, onRunPreMortem, preMortemLoading = false }) => {
     const dependencies = c.dependencias || [];
     const getTipoIcon = (tipo: string) => {
         switch (tipo) {
@@ -107,6 +109,35 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
                 {c.hasImpedimento && dependencies.length > 0 && (
                     <div style={{ fontSize: '0.78rem', color: '#f59e0b', marginBottom: '0.8rem' }}>
                         Dependência pendente detectada.
+                    </div>
+                )}
+
+                <div style={{ marginTop: '0.6rem', marginBottom: '0.8rem' }}>
+                    <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={() => onRunPreMortem?.(c.id)}
+                        disabled={!onRunPreMortem || preMortemLoading}
+                        style={{ width: 'auto', padding: '0.35rem 0.65rem', opacity: preMortemLoading ? 0.85 : 1 }}
+                    >
+                        {preMortemLoading ? 'Analisando Pre-Mortem...' : 'Rodar Pre-Mortem'}
+                    </button>
+                </div>
+
+                {c.preMortem && (
+                    <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '0.8rem', border: '1px solid var(--glass-border)', borderRadius: '8px', padding: '0.65rem' }}>
+                        <div style={{ marginBottom: '0.35rem' }}>
+                            <strong>Pre-Mortem:</strong> risco {c.preMortem.riskLevel}
+                        </div>
+                        {c.preMortem.causes.length > 0 && (
+                            <div style={{ marginBottom: '0.25rem' }}>Causas: {c.preMortem.causes.join(' | ')}</div>
+                        )}
+                        {c.preMortem.criticalQuestions.length > 0 && (
+                            <div style={{ marginBottom: '0.25rem' }}>Perguntas: {c.preMortem.criticalQuestions.join(' | ')}</div>
+                        )}
+                        {c.preMortem.mitigations.length > 0 && (
+                            <div>Mitigações: {c.preMortem.mitigations.join(' | ')}</div>
+                        )}
                     </div>
                 )}
             </div>

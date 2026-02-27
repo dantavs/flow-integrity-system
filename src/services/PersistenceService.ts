@@ -65,6 +65,15 @@ function parseCommitments(raw: string): Commitment[] {
         criadoEm: new Date(c.criadoEm),
         dependencias: Array.isArray(c.dependencias) ? c.dependencias.map((d: unknown) => String(d)) : [],
         riscos: normalizeRisks(c.riscos),
+        preMortem: c.preMortem && typeof c.preMortem === 'object'
+            ? {
+                riskLevel: c.preMortem.riskLevel === 'high' || c.preMortem.riskLevel === 'medium' ? c.preMortem.riskLevel : 'low',
+                causes: Array.isArray(c.preMortem.causes) ? c.preMortem.causes.map((item: unknown) => String(item)).slice(0, 3) : [],
+                criticalQuestions: Array.isArray(c.preMortem.criticalQuestions) ? c.preMortem.criticalQuestions.map((item: unknown) => String(item)).slice(0, 2) : [],
+                mitigations: Array.isArray(c.preMortem.mitigations) ? c.preMortem.mitigations.map((item: unknown) => String(item)).slice(0, 2) : [],
+                generatedAt: String(c.preMortem.generatedAt || ''),
+            }
+            : undefined,
         historico: (c.historico || []).map((h: any) => ({
             ...h,
             timestamp: new Date(h.timestamp),

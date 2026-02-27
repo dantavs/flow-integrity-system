@@ -28,6 +28,18 @@ export interface AdvisorOutput {
     why: string;
 }
 
+export interface PreMortemInput {
+    context: unknown;
+    prompt?: string;
+}
+
+export interface PreMortemOutput {
+    riskLevel: 'low' | 'medium' | 'high';
+    causes: string[];
+    criticalQuestions: string[];
+    mitigations: string[];
+}
+
 export type AdvisorResult =
     | { status: 'ok'; result: AdvisorOutput }
     | { status: 'disabled'; reason: string }
@@ -44,6 +56,23 @@ Retorne SOMENTE JSON válido no formato:
   "recommendedActions": string[],
   "why": string
 }
+Sem markdown.
+`;
+
+const PRE_MORTEM_SYSTEM_PROMPT = `
+Você é um analista de Pre-Mortem para execução de compromissos.
+Assuma que o compromisso falhou e retorne SOMENTE JSON válido no formato:
+{
+  "riskLevel": "low" | "medium" | "high",
+  "causes": string[],
+  "criticalQuestions": string[],
+  "mitigations": string[]
+}
+Restrições:
+- Máximo de 3 causas.
+- Máximo de 2 perguntas críticas.
+- Máximo de 2 mitigações.
+- Texto total entre 250 e 300 palavras.
 Sem markdown.
 `;
 
@@ -83,6 +112,25 @@ export function parseAdvisorOutput(raw: unknown): AdvisorOutput {
         rewriteSuggestions: toStringArray(data.rewriteSuggestions),
         recommendedActions: toStringArray(data.recommendedActions),
         why,
+    };
+}
+
+export function parsePreMortemOutput(raw: unknown): PreMortemOutput {
+    if (!raw || typeof raw !== 'object') {
+        throw new Error('Saída inválida do pre-mortem');
+    }
+
+    const data = raw as Record<string, unknown>;
+    const riskLevel = String(data.riskLevel || '').toLowerCase();
+    if (riskLevel !== 'low' && riskLevel !== 'medium' && riskLevel !== 'high') {
+        throw new Error('riskLevel inválido');
+    }
+
+    return {
+        riskLevel: riskLevel as 'low' | 'medium' | 'high',
+        causes: toStringArray(data.causes).slice(0, 3),
+        criticalQuestions: toStringArray(data.criticalQuestions).slice(0, 2),
+        mitigations: toStringArray(data.mitigations).slice(0, 2),
     };
 }
 
@@ -136,6 +184,60 @@ export async function analyzeCommitmentWithAI(input: AdvisorInput): Promise<Advi
         }
 
         const parsed = parseAdvisorOutput(JSON.parse(content));
+        return { status: 'ok', result: parsed };
+    } catch {
+        return { status: 'unavailable', reason: 'Falha na chamada do provedor de IA.' };
+    } finally {
+        clearTimeout(timeout);
+    }
+}
+
+export async function analyzePreMortemWithAI(input: PreMortemInput): Promise<AdvisorResult | { status: 'ok'; result: PreMortemOutput }> {
+    if (!isGuardianEnabled()) {
+        return { status: 'disabled', reason: 'Flow Guardian desabilitado por feature flag.' };
+    }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+        return { status: 'disabled', reason: 'OPENAI_API_KEY não configurada.' };
+    }
+
+    const model = process.env.FLOW_GUARDIAN_MODEL_ADVISOR || 'gpt-4o-mini';
+    const timeoutMs = Number(process.env.FLOW_GUARDIAN_TIMEOUT_MS || '15000');
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${apiKey}`,
+            },
+            signal: controller.signal,
+            body: JSON.stringify({
+                model,
+                response_format: { type: 'json_object' },
+                messages: [
+                    { role: 'system', content: PRE_MORTEM_SYSTEM_PROMPT },
+                    { role: 'user', content: String(input.prompt || JSON.stringify(input.context)) },
+                ],
+                temperature: 0.2,
+            }),
+        });
+
+        if (!response.ok) {
+            return { status: 'unavailable', reason: `Provider error: ${response.status}` };
+        }
+
+        const payload = await response.json() as any;
+        const content = payload?.choices?.[0]?.message?.content;
+        if (!content || typeof content !== 'string') {
+            return { status: 'unavailable', reason: 'Resposta sem conteúdo estruturado.' };
+        }
+
+        const parsed = parsePreMortemOutput(JSON.parse(content));
         return { status: 'ok', result: parsed };
     } catch {
         return { status: 'unavailable', reason: 'Falha na chamada do provedor de IA.' };

@@ -1,7 +1,9 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import {
     analyzeCommitmentWithAI,
+    analyzePreMortemWithAI,
     parseAdvisorOutput,
+    parsePreMortemOutput,
     AdvisorInput,
 } from '@/services/GuardianAdvisorService';
 
@@ -92,6 +94,44 @@ describe('GuardianAdvisorService', () => {
         if (result.status === 'ok') {
             expect(result.result.qualityScore).toBe(74);
             expect(result.result.why.length).toBeGreaterThan(5);
+        }
+    });
+
+    it('parses valid pre-mortem output', () => {
+        const parsed = parsePreMortemOutput({
+            riskLevel: 'medium',
+            causes: ['Owner sobrecarregado'],
+            criticalQuestions: ['Qual contingência existe?'],
+            mitigations: ['Quebrar entrega em marcos menores'],
+        });
+
+        expect(parsed.riskLevel).toBe('medium');
+        expect(parsed.causes).toHaveLength(1);
+    });
+
+    it('runs pre-mortem analysis with valid provider payload', async () => {
+        process.env.NEXT_PUBLIC_FLOW_GUARDIAN_ENABLED = 'true';
+        process.env.OPENAI_API_KEY = 'x';
+        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({
+                choices: [{
+                    message: {
+                        content: JSON.stringify({
+                            riskLevel: 'high',
+                            causes: ['Dependência crítica sem owner'],
+                            criticalQuestions: ['Quem assume fallback operacional?'],
+                            mitigations: ['Definir dono de desbloqueio e data limite'],
+                        }),
+                    },
+                }],
+            }),
+        }) as any);
+
+        const result = await analyzePreMortemWithAI({ context: { id: '1' } });
+        expect(result.status).toBe('ok');
+        if (result.status === 'ok') {
+            expect(result.result.riskLevel).toBe('high');
         }
     });
 });

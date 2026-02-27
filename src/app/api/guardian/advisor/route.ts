@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { analyzeCommitmentWithAI, AdvisorInput } from '@/services/GuardianAdvisorService';
+import { analyzeCommitmentWithAI, analyzePreMortemWithAI, AdvisorInput, PreMortemInput } from '@/services/GuardianAdvisorService';
 
 function validateInput(body: any): AdvisorInput | null {
     if (!body || typeof body !== 'object') return null;
@@ -36,6 +36,24 @@ function validateInput(body: any): AdvisorInput | null {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
+        if (body?.analysisType === 'pre_mortem') {
+            const preMortemInput: PreMortemInput | null = body?.context ? { context: body.context, prompt: body.prompt ? String(body.prompt) : undefined } : null;
+            if (!preMortemInput) {
+                return NextResponse.json(
+                    { status: 'invalid_input', reason: 'Contexto inválido para pre-mortem.' },
+                    { status: 400 },
+                );
+            }
+
+            const result = await analyzePreMortemWithAI(preMortemInput);
+            if (result.status === 'ok') {
+                return NextResponse.json(result, { status: 200 });
+            }
+
+            const statusCode = result.status === 'disabled' ? 200 : 503;
+            return NextResponse.json(result, { status: statusCode });
+        }
+
         const input = validateInput(body);
         if (!input) {
             return NextResponse.json(

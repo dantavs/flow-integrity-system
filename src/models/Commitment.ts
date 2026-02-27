@@ -31,6 +31,16 @@ export interface CommitmentRisk {
     impacto: RiskMatrixLevel;
 }
 
+export type PreMortemRiskLevel = 'low' | 'medium' | 'high';
+
+export interface CommitmentPreMortem {
+    riskLevel: PreMortemRiskLevel;
+    causes: string[];
+    criticalQuestions: string[];
+    mitigations: string[];
+    generatedAt: string;
+}
+
 export interface Commitment {
     id: string;
     titulo: string;
@@ -48,6 +58,7 @@ export interface Commitment {
     listaImpedimentos?: string[];
     riscos: CommitmentRisk[];
     renegociadoCount?: number;
+    preMortem?: CommitmentPreMortem;
     criadoEm: Date;
     historico: AuditEvent[];
 }
