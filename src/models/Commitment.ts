@@ -11,7 +11,14 @@ export type RiskCategory = 'PRAZO' | 'ESCOPO' | 'DEPENDENCIA' | 'RECURSOS' | 'QU
 export type RiskMitigationStatus = 'ABERTO' | 'EM_MITIGACAO' | 'MITIGADO' | 'ACEITO';
 export type RiskMatrixLevel = 'LOW' | 'MEDIUM' | 'HIGH';
 
-export type AuditEventType = 'CREATE' | 'STATUS_CHANGE' | 'EDIT' | 'RENEGOTIATION';
+export type AuditEventType =
+    | 'CREATE'
+    | 'STATUS_CHANGE'
+    | 'EDIT'
+    | 'RENEGOTIATION'
+    | 'checklist_item_added'
+    | 'checklist_item_completed'
+    | 'checklist_item_removed';
 
 export interface AuditEvent {
     id: string;
@@ -29,6 +36,14 @@ export interface CommitmentRisk {
     statusMitigacao: RiskMitigationStatus;
     probabilidade: RiskMatrixLevel;
     impacto: RiskMatrixLevel;
+}
+
+export interface CommitmentChecklistItem {
+    id: string;
+    text: string;
+    completed: boolean;
+    createdAt: string;
+    completedAt?: string;
 }
 
 export type PreMortemRiskLevel = 'low' | 'medium' | 'high';
@@ -57,6 +72,7 @@ export interface Commitment {
     hasImpedimento: boolean;
     listaImpedimentos?: string[];
     riscos: CommitmentRisk[];
+    checklist?: CommitmentChecklistItem[];
     renegociadoCount?: number;
     preMortem?: CommitmentPreMortem;
     criadoEm: Date;

@@ -17,6 +17,9 @@ const AuditTimeline: React.FC<AuditTimelineProps> = ({ history }) => {
             case 'STATUS_CHANGE': return '🔄';
             case 'EDIT': return '📝';
             case 'RENEGOTIATION': return '⏳';
+            case 'checklist_item_added': return '➕';
+            case 'checklist_item_completed': return '✅';
+            case 'checklist_item_removed': return '🗑️';
             default: return '📌';
         }
     };

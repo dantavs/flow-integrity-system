@@ -32,6 +32,13 @@ const addDays = (value: Date, days: number): Date => {
 
 const isOpenRisk = (status: string): boolean => status === 'ABERTO' || status === 'EM_MITIGACAO';
 
+const checklistProgress = (commitment: Commitment): number => {
+    const checklist = commitment.checklist || [];
+    if (checklist.length === 0) return 0;
+    const completed = checklist.filter(item => item.completed).length;
+    return Math.round((completed / checklist.length) * 100);
+};
+
 const doneTimestamp = (commitment: Commitment): Date | null => {
     const doneEvent = (commitment.historico || [])
         .filter(event => event.tipo === 'STATUS_CHANGE' && event.valorNovo === CommitmentStatus.DONE)
@@ -43,7 +50,9 @@ const doneTimestamp = (commitment: Commitment): Date | null => {
 const isUnstableSignal = (commitment: Commitment, today: Date): boolean => {
     const due = startOfDay(new Date(commitment.dataEsperada));
     const hasHighOpenRisk = (commitment.riscos || []).some(risk => isOpenRisk(risk.statusMitigacao) && riskMatrixScore(risk) >= 6);
-    return due < today || commitment.hasImpedimento || hasHighOpenRisk || (commitment.renegociadoCount || 0) >= 2;
+    const daysUntilDue = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const stalledChecklistNearDue = (commitment.checklist || []).length > 0 && checklistProgress(commitment) === 0 && daysUntilDue <= 2;
+    return due < today || commitment.hasImpedimento || hasHighOpenRisk || (commitment.renegociadoCount || 0) >= 2 || stalledChecklistNearDue;
 };
 
 function scoreToSeverity(score: number): ReflectionSeverity {
@@ -132,6 +141,55 @@ export function buildReflectionFeed(
                 ],
                 createdAt: new Date(now),
             });
+        }
+
+        const checklist = commitment.checklist || [];
+        if (checklist.length > 0) {
+            const due = startOfDay(new Date(commitment.dataEsperada));
+            const daysUntilDue = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+            const progress = checklistProgress(commitment);
+
+            if (progress === 0 && daysUntilDue <= 2) {
+                const dedupKey = `CHECKLIST_STALLED_NEAR_DUE:${commitment.id}`;
+                const score = daysUntilDue <= 0 ? 95 : 84;
+                reflections.push({
+                    id: dedupKey,
+                    dedupKey,
+                    triggerType: 'CHECKLIST_STALLED_NEAR_DUE',
+                    severity: scoreToSeverity(score),
+                    score,
+                    message: `Checklist sem progresso em "${commitment.titulo}" próximo ao prazo.`,
+                    context: `Checklist em 0% com vencimento em ${daysUntilDue} dia(s).`,
+                    why: 'Compromisso com checklist parado próximo da data tende a elevar risco de falha de execução.',
+                    relatedCommitmentIds: [commitment.id],
+                    relatedProject: commitment.projeto,
+                    actions: [
+                        { type: 'OPEN_COMMITMENT', label: 'Revisar compromisso', commitmentId: commitment.id },
+                        { type: 'FILTER_PROJECT', label: 'Ver projeto', projeto: commitment.projeto },
+                    ],
+                    createdAt: new Date(now),
+                });
+            }
+
+            if (progress === 100 && commitment.status !== CommitmentStatus.DONE) {
+                const dedupKey = `CHECKLIST_COMPLETED_STATUS_REVIEW:${commitment.id}`;
+                reflections.push({
+                    id: dedupKey,
+                    dedupKey,
+                    triggerType: 'CHECKLIST_COMPLETED_STATUS_REVIEW',
+                    severity: 'LOW',
+                    score: 64,
+                    message: `Checklist concluído em "${commitment.titulo}" com status ainda aberto.`,
+                    context: 'Itens em 100% concluídos; considere revisar status do compromisso.',
+                    why: 'Inconsistência leve entre execução registrada e status do fluxo.',
+                    relatedCommitmentIds: [commitment.id],
+                    relatedProject: commitment.projeto,
+                    actions: [
+                        { type: 'OPEN_COMMITMENT', label: 'Revisar compromisso', commitmentId: commitment.id },
+                    ],
+                    createdAt: new Date(now),
+                });
+            }
         }
 
         const createdAt = startOfDay(new Date(commitment.criadoEm));

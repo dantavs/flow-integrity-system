@@ -65,6 +65,18 @@ function parseCommitments(raw: string): Commitment[] {
         criadoEm: new Date(c.criadoEm),
         dependencias: Array.isArray(c.dependencias) ? c.dependencias.map((d: unknown) => String(d)) : [],
         riscos: normalizeRisks(c.riscos),
+        checklist: Array.isArray(c.checklist)
+            ? c.checklist
+                .filter((item: any) => item && typeof item === 'object')
+                .map((item: any) => ({
+                    id: String(item.id || `chk-migrated-${Date.now()}-${Math.floor(Math.random() * 1000)}`),
+                    text: String(item.text || '').trim(),
+                    completed: Boolean(item.completed),
+                    createdAt: String(item.createdAt || new Date().toISOString()),
+                    completedAt: item.completedAt ? String(item.completedAt) : undefined,
+                }))
+                .filter((item: any) => item.text !== '')
+            : [],
         preMortem: c.preMortem && typeof c.preMortem === 'object'
             ? {
                 riskLevel: c.preMortem.riskLevel === 'high' || c.preMortem.riskLevel === 'medium' ? c.preMortem.riskLevel : 'low',

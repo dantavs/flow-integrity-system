@@ -4,7 +4,16 @@ import React, { useState, useEffect, useMemo } from 'react';
 import CommitmentForm from '../components/CommitmentForm';
 import CommitmentList from '../components/CommitmentList';
 import AuditTimeline from '../components/AuditTimeline';
-import { createCommitment, changeCommitmentStatus, editCommitment, CreateCommitmentDTO } from '../services/CommitmentService';
+import {
+  addChecklistItem,
+  changeCommitmentStatus,
+  createCommitment,
+  CreateCommitmentDTO,
+  editCommitment,
+  getChecklistProgress,
+  removeChecklistItem,
+  toggleChecklistItem
+} from '../services/CommitmentService';
 import {
   clearCommitmentsStorage,
   getAppEnvironment,
@@ -276,6 +285,47 @@ export default function Home() {
     } finally {
       setPreMortemLoadingById(prev => ({ ...prev, [id]: false }));
     }
+  };
+
+  const maybeSuggestDoneByChecklist = (commitment: Commitment) => {
+    const progress = getChecklistProgress(commitment);
+    if (progress.total > 0 && progress.percent === 100 && commitment.status !== CommitmentStatus.DONE) {
+      setToast({
+        message: `Checklist 100% em #${commitment.id}. Sugestão: revisar status para DONE.`,
+        type: 'INFO'
+      });
+    }
+  };
+
+  const handleChecklistAdd = (id: string, text: string) => {
+    try {
+      setCommitments(prev => {
+        const next = applyDependencyIntegrity(prev.map(c => c.id === id ? addChecklistItem(c, text) : c));
+        const updated = next.find(c => c.id === id);
+        if (updated) maybeSuggestDoneByChecklist(updated);
+        return next;
+      });
+    } catch (error: any) {
+      setToast({ message: error.message || 'Falha ao adicionar item do checklist.', type: 'ERROR' });
+    }
+  };
+
+  const handleChecklistToggle = (id: string, itemId: string) => {
+    setCommitments(prev => {
+      const next = applyDependencyIntegrity(prev.map(c => c.id === id ? toggleChecklistItem(c, itemId) : c));
+      const updated = next.find(c => c.id === id);
+      if (updated) maybeSuggestDoneByChecklist(updated);
+      return next;
+    });
+  };
+
+  const handleChecklistRemove = (id: string, itemId: string) => {
+    setCommitments(prev => {
+      const next = applyDependencyIntegrity(prev.map(c => c.id === id ? removeChecklistItem(c, itemId) : c));
+      const updated = next.find(c => c.id === id);
+      if (updated) maybeSuggestDoneByChecklist(updated);
+      return next;
+    });
   };
 
   return (
@@ -781,6 +831,9 @@ export default function Home() {
             onViewHistory={setHistoryId}
             onRunPreMortem={handleRunPreMortem}
             preMortemLoadingById={preMortemLoadingById}
+            onChecklistAdd={handleChecklistAdd}
+            onChecklistToggle={handleChecklistToggle}
+            onChecklistRemove={handleChecklistRemove}
           />
         </section>
       </main>
@@ -808,6 +861,11 @@ export default function Home() {
                 onSubmit={handleEditCommitmentSubmit}
                 onCancel={() => setEditingId(null)}
                 layoutMode="modal"
+                currentStatus={commitments.find(c => c.id === editingId)?.status}
+                onStatusChange={(nextStatus) => {
+                  if (!editingId) return;
+                  handleStatusUpdate(editingId, nextStatus);
+                }}
                 suggestions={{
                   projetos: uniqueProjetos,
                   owners: uniqueOwners,

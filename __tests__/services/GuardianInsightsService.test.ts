@@ -97,4 +97,34 @@ describe('GuardianInsightsService', () => {
             expect(Array.isArray(result.result.insights)).toBe(true);
         }
     });
+
+    it('adds checklist stalled near due as risk signal', () => {
+        const commitments = [
+            make({
+                id: 'c1',
+                dataEsperada: new Date('2026-02-26T00:00:00'),
+                checklist: [
+                    { id: 'chk-1', text: 'A', completed: false, createdAt: new Date('2026-02-20T00:00:00').toISOString() },
+                ],
+            }),
+        ];
+        const result = buildDeterministicIntegrityInsights(commitments as any, now);
+        expect(result.systemSignals.totals.checklistStalledNearDue).toBe(1);
+        expect(result.insights.some(item => item.id === 'checklist-stalled-near-due')).toBe(true);
+    });
+
+    it('adds checklist inconsistency insight when checklist is 100% and status is open', () => {
+        const commitments = [
+            make({
+                id: 'c2',
+                status: CommitmentStatus.ACTIVE,
+                checklist: [
+                    { id: 'chk-1', text: 'A', completed: true, createdAt: new Date('2026-02-20T00:00:00').toISOString() },
+                ],
+            }),
+        ];
+        const result = buildDeterministicIntegrityInsights(commitments as any, now);
+        expect(result.systemSignals.totals.checklistInconsistency).toBe(1);
+        expect(result.insights.some(item => item.id === 'checklist-status-inconsistency')).toBe(true);
+    });
 });

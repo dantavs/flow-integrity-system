@@ -11,9 +11,22 @@ interface CommitmentListProps {
     onViewHistory?: (id: string) => void;
     onRunPreMortem?: (id: string) => void;
     preMortemLoadingById?: Record<string, boolean>;
+    onChecklistAdd?: (id: string, text: string) => void;
+    onChecklistToggle?: (id: string, itemId: string) => void;
+    onChecklistRemove?: (id: string, itemId: string) => void;
 }
 
-const CommitmentList: React.FC<CommitmentListProps> = ({ commitments, onStatusChange, onEdit, onViewHistory, onRunPreMortem, preMortemLoadingById }) => {
+const CommitmentList: React.FC<CommitmentListProps> = ({
+    commitments,
+    onStatusChange,
+    onEdit,
+    onViewHistory,
+    onRunPreMortem,
+    preMortemLoadingById,
+    onChecklistAdd,
+    onChecklistToggle,
+    onChecklistRemove,
+}) => {
     if (commitments.length === 0) {
         return (
             <div className="glass-card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)', width: '100%' }}>
@@ -39,6 +52,9 @@ const CommitmentList: React.FC<CommitmentListProps> = ({ commitments, onStatusCh
                     onViewHistory={onViewHistory}
                     onRunPreMortem={onRunPreMortem}
                     preMortemLoading={Boolean(preMortemLoadingById?.[c.id])}
+                    onChecklistAdd={onChecklistAdd}
+                    onChecklistToggle={onChecklistToggle}
+                    onChecklistRemove={onChecklistRemove}
                 />
             ))}
         </div>

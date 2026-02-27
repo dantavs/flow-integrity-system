@@ -8,6 +8,7 @@ describe('CommitmentList', () => {
         {
             id: '1',
             titulo: 'Compromisso 1',
+            descricao: '',
             projeto: 'Projeto A',
             area: 'Engenharia',
             owner: 'Daniel',
@@ -19,6 +20,7 @@ describe('CommitmentList', () => {
             criadoEm: new Date(),
             tipo: 'DELIVERY',
             impacto: 'MEDIUM',
+            checklist: [],
             riscos: [],
             renegociadoCount: 0,
             historico: []
@@ -26,6 +28,7 @@ describe('CommitmentList', () => {
         {
             id: '2',
             titulo: 'Compromisso 2',
+            descricao: '',
             projeto: 'Projeto B',
             area: 'QA',
             owner: 'Daniel',
@@ -37,6 +40,7 @@ describe('CommitmentList', () => {
             criadoEm: new Date(),
             tipo: 'ALIGNMENT',
             impacto: 'HIGH',
+            checklist: [],
             riscos: [{
                 id: 'r2',
                 descricao: 'Falta de acesso',
@@ -60,8 +64,8 @@ describe('CommitmentList', () => {
 
         expect(screen.getByText('Compromisso 1')).toBeDefined();
         expect(screen.getByText('Compromisso 2')).toBeDefined();
-        expect(screen.getByText('Projeto A • Engenharia')).toBeDefined();
-        expect(screen.getByText('Projeto B • QA')).toBeDefined();
+        expect(screen.getByText(/Projeto A/)).toBeDefined();
+        expect(screen.getByText(/Projeto B/)).toBeDefined();
     });
 
     it('should call onStatusChange when a status is updated', () => {

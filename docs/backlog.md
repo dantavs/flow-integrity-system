@@ -17,6 +17,12 @@
 - [ ] **CORE-009:** **Otimização de Backlog p/ Métricas:** Refinar formato do .md para KPIs automáticos.
 
 ## 🧪 Aguardando Aprovação
+- [~] **CORE-035:** **Checklist Manual por Compromisso:** Itens simples por compromisso com progresso, eventos, visão compacta/expansível no card e integração com Reflection/Pre-Mortem/Integrity.
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
+- [~] **CORE-036:** **Refino UX do Checklist no Card:** Restaurar ícones de ações, ajustar comportamento de visualização/edição do checklist por status e permitir adicionar item via tecla Enter.
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
+- [~] **CORE-037:** **Checklist no Formulário + Status no Modal de Edição:** Exibir bloco de checklist na tela de adição e permitir visualizar/editar status dentro do modal de edição.
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
 
 ## ✅ Concluído
 

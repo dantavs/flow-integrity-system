@@ -1,5 +1,6 @@
 ﻿import {
     Commitment,
+    CommitmentChecklistItem,
     CommitmentStatus,
     CommitmentType,
     CommitmentImpact,
@@ -21,6 +22,12 @@ export interface CreateCommitmentDTO {
     tipo: CommitmentType;
     impacto: CommitmentImpact;
     riscos: CommitmentRisk[];
+}
+
+export interface ChecklistProgress {
+    total: number;
+    completed: number;
+    percent: number;
 }
 
 const defaultRisk = (descricao: string): CommitmentRisk => ({
@@ -97,14 +104,14 @@ function sanitizeDependencyIds(dependencias: unknown): string[] {
         new Set(
             dependencias
                 .map(dep => String(dep).trim())
-                .filter(dep => dep !== '')
-        )
+                .filter(dep => dep !== ''),
+        ),
     );
 }
 
 export function createCommitment(data: CreateCommitmentDTO, existingIds: string[]): Commitment {
     if (!data.titulo || data.titulo.trim() === '') {
-        throw new Error('Título é obrigatório');
+        throw new Error('Titulo e obrigatorio');
     }
 
     const now = new Date();
@@ -113,7 +120,7 @@ export function createCommitment(data: CreateCommitmentDTO, existingIds: string[
     const expectedDate = new Date(data.dataEsperada.getFullYear(), data.dataEsperada.getMonth(), data.dataEsperada.getDate());
 
     if (expectedDate < today) {
-        throw new Error('A data esperada não pode estar no passado');
+        throw new Error('A data esperada nao pode estar no passado');
     }
 
     const nextId = existingIds.length > 0
@@ -128,6 +135,7 @@ export function createCommitment(data: CreateCommitmentDTO, existingIds: string[
         id: nextId,
         status: CommitmentStatus.BACKLOG,
         hasImpedimento: false,
+        checklist: [],
         criadoEm: now,
         renegociadoCount: 0,
         historico: [{
@@ -136,6 +144,97 @@ export function createCommitment(data: CreateCommitmentDTO, existingIds: string[
             timestamp: now,
             descricao: 'Compromisso criado com status BACKLOG',
         }],
+    };
+}
+
+export function getChecklistProgress(commitment: Commitment): ChecklistProgress {
+    const checklist = commitment.checklist || [];
+    const total = checklist.length;
+    const completed = checklist.filter(item => item.completed).length;
+    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+    return { total, completed, percent };
+}
+
+export function addChecklistItem(commitment: Commitment, text: string): Commitment {
+    const normalized = String(text || '').trim();
+    if (!normalized) {
+        throw new Error('Texto do checklist e obrigatorio');
+    }
+
+    const now = new Date();
+    const item: CommitmentChecklistItem = {
+        id: `chk-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        text: normalized,
+        completed: false,
+        createdAt: now.toISOString(),
+    };
+
+    return {
+        ...commitment,
+        checklist: [...(commitment.checklist || []), item],
+        historico: [
+            ...(commitment.historico || []),
+            {
+                id: `evt-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+                tipo: 'checklist_item_added',
+                timestamp: now,
+                descricao: `Checklist item adicionado: ${normalized}`,
+            },
+        ],
+    };
+}
+
+export function toggleChecklistItem(commitment: Commitment, itemId: string): Commitment {
+    const checklist = commitment.checklist || [];
+    const target = checklist.find(item => item.id === itemId);
+    if (!target) return commitment;
+
+    const now = new Date();
+    const nextCompleted = !target.completed;
+    const nextChecklist = checklist.map(item => {
+        if (item.id !== itemId) return item;
+        return {
+            ...item,
+            completed: nextCompleted,
+            completedAt: nextCompleted ? now.toISOString() : undefined,
+        };
+    });
+
+    return {
+        ...commitment,
+        checklist: nextChecklist,
+        historico: [
+            ...(commitment.historico || []),
+            {
+                id: `evt-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+                tipo: 'checklist_item_completed',
+                timestamp: now,
+                descricao: nextCompleted
+                    ? `Checklist item concluido: ${target.text}`
+                    : `Checklist item reaberto: ${target.text}`,
+            },
+        ],
+    };
+}
+
+export function removeChecklistItem(commitment: Commitment, itemId: string): Commitment {
+    const checklist = commitment.checklist || [];
+    const target = checklist.find(item => item.id === itemId);
+    if (!target) return commitment;
+
+    const now = new Date();
+    return {
+        ...commitment,
+        checklist: checklist.filter(item => item.id !== itemId),
+        historico: [
+            ...(commitment.historico || []),
+            {
+                id: `evt-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+                tipo: 'checklist_item_removed',
+                timestamp: now,
+                descricao: `Checklist item removido: ${target.text}`,
+            },
+        ],
     };
 }
 
@@ -160,10 +259,10 @@ export function changeCommitmentStatus(commitment: Commitment, newStatus: Commit
 
 export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO): Commitment {
     if (!data.titulo || data.titulo.trim() === '') {
-        throw new Error('Título é obrigatório');
+        throw new Error('Titulo e obrigatorio');
     }
     if (!data.dataEsperada) {
-        throw new Error('Data de entrega é obrigatória');
+        throw new Error('Data de entrega e obrigatoria');
     }
 
     const now = new Date();
@@ -177,7 +276,7 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
     const oldExpectedDate = new Date(commitment.dataEsperada.getFullYear(), commitment.dataEsperada.getMonth(), commitment.dataEsperada.getDate());
 
     if (expectedDate.getTime() !== oldExpectedDate.getTime() && expectedDate < today) {
-        throw new Error('Ao alterar a data, ela não pode ser transferida para o passado');
+        throw new Error('Ao alterar a data, ela nao pode ser transferida para o passado');
     }
 
     const isRenegotiation = expectedDate.getTime() !== oldExpectedDate.getTime();
@@ -187,8 +286,8 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
     const previousDependencies = sanitizeDependencyIds(commitment.dependencias);
 
     const changes: string[] = [];
-    if (commitment.titulo !== data.titulo) changes.push(`Título: ${commitment.titulo} -> ${data.titulo}`);
-    if ((commitment.descricao || '') !== (data.descricao || '')) changes.push('Descrição atualizada');
+    if (commitment.titulo !== data.titulo) changes.push(`Titulo: ${commitment.titulo} -> ${data.titulo}`);
+    if ((commitment.descricao || '') !== (data.descricao || '')) changes.push('Descricao atualizada');
     if (commitment.projeto !== data.projeto) changes.push(`Projeto: ${commitment.projeto} -> ${data.projeto}`);
     if (commitment.owner !== data.owner) changes.push(`Owner: ${commitment.owner} -> ${data.owner}`);
     if (commitment.stakeholder !== data.stakeholder) changes.push(`Stakeholder: ${commitment.stakeholder} -> ${data.stakeholder}`);
@@ -196,7 +295,7 @@ export function editCommitment(commitment: Commitment, data: CreateCommitmentDTO
     if (commitment.impacto !== data.impacto) changes.push(`Impacto: ${commitment.impacto} -> ${data.impacto}`);
     if (isRenegotiation) changes.push(`Data: ${oldExpectedDate.toLocaleDateString()} -> ${expectedDate.toLocaleDateString()}`);
     if (risksChanged(previousRisks, normalizedRisks)) changes.push(`Riscos: ${previousRisks.length} -> ${normalizedRisks.length}`);
-    if (JSON.stringify(previousDependencies) !== JSON.stringify(normalizedDependencies)) changes.push(`Dependências: ${previousDependencies.length} -> ${normalizedDependencies.length}`);
+    if (JSON.stringify(previousDependencies) !== JSON.stringify(normalizedDependencies)) changes.push(`Dependencias: ${previousDependencies.length} -> ${normalizedDependencies.length}`);
 
     if (changes.length === 0 && commitment.area === data.area) {
         return commitment;

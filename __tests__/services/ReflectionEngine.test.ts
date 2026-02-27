@@ -141,4 +141,29 @@ describe('ReflectionEngine', () => {
         expect(feed.items.length).toBe(2);
         expect(feed.items.some(item => item.dedupKey === 'POSTPONEMENT_PATTERN:p1')).toBe(false);
     });
+
+    it('generates checklist stalled near due reflection', () => {
+        const commitments = [
+            make({
+                id: 'chk-1',
+                titulo: 'Entrega crítica',
+                dataEsperada: new Date('2026-02-25T00:00:00'),
+                checklist: [{ id: 'a', text: 'Preparar release', completed: false, createdAt: new Date('2026-02-20T00:00:00').toISOString() }],
+            }),
+        ];
+        const feed = buildReflectionFeed(commitments as any, now);
+        expect(feed.items.some(item => item.triggerType === 'CHECKLIST_STALLED_NEAR_DUE')).toBe(true);
+    });
+
+    it('generates checklist completed status review reflection', () => {
+        const commitments = [
+            make({
+                id: 'chk-2',
+                status: CommitmentStatus.ACTIVE,
+                checklist: [{ id: 'a', text: 'Finalizar', completed: true, createdAt: new Date('2026-02-20T00:00:00').toISOString() }],
+            }),
+        ];
+        const feed = buildReflectionFeed(commitments as any, now);
+        expect(feed.items.some(item => item.triggerType === 'CHECKLIST_COMPLETED_STATUS_REVIEW')).toBe(true);
+    });
 });

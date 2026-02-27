@@ -48,6 +48,11 @@ export interface PreMortemContext {
     projectAtRiskCommitments: PreMortemAtRiskCommitment[];
     dependencies: PreMortemDependencySnapshot[];
     postponementHistory: PreMortemHistorySummary;
+    checklist: {
+        totalChecklistItems: number;
+        completedChecklistItems: number;
+        checklistProgressPercent: number;
+    };
 }
 
 export interface PreMortemOutput {
@@ -71,10 +76,15 @@ const toDateKey = (value: Date | string): string => new Date(value).toISOString(
 function getRiskSignals(commitment: Commitment, today: Date): string[] {
     const signals: string[] = [];
     const due = new Date(commitment.dataEsperada);
+    const daysUntilDue = Math.ceil((new Date(due.getFullYear(), due.getMonth(), due.getDate()).getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const checklist = commitment.checklist || [];
+    const checklistCompleted = checklist.filter(item => item.completed).length;
+    const checklistProgress = checklist.length === 0 ? 0 : Math.round((checklistCompleted / checklist.length) * 100);
     if (new Date(due.getFullYear(), due.getMonth(), due.getDate()) < today) signals.push('vencido');
     if (commitment.hasImpedimento) signals.push('bloqueado');
     if ((commitment.renegociadoCount || 0) >= 2) signals.push('reincidente');
     if (hasOpenHighRisk(commitment)) signals.push('risco_alto_aberto');
+    if (checklist.length > 0 && checklistProgress === 0 && daysUntilDue <= 2) signals.push('checklist_zerado_proximo_prazo');
     return signals;
 }
 
@@ -117,6 +127,9 @@ export function generatePreMortemContext(
     const renegotiationEvents = baseEvents
         .filter(event => event.tipo === 'RENEGOTIATION')
         .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    const checklist = commitment.checklist || [];
+    const completedChecklistItems = checklist.filter(item => item.completed).length;
+    const checklistProgressPercent = checklist.length === 0 ? 0 : Math.round((completedChecklistItems / checklist.length) * 100);
 
     return {
         commitment: {
@@ -145,6 +158,11 @@ export function generatePreMortemContext(
         postponementHistory: {
             renegotiationCount: commitment.renegociadoCount || renegotiationEvents.length,
             lastRenegotiations: renegotiationEvents.slice(0, 3).map(event => `${toDateKey(event.timestamp)}: ${event.descricao}`),
+        },
+        checklist: {
+            totalChecklistItems: checklist.length,
+            completedChecklistItems,
+            checklistProgressPercent,
         },
     };
 }

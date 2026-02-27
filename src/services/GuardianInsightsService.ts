@@ -35,6 +35,8 @@ export interface IntegritySystemSignals {
         blocked: number;
         highRiskOpen: number;
         recurrent: number;
+        checklistStalledNearDue: number;
+        checklistInconsistency: number;
     };
     ownerSaturation: OwnerSaturationSignal[];
     projectRisk: ProjectRiskSignal[];
@@ -79,6 +81,31 @@ const isOpenHighRisk = (commitment: Commitment): boolean =>
         && riskMatrixScore(risk) >= 6,
     );
 
+const checklistProgress = (commitment: Commitment): number => {
+    const checklist = commitment.checklist || [];
+    if (checklist.length === 0) return 0;
+    const completed = checklist.filter(item => item.completed).length;
+    return Math.round((completed / checklist.length) * 100);
+};
+
+const daysUntilDue = (commitment: Commitment, today: Date): number => {
+    const due = startOfDay(new Date(commitment.dataEsperada));
+    const diff = due.getTime() - today.getTime();
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));
+};
+
+const isChecklistStalledNearDue = (commitment: Commitment, today: Date): boolean => {
+    const checklist = commitment.checklist || [];
+    if (checklist.length === 0) return false;
+    return checklistProgress(commitment) === 0 && daysUntilDue(commitment, today) <= 2;
+};
+
+const isChecklistInconsistent = (commitment: Commitment): boolean => {
+    const checklist = commitment.checklist || [];
+    if (checklist.length === 0) return false;
+    return checklistProgress(commitment) === 100 && commitment.status !== CommitmentStatus.DONE;
+};
+
 function toSeverity(score: number): InsightSeverity {
     if (score >= 8) return 'HIGH';
     if (score >= 5) return 'MEDIUM';
@@ -111,6 +138,7 @@ export function buildDeterministicIntegrityInsights(
         if (commitment.hasImpedimento) row.blockedCount += 1;
         if (isOpenHighRisk(commitment)) row.highRiskOpenCount += 1;
         if ((commitment.renegociadoCount || 0) >= 2) row.recurrentCount += 1;
+        if (isChecklistStalledNearDue(commitment, today)) row.highRiskOpenCount += 1;
         return acc;
     }, {} as Record<string, OwnerSaturationSignal>);
 
@@ -149,6 +177,7 @@ export function buildDeterministicIntegrityInsights(
             row.unstableSignals += 1;
             row.highRiskOpenCount += 1;
         }
+        if (isChecklistStalledNearDue(commitment, today)) row.unstableSignals += 1;
         return acc;
     }, {} as Record<string, ProjectRiskSignal>);
 
@@ -160,6 +189,8 @@ export function buildDeterministicIntegrityInsights(
         if (commitment.hasImpedimento) acc.blocked += 1;
         if (isOpenHighRisk(commitment)) acc.highRiskOpen += 1;
         if ((commitment.renegociadoCount || 0) >= 2) acc.recurrent += 1;
+        if (isChecklistStalledNearDue(commitment, today)) acc.checklistStalledNearDue += 1;
+        if (isChecklistInconsistent(commitment)) acc.checklistInconsistency += 1;
         return acc;
     }, {
         active: active.length,
@@ -167,6 +198,8 @@ export function buildDeterministicIntegrityInsights(
         blocked: 0,
         highRiskOpen: 0,
         recurrent: 0,
+        checklistStalledNearDue: 0,
+        checklistInconsistency: 0,
     });
 
     const insights: GuardianInsight[] = [];
@@ -215,6 +248,28 @@ export function buildDeterministicIntegrityInsights(
             evidence: `${totals.blocked} compromisso(s) ativo(s) estão bloqueados por dependências.`,
             recommendedAction: 'Atacar desbloqueios críticos primeiro e reduzir entrada de novos itens dependentes.',
             why: 'Acúmulo de bloqueios aumenta WIP improdutivo e reduz previsibilidade de entrega.',
+        });
+    }
+
+    if (totals.checklistStalledNearDue >= 1) {
+        insights.push({
+            id: 'checklist-stalled-near-due',
+            severity: totals.checklistStalledNearDue >= 2 ? 'HIGH' : 'MEDIUM',
+            headline: 'Checklist sem progresso próximo ao prazo',
+            evidence: `${totals.checklistStalledNearDue} compromisso(s) com checklist em 0% e vencimento em até 2 dias.`,
+            recommendedAction: 'Quebrar desbloqueios imediatos e revisar escopo mínimo viável da entrega.',
+            why: 'Checklist parado perto do prazo é sinal de risco de execução concentrado.',
+        });
+    }
+
+    if (totals.checklistInconsistency >= 1) {
+        insights.push({
+            id: 'checklist-status-inconsistency',
+            severity: 'LOW',
+            headline: 'Inconsistência leve: checklist concluído com status aberto',
+            evidence: `${totals.checklistInconsistency} compromisso(s) com checklist em 100% e status diferente de DONE.`,
+            recommendedAction: 'Revisar status dos compromissos para refletir conclusão operacional.',
+            why: 'Sinal de desalinhamento entre execução e status registrado no fluxo.',
         });
     }
 

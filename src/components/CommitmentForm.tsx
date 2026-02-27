@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { CreateCommitmentDTO } from '../services/CommitmentService';
 import {
     Commitment,
+    CommitmentStatus,
     CommitmentRisk,
     RiskCategory,
     RiskMatrixLevel,
@@ -26,6 +27,8 @@ interface CommitmentFormProps {
         status: string;
         projeto?: string;
     }>;
+    currentStatus?: CommitmentStatus;
+    onStatusChange?: (status: CommitmentStatus) => void;
 }
 
 type CommitmentFormState = Omit<CreateCommitmentDTO, 'dataEsperada'> & {
@@ -78,6 +81,8 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({
     layoutMode = 'default',
     suggestions,
     dependencyOptions = [],
+    currentStatus,
+    onStatusChange,
 }) => {
     const nextRiskIdRef = useRef(2);
     const [todayMinDate, setTodayMinDate] = useState('');
@@ -341,7 +346,42 @@ const CommitmentForm: React.FC<CommitmentFormProps> = ({
                         <option value="CRITICAL">Critical</option>
                     </select>
                 </div>
+
+                {initialData && currentStatus && onStatusChange && (
+                    <div className="space-y-1">
+                        <label htmlFor="status">Status</label>
+                        <select
+                            id="status"
+                            name="status"
+                            value={currentStatus}
+                            onChange={(e) => onStatusChange(e.target.value as CommitmentStatus)}
+                            className="input-field"
+                        >
+                            <option value={CommitmentStatus.BACKLOG}>BACKLOG</option>
+                            <option value={CommitmentStatus.ACTIVE}>ACTIVE</option>
+                            <option value={CommitmentStatus.DONE}>DONE</option>
+                            <option value={CommitmentStatus.CANCELLED}>CANCELLED</option>
+                        </select>
+                    </div>
+                )}
             </div>
+
+            <section className="space-y-3 commitment-main-block" style={{ border: '1px solid var(--glass-border)', borderRadius: '10px', padding: '0.8rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
+                    <div>
+                        <div style={{ fontWeight: 600 }}>Checklist</div>
+                        {!initialData ? (
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                                O checklist fica disponível após salvar o compromisso, na visualização do card.
+                            </div>
+                        ) : (
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                                Itens atuais: {(initialData.checklist || []).filter(item => item.completed).length}/{(initialData.checklist || []).length}. Edite pelo card para manter histórico de eventos.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </section>
 
             <section className="space-y-3 commitment-main-block" style={{ border: '1px solid var(--glass-border)', borderRadius: '10px', padding: '0.8rem' }}>
                 <button

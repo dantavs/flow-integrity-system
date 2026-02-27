@@ -26,7 +26,16 @@ describe('PreMortemService', () => {
 
     it('builds structured context with project summary and dependencies', () => {
         const dep = make({ id: 'dep-1', titulo: 'Dependência', status: CommitmentStatus.ACTIVE });
-        const main = make({ id: 'main-1', titulo: 'Principal', dependencias: ['dep-1'], renegociadoCount: 2 });
+        const main = make({
+            id: 'main-1',
+            titulo: 'Principal',
+            dependencias: ['dep-1'],
+            renegociadoCount: 2,
+            checklist: [
+                { id: 'c1', text: 'A', completed: true, createdAt: new Date().toISOString() },
+                { id: 'c2', text: 'B', completed: false, createdAt: new Date().toISOString() },
+            ],
+        });
         const other = make({ id: 'other-1', titulo: 'Outro', hasImpedimento: true });
 
         const context = generatePreMortemContext(main as any, [main, dep, other] as any, []);
@@ -34,6 +43,9 @@ describe('PreMortemService', () => {
         expect(context.projectSummary.total).toBe(3);
         expect(context.dependencies).toHaveLength(1);
         expect(context.projectAtRiskCommitments.length).toBeGreaterThanOrEqual(1);
+        expect(context.checklist.totalChecklistItems).toBe(2);
+        expect(context.checklist.completedChecklistItems).toBe(1);
+        expect(context.checklist.checklistProgressPercent).toBe(50);
     });
 
     it('builds prompt with fixed JSON contract', () => {

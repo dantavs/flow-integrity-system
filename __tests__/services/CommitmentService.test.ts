@@ -17,6 +17,7 @@ describe('CommitmentService - editCommitment', () => {
         impacto: 'MEDIUM' as CommitmentImpact,
         status: CommitmentStatus.ACTIVE,
         hasImpedimento: false,
+        checklist: [],
         riscos: [],
         renegociadoCount: 0,
         criadoEm: new Date(),
@@ -36,7 +37,7 @@ describe('CommitmentService - editCommitment', () => {
         impacto: 'MEDIUM',
         riscos: [{
             id: 'r-1',
-            descricao: 'Dependência de terceiro',
+            descricao: 'Dependencia de terceiro',
             categoria: 'DEPENDENCIA',
             statusMitigacao: 'EM_MITIGACAO',
             probabilidade: 'MEDIUM',
@@ -44,7 +45,7 @@ describe('CommitmentService - editCommitment', () => {
         }],
     };
 
-    test('edita título e data corretamente e cria evento de RENEGOTIATION', () => {
+    test('edits title/date and creates renegotiation event', () => {
         const edited = editCommitment(baseCommitment, newData);
         expect(edited.titulo).toBe(newData.titulo);
         expect(edited.dataEsperada.getTime()).toBe(newData.dataEsperada.getTime());
@@ -54,17 +55,17 @@ describe('CommitmentService - editCommitment', () => {
         expect(edited.riscos).toHaveLength(1);
     });
 
-    test('lança erro quando título está vazio', () => {
+    test('throws error when title is empty', () => {
         const badData = { ...newData, titulo: '' } as CreateCommitmentDTO;
-        expect(() => editCommitment(baseCommitment, badData)).toThrow('Título é obrigatório');
+        expect(() => editCommitment(baseCommitment, badData)).toThrow(/obrigat/i);
     });
 
-    test('lança erro quando dataEsperada está ausente', () => {
+    test('throws error when dataEsperada is missing', () => {
         const badData = { ...newData, dataEsperada: undefined as any } as CreateCommitmentDTO;
-        expect(() => editCommitment(baseCommitment, badData)).toThrow('Data de entrega é obrigatória');
+        expect(() => editCommitment(baseCommitment, badData)).toThrow(/entrega/i);
     });
 
-    test('normaliza risco legado em string na criação', () => {
+    test('normalizes legacy textual risk on creation', () => {
         const dto = { ...newData, riscos: 'Risco textual legado' as any };
         const created = createCommitment(dto, []);
         expect(created.riscos).toHaveLength(1);

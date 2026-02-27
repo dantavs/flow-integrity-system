@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Commitment, CommitmentStatus, riskMatrixScore } from '../models/Commitment';
 
 interface CommitmentCardProps {
@@ -11,17 +11,52 @@ interface CommitmentCardProps {
     onViewHistory?: (id: string) => void;
     onRunPreMortem?: (id: string) => void;
     preMortemLoading?: boolean;
+    onChecklistAdd?: (id: string, text: string) => void;
+    onChecklistToggle?: (id: string, itemId: string) => void;
+    onChecklistRemove?: (id: string, itemId: string) => void;
 }
 
-const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, onStatusChange, onEdit, onViewHistory, onRunPreMortem, preMortemLoading = false }) => {
+const CommitmentCard: React.FC<CommitmentCardProps> = ({
+    commitment: c,
+    index,
+    onStatusChange,
+    onEdit,
+    onViewHistory,
+    onRunPreMortem,
+    preMortemLoading = false,
+    onChecklistAdd,
+    onChecklistToggle,
+    onChecklistRemove,
+}) => {
     const dependencies = c.dependencias || [];
+    const checklist = c.checklist || [];
+    const checklistCompleted = useMemo(() => checklist.filter(item => item.completed).length, [checklist]);
+    const isOpenCommitment = c.status === CommitmentStatus.BACKLOG || c.status === CommitmentStatus.ACTIVE;
+    const [isChecklistExpanded, setIsChecklistExpanded] = useState(false);
+    const [newChecklistText, setNewChecklistText] = useState('');
+
+    const PencilIcon = () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 20h4l10-10-4-4L4 16v4Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="m12 6 4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    );
+
+    const HistoryIcon = () => (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M3 3v5h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M3.5 12a8.5 8.5 0 1 0 2.5-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M12 8v5l3 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    );
+
     const getTipoIcon = (tipo: string) => {
         switch (tipo) {
-            case 'DELIVERY': return '🏁';
-            case 'ALIGNMENT': return '🤝';
-            case 'DECISION': return '⚖️';
-            case 'OP': return '⚙️';
-            default: return '📄';
+            case 'DELIVERY': return 'D';
+            case 'ALIGNMENT': return 'A';
+            case 'DECISION': return 'D2';
+            case 'OP': return 'OP';
+            default: return 'C';
         }
     };
 
@@ -62,17 +97,17 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
                                 title="Editar Compromisso"
                                 aria-label="Editar"
                             >
-                                ✏️
+                                <PencilIcon />
                             </button>
                         )}
                         {onViewHistory && (
                             <button
                                 onClick={() => onViewHistory(c.id)}
                                 style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4px', borderRadius: '4px' }}
-                                title="Ver Histórico"
-                                aria-label="Histórico"
+                                title="Ver Historico"
+                                aria-label="Historico"
                             >
-                                🕒
+                                <HistoryIcon />
                             </button>
                         )}
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ID: #{c.id}</span>
@@ -85,15 +120,15 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
                         {c.descricao}
                     </p>
                 )}
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>{c.projeto} • {c.area}</p>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>{c.projeto} - {c.area}</p>
 
                 {c.riscos.length > 0 && (
                     <div style={{ fontSize: '0.8rem', color: 'var(--accent-primary)', backgroundColor: 'rgba(139, 92, 246, 0.05)', padding: '0.5rem', borderRadius: '4px', marginBottom: '1rem', borderLeft: '2px solid var(--accent-primary)' }}>
-                        <strong>⚠️ Riscos ({c.riscos.length})</strong>
+                        <strong>Riscos ({c.riscos.length})</strong>
                         <ul style={{ marginTop: '0.4rem', marginBottom: 0, paddingLeft: '1rem' }}>
                             {c.riscos.slice(0, 2).map(risk => (
                                 <li key={risk.id}>
-                                    {risk.descricao} ({risk.categoria} • {risk.statusMitigacao} • Score {riskMatrixScore(risk)})
+                                    {risk.descricao} ({risk.categoria} | {risk.statusMitigacao} | Score {riskMatrixScore(risk)})
                                 </li>
                             ))}
                         </ul>
@@ -102,15 +137,92 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
 
                 {dependencies.length > 0 && (
                     <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.7rem' }}>
-                        <strong>🔗 Dependências:</strong> {dependencies.map(id => `#${id}`).join(', ')}
+                        <strong>Dependencias:</strong> {dependencies.map(id => `#${id}`).join(', ')}
                     </div>
                 )}
 
                 {c.hasImpedimento && dependencies.length > 0 && (
                     <div style={{ fontSize: '0.78rem', color: '#f59e0b', marginBottom: '0.8rem' }}>
-                        Dependência pendente detectada.
+                        Dependencia pendente detectada.
                     </div>
                 )}
+
+                <div style={{ marginBottom: '0.8rem', border: '1px solid var(--glass-border)', borderRadius: '8px', padding: '0.55rem 0.65rem' }}>
+                    <button
+                        type="button"
+                        onClick={() => setIsChecklistExpanded(prev => !prev)}
+                        style={{ width: '100%', background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', textAlign: 'left', padding: 0 }}
+                    >
+                        <strong>Checklist:</strong> {checklistCompleted}/{checklist.length} {isChecklistExpanded ? 'v' : '>'}
+                    </button>
+
+                    {isChecklistExpanded && (
+                        <div style={{ marginTop: '0.55rem' }}>
+                            {isOpenCommitment && (
+                                <div style={{ display: 'flex', gap: '0.45rem', marginBottom: '0.55rem' }}>
+                                    <input
+                                        type="text"
+                                        className="input-field"
+                                        placeholder="Novo item"
+                                        value={newChecklistText}
+                                        onChange={(e) => setNewChecklistText(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key !== 'Enter') return;
+                                            e.preventDefault();
+                                            const text = newChecklistText.trim();
+                                            if (!text || !onChecklistAdd) return;
+                                            onChecklistAdd(c.id, text);
+                                            setNewChecklistText('');
+                                        }}
+                                        style={{ padding: '0.35rem 0.5rem', fontSize: '0.84rem' }}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="btn-secondary"
+                                        style={{ width: 'auto', padding: '0.3rem 0.65rem' }}
+                                        onClick={() => {
+                                            const text = newChecklistText.trim();
+                                            if (!text || !onChecklistAdd) return;
+                                            onChecklistAdd(c.id, text);
+                                            setNewChecklistText('');
+                                        }}
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                            )}
+
+                            {checklist.length === 0 ? (
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Sem itens no checklist.</div>
+                            ) : (
+                                <div style={{ display: 'grid', gap: '0.35rem' }}>
+                                    {checklist.map(item => (
+                                        <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.82rem' }}>
+                                            <input
+                                                type="checkbox"
+                                                checked={item.completed}
+                                                onChange={() => onChecklistToggle?.(c.id, item.id)}
+                                                disabled={!isOpenCommitment}
+                                            />
+                                            <span style={{ flex: 1, textDecoration: item.completed ? 'line-through' : 'none', color: item.completed ? 'var(--text-muted)' : 'var(--text-secondary)' }}>
+                                                {item.text}
+                                            </span>
+                                            <button
+                                                type="button"
+                                                onClick={() => onChecklistRemove?.(c.id, item.id)}
+                                                style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+                                                aria-label="Remover item"
+                                                disabled={!isOpenCommitment}
+                                            >
+                                                x
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
 
                 <div style={{ marginTop: '0.6rem', marginBottom: '0.8rem' }}>
                     <button
@@ -136,7 +248,7 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
                             <div style={{ marginBottom: '0.25rem' }}>Perguntas: {c.preMortem.criticalQuestions.join(' | ')}</div>
                         )}
                         {c.preMortem.mitigations.length > 0 && (
-                            <div>Mitigações: {c.preMortem.mitigations.join(' | ')}</div>
+                            <div>Mitigacoes: {c.preMortem.mitigations.join(' | ')}</div>
                         )}
                     </div>
                 )}
@@ -150,7 +262,7 @@ const CommitmentCard: React.FC<CommitmentCardProps> = ({ commitment: c, index, o
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
-                        <span>📅</span>
+                        <span>Data</span>
                         <span style={{ fontWeight: 600, color: getDateColor(c.dataEsperada) }}>
                             {new Date(c.dataEsperada).toLocaleDateString('pt-BR')}
                         </span>
