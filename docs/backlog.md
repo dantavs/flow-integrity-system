@@ -17,12 +17,6 @@
 - [ ] **CORE-009:** **Otimização de Backlog p/ Métricas:** Refinar formato do .md para KPIs automáticos.
 
 ## 🧪 Aguardando Aprovação
-- [~] **CORE-035:** **Checklist Manual por Compromisso:** Itens simples por compromisso com progresso, eventos, visão compacta/expansível no card e integração com Reflection/Pre-Mortem/Integrity.
-  *(Início: 2026-02-25 | Fim: 2026-02-25)*
-- [~] **CORE-036:** **Refino UX do Checklist no Card:** Restaurar ícones de ações, ajustar comportamento de visualização/edição do checklist por status e permitir adicionar item via tecla Enter.
-  *(Início: 2026-02-25 | Fim: 2026-02-25)*
-- [~] **CORE-037:** **Checklist no Formulário + Status no Modal de Edição:** Exibir bloco de checklist na tela de adição e permitir visualizar/editar status dentro do modal de edição.
-  *(Início: 2026-02-25 | Fim: 2026-02-25)*
 
 ## ✅ Concluído
 
@@ -71,6 +65,12 @@
   *(Início: 2026-02-23 | Fim: 2026-02-23)*
 
 ### 🚀 Fase 2: Governança e Integridade
+- [x] **CORE-037:** **Checklist no Formulário + Status no Modal de Edição:** Exibir bloco de checklist na tela de adição e permitir visualizar/editar status dentro do modal de edição.
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
+- [x] **CORE-036:** **Refino UX do Checklist no Card:** Restaurar ícones de ações, ajustar comportamento de visualização/edição do checklist por status e permitir adicionar item via tecla Enter.
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
+- [x] **CORE-035:** **Checklist Manual por Compromisso:** Itens simples por compromisso com progresso, eventos, visão compacta/expansível no card e integração com Reflection/Pre-Mortem/Integrity.
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
 - [x] **CORE-034:** **Descrição no Compromisso + Contexto para IA:** Adicionar campo de descrição no compromisso e enviar esse conteúdo para o Flow Advisor.
   *(Início: 2026-02-25 | Fim: 2026-02-25)*
 - [x] **CORE-024:** **Score de Integridade de Fluxo:** Indicador visual da % de saúde do sistema.
