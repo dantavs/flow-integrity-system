@@ -56,6 +56,17 @@ export type IntegrityInsightsRunResult = {
 const isActive = (commitment: Commitment): boolean =>
     commitment.status === CommitmentStatus.BACKLOG || commitment.status === CommitmentStatus.ACTIVE;
 
+const DEFAULT_OWNER_SATURATION_EXCLUSION = ['Tavares'];
+
+function getSaturationExcludedOwners(): string[] {
+    const configured = String(process.env.FLOW_GUARDIAN_OWNER_SATURATION_EXCLUDE || '')
+        .split(',')
+        .map(item => item.trim())
+        .filter(Boolean);
+    const merged = [...DEFAULT_OWNER_SATURATION_EXCLUSION, ...configured];
+    return Array.from(new Set(merged.map(owner => owner.toLowerCase())));
+}
+
 const startOfDay = (value: Date): Date => {
     const date = new Date(value);
     date.setHours(0, 0, 0, 0);
@@ -160,7 +171,8 @@ export function buildDeterministicIntegrityInsights(
 
     const insights: GuardianInsight[] = [];
 
-    const topOwner = ownerSaturation[0];
+    const excludedOwners = getSaturationExcludedOwners();
+    const topOwner = ownerSaturation.find(owner => !excludedOwners.includes(owner.owner.toLowerCase()));
     if (topOwner && topOwner.saturationScore >= 5) {
         insights.push({
             id: `owner-saturation:${topOwner.owner}`,

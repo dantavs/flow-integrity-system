@@ -55,6 +55,17 @@ describe('GuardianInsightsService', () => {
         expect(result.systemSignals.ownerSaturation[0].owner).toBe('Ana');
     });
 
+    it('does not generate owner saturation insight for Tavares by default', () => {
+        const commitments = [
+            make({ id: 't1', owner: 'Tavares', hasImpedimento: true, dataEsperada: new Date('2026-02-20T00:00:00') }),
+            make({ id: 't2', owner: 'Tavares', renegociadoCount: 3 }),
+            make({ id: 't3', owner: 'Tavares' }),
+        ];
+
+        const result = buildDeterministicIntegrityInsights(commitments as any, now);
+        expect(result.insights.some(item => item.id === 'owner-saturation:Tavares')).toBe(false);
+    });
+
     it('generates project instability insight with multiple unstable signals', () => {
         const risk = {
             id: 'r2',
