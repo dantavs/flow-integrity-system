@@ -21,6 +21,8 @@
 ## ✅ Concluído
 
 ### 🤖 Inteligência e Automação (Flow Guardian)
+- [x] **AI-006:** **Ajuste de Saturação por Owner no Integrity Guardian:** Evitar alerta de saturação para owner principal de execução (caso Tavares) mantendo alertas para demais owners.
+  *(Início: 2026-02-25 | Fim: 2026-02-25)*
 - [x] **AI-005:** **Pre-Mortem Analysis:** Rodar análise rápida assumindo falha do compromisso, com classificação de risco, causas prováveis, perguntas críticas e mitigação prática.
   *(Início: 2026-02-25 | Fim: 2026-02-25)*
 - [x] **AI-003:** **Integrity Guardian (Insights):** Gerar relatórios de saúde do fluxo e comportamentos de risco (ex: saturação de owners). ([doc](flow-guardian-plan.md#ai-003---integrity-guardian-insights))
